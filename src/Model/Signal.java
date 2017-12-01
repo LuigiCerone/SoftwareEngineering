@@ -1,14 +1,28 @@
 package Model;
 
-public class Signal {
-    private int singalNumber;
-    private boolean value;
-    private int robotId;
+import java.util.Date;
 
-    public Signal(int singalNumber, boolean value, int robotId) {
+public class Signal {
+    private int id;
+    private int singalNumber;
+    private boolean signalValue;
+    private String robotId;
+    private Date timestamps;
+
+    public Signal(int id, int singalNumber, boolean signalValue, String robotId, Date timestamps) {
+        this.id = id;
         this.singalNumber = singalNumber;
-        this.value = value;
+        this.signalValue = signalValue;
         this.robotId = robotId;
+        this.timestamps = timestamps;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getSingalNumber() {
@@ -19,19 +33,27 @@ public class Signal {
         this.singalNumber = singalNumber;
     }
 
-    public boolean isValue() {
-        return value;
+    public boolean isSignalValue() {
+        return signalValue;
     }
 
-    public void setValue(boolean value) {
-        this.value = value;
+    public void setSignalValue(boolean signalValue) {
+        this.signalValue = signalValue;
     }
 
-    public int getRobotId() {
+    public String getRobotId() {
         return robotId;
     }
 
-    public void setRobotId(int robotId) {
+    public void setRobotId(String robotId) {
         this.robotId = robotId;
+    }
+
+    public Date getTimestamps() {
+        return timestamps;
+    }
+
+    public void setTimestamps(Date timestamps) {
+        this.timestamps = timestamps;
     }
 }

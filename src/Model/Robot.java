@@ -1,40 +1,51 @@
 package Model;
 
 public class Robot {
-    private int id;
-    private int clusterId;
-    private int zoneId;
+    private String id;
+    private String clusterId;
+    private String zoneId;
+    private boolean isUp;
     private float inefficiencyRate;
 
-    public Robot(int id, int clusterId, int zoneId, float inefficiencyRate) {
+
+    public Robot(String id, String clusterId, String zoneId, boolean isUp, float inefficiencyRate) {
         this.id = id;
         this.clusterId = clusterId;
         this.zoneId = zoneId;
+        this.isUp = isUp;
         this.inefficiencyRate = inefficiencyRate;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getClusterId() {
+    public String getClusterId() {
         return clusterId;
     }
 
-    public void setClusterId(int clusterId) {
+    public void setClusterId(String clusterId) {
         this.clusterId = clusterId;
     }
 
-    public int getZoneId() {
+    public String getZoneId() {
         return zoneId;
     }
 
-    public void setZoneId(int zoneId) {
+    public void setZoneId(String zoneId) {
         this.zoneId = zoneId;
+    }
+
+    public boolean isUp() {
+        return isUp;
+    }
+
+    public void setUp(boolean up) {
+        isUp = up;
     }
 
     public float getInefficiencyRate() {

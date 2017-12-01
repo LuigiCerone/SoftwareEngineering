@@ -1,22 +1,36 @@
 package Model;
 
-public class Cluster {
-    private int id;
-    private float inefficiencyRate;
-    private int zoneId;
+import java.util.List;
 
-    public Cluster(int id, float inefficiencyRate, int zoneId) {
+public class Cluster {
+    private String id;
+    private String zoneId;
+    private float inefficiencyRate;
+    private boolean isUp;
+    private List<Robot> robotsList;
+
+    public Cluster(String id, String zoneId, float inefficiencyRate, boolean isUp, List<Robot> robotsList) {
         this.id = id;
-        this.inefficiencyRate = inefficiencyRate;
         this.zoneId = zoneId;
+        this.inefficiencyRate = inefficiencyRate;
+        this.isUp = isUp;
+        this.robotsList = robotsList;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
+    }
+
+    public String getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(String zoneId) {
+        this.zoneId = zoneId;
     }
 
     public float getInefficiencyRate() {
@@ -27,11 +41,19 @@ public class Cluster {
         this.inefficiencyRate = inefficiencyRate;
     }
 
-    public int getZoneId() {
-        return zoneId;
+    public boolean isUp() {
+        return isUp;
     }
 
-    public void setZoneId(int zoneId) {
-        this.zoneId = zoneId;
+    public void setUp(boolean up) {
+        isUp = up;
+    }
+
+    public List<Robot> getRobotsList() {
+        return robotsList;
+    }
+
+    public void setRobotsList(List<Robot> robotsList) {
+        this.robotsList = robotsList;
     }
 }
