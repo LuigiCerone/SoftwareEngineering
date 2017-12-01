@@ -7,5 +7,6 @@ public class Main {
         System.out.println("test");
 
         MongoDB mdb = new MongoDB();
+        mdb.getAllRobotsData();
     }
 }
