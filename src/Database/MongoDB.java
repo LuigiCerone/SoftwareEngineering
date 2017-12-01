@@ -2,6 +2,7 @@ package Database;
 
 import com.mongodb.*;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.util.JSON;
 
 public class MongoDB {
     public static final String DATABASE_NAME = "robots";
@@ -31,5 +32,10 @@ public class MongoDB {
         while(cursor.hasNext()){
             System.out.println(cursor.next());
         }
+    }
+
+    public void insertRobotData(String data){
+        DBObject dbObject = (DBObject) JSON.parse(data);
+        robotsCollection.insert(dbObject);
     }
 }
