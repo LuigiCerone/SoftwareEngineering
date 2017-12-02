@@ -3,26 +3,14 @@ package Model;
 import java.util.Date;
 
 public class Signal {
-    private int id;
     private int singalNumber;
     private boolean signalValue;
-    private String robotId;
-    private Date timestamps;
+    private String timestamps;
 
-    public Signal(int id, int singalNumber, boolean signalValue, String robotId, Date timestamps) {
-        this.id = id;
+    public Signal(int singalNumber, boolean signalValue, String timestamps) {
         this.singalNumber = singalNumber;
         this.signalValue = signalValue;
-        this.robotId = robotId;
         this.timestamps = timestamps;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getSingalNumber() {
@@ -41,19 +29,11 @@ public class Signal {
         this.signalValue = signalValue;
     }
 
-    public String getRobotId() {
-        return robotId;
-    }
-
-    public void setRobotId(String robotId) {
-        this.robotId = robotId;
-    }
-
-    public Date getTimestamps() {
+    public String getTimestamps() {
         return timestamps;
     }
 
-    public void setTimestamps(Date timestamps) {
+    public void setTimestamps(String timestamps) {
         this.timestamps = timestamps;
     }
 }

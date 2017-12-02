@@ -1,5 +1,6 @@
 package HttpServer;
 
+import Controller.ControllerSignals;
 import Database.MongoDB;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -18,14 +19,17 @@ public class databaseUploaderHandler implements HttpHandler {
             // Here I need to take the post data.
             InputStream is = t.getRequestBody();
             String value = IOUtils.toString(is, "UTF-8");
-            System.out.println(value);
+            // System.out.println(value);
             insertIntoDB(value);
         }
         t.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
         t.close();
     }
 
-    private void insertIntoDB(String value) {
-        mongoDB.insertRobotData(value);
+    private void insertIntoDB(String data) {
+        mongoDB.insertRobotData(data);
+        // TODO Put the following in threads.
+        ControllerSignals controllerSignals = new ControllerSignals();
+        controllerSignals.clusterCollectionHandler(data);
     }
 }
