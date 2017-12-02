@@ -29,7 +29,9 @@ public class databaseUploaderHandler implements HttpHandler {
     private void insertIntoDB(String data) {
         mongoDB.insertRobotData(data);
         // TODO Put the following in threads.
-        ControllerSignals controllerSignals = new ControllerSignals();
-        controllerSignals.clusterCollectionHandler(data);
+//        ControllerSignals controllerSignals = new ControllerSignals();
+//        controllerSignals.clusterCollectionHandler(data);
+        Thread myThread = new Thread(new ControllerSignals(data));
+        myThread.start();
     }
 }

@@ -1,28 +1,36 @@
 package Controller;
 
 import Database.MongoDB;
-import com.mongodb.DBCollection;
-import com.mongodb.Mongo;
-import org.json.JSONObject;
 
-public class ControllerSignals {
+public class ControllerSignals implements Runnable{
     private MongoDB mongoDB;
+    private String data;
 
-    public ControllerSignals(){
+    public ControllerSignals(String data){
         this.mongoDB = new MongoDB();
+        this.data = data;
     }
 
-    public void clusterCollectionHandler(String data){
+    private void clusterCollectionHandler(){
         // Does the collection with the _clusterId attributes exists?
-        System.out.println("qui");
-        JSONObject json = new JSONObject(data);
-        String clusterId = json.getString("_clusterId");
-        DBCollection collection = mongoDB.checkForClusterCollectionOrCreateIt(clusterId);
-        robotDocumentHandler(collection, json);
+//        Gson gson = new Gson();
+//        System.out.println(json.toString());
+//        String clusterId = json.getJSONObject("robot").getString("_cluster");
+//        DBCollection collection = mongoDB.checkForClusterCollectionOrCreateIt(clusterId);
+//        robotDocumentHandler(collection, json);
     }
 
-    private void robotDocumentHandler(DBCollection collection, JSONObject json){
+    private void insertRobotDocument(){
         // Does a document with the _id robot exists within that collection?
-        mongoDB.checkForRobotDocumentOrCreateIt(collection, json);
+//        JsonParser parser = new JsonParser();
+//        JsonObject json = parser.parse(data).getAsJsonObject();
+//        mongoDB.insertRobotInCluster(json);
+    }
+
+    @Override
+    public void run() {
+       // clusterCollectionHandler();
+        insertRobotDocument();
+
     }
 }

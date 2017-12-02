@@ -6,14 +6,12 @@ public class Cluster {
     private String id;
     private String zoneId;
     private float inefficiencyRate;
-    private boolean isUp;
     private List<Robot> robotsList;
 
     public Cluster(String id, String zoneId, float inefficiencyRate, boolean isUp, List<Robot> robotsList) {
         this.id = id;
         this.zoneId = zoneId;
         this.inefficiencyRate = inefficiencyRate;
-        this.isUp = isUp;
         this.robotsList = robotsList;
     }
 
@@ -39,14 +37,6 @@ public class Cluster {
 
     public void setInefficiencyRate(float inefficiencyRate) {
         this.inefficiencyRate = inefficiencyRate;
-    }
-
-    public boolean isUp() {
-        return isUp;
-    }
-
-    public void setUp(boolean up) {
-        isUp = up;
     }
 
     public List<Robot> getRobotsList() {
