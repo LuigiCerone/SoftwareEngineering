@@ -3,52 +3,55 @@ package Database;
 import Model.ReadData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.*;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.util.JSON;
-import de.undercouch.bson4jackson.BsonFactory;
-import org.jongo.Jongo;
-import org.jongo.MongoCollection;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+
 
 public class MongoDB {
     public static final String DATABASE_NAME = "SEProject";
     public static final String DATAREADINGS_COLLECTION = "datareadings";
 
-    private DB mongoDatabase = this.getDatabase();
-    private Jongo jongo = null;
-    private MongoCollection robotsCollection = this.setDefaultCollection();
+    private MongoDatabase mongoDatabase = this.getDatabase();
+    private MongoCollection<ReadData> robotsCollection = this.setDefaultCollection();
 
     public MongoDB() {
     }
 
-    public DB getDatabase() {
-        return MongoClientSingleton.getInstance().getDB(DATABASE_NAME);
+    public MongoDatabase getDatabase() {
+        return MongoClientSingleton.getInstance().getDatabase(DATABASE_NAME);
     }
 
-    public MongoCollection setDefaultCollection() {
-        this.jongo = new Jongo(mongoDatabase);
-        return jongo.getCollection(DATAREADINGS_COLLECTION);
+    public MongoCollection<ReadData> setDefaultCollection() {
+        return mongoDatabase.getCollection(DATAREADINGS_COLLECTION, ReadData.class);
     }
 
     public void getAllRobotsData() {
         // MongoCursor<ReadData> cursor = robotsCollection.find().as(ReadData.class);
-        ReadData r = robotsCollection.findOne().as(ReadData.class);
-        System.out.println(r.toString());
+//        ReadData r = robotsCollection.findOne().as(ReadData.class);
+//        System.out.println(r.toString());
 //        while (cursor.hasNext()) {
 //            System.out.println(cursor.next());
 //        }
     }
 
-    public void insertRobotData(String data) throws IOException {
+    public void insertRobotData(String data) {
         // DBObject dbObject = (DBObject) JSON.parse(data);
         //robotsCollection.insert(data);
-        ReadData rd = new ObjectMapper().readerFor(ReadData.class).readValue(data);
-        System.out.println(new ObjectMapper().writeValueAsString(rd));
+//        ReadData rd = new ReadData(data);
+//        ReadData rd = new ObjectMapper().readerFor(ReadData.class).readValue(data);
+//        System.out.println(new ObjectMapper().writeValueAsString(rd));
+//        robotsCollection.insertOne(rd);
+        ReadData rd = new ReadData("Prova", "Prova", "Prova", 1, false, "rfrgirgf");
+        try {
+            robotsCollection.insertOne(rd);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-    // Assumption, in our database empty collections don't exists.
+// Assumption, in our database empty collections don't exists.
 //    public DBCollection checkForClusterCollectionOrCreateIt(String clusterId) {
 //        DBCollection table = mongoDatabase.getCollection(clusterId);
 //        return table;

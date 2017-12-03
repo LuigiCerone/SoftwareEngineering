@@ -28,11 +28,7 @@ public class databaseUploaderHandler implements HttpHandler {
     }
 
     private void insertIntoDB(String data) {
-        try {
-            mongoDB.insertRobotData(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        mongoDB.insertRobotData(data);
         // TODO Put the following in threads.
 //        ControllerSignals controllerSignals = new ControllerSignals();
 //        controllerSignals.clusterCollectionHandler(data);

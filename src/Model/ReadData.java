@@ -1,12 +1,11 @@
 package Model;
 
+import eu.dozd.mongo.annotation.Entity;
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+@Entity
 public class ReadData {
-    // JSON field name
     public static final String ROBOT = "robot";
     public static final String CLUSTER = "cluster";
     public static final String ZONE = "zone";
@@ -14,35 +13,23 @@ public class ReadData {
     public static final String VALUE = "value";
     public static final String TIMESTAMP = "timestamp";
 
-
-    private String robot;
-    private String cluster;
-    private String zone;
-    private int signal;
-    private boolean value;
-    private String timestamp;
-
+    String robot;
+    String cluster;
+    String zone;
+    int signal;
+    boolean value;
+    String timestamp;
 
     public ReadData(){
-
     }
 
-//    public ReadData(String robot, String cluster, String zone, int signal, boolean value, String timestamp) {
-//        this.robot = robot;
-//        this.cluster = cluster;
-//        this.zone = zone;
-//        this.signal = signal;
-//        this.value = value;
-//        this.timestamp = timestamp;
-//    }
-
-    @JsonCreator
-    public ReadData(@JsonProperty(ROBOT) String robot,
-                    @JsonProperty(CLUSTER) String cluster,
-                    @JsonProperty(ZONE) String zone,
-                    @JsonProperty(SIGNAL) int signal,
-                    @JsonProperty(VALUE) boolean value,
-                    @JsonProperty(TIMESTAMP) String timestamp){
+    @BsonCreator
+    public ReadData(@BsonProperty(ROBOT) String robot,
+                    @BsonProperty(CLUSTER) String cluster,
+                    @BsonProperty(ZONE) String zone,
+                    @BsonProperty(SIGNAL) int signal,
+                    @BsonProperty(VALUE) boolean value,
+                    @BsonProperty(TIMESTAMP) String timestamp) {
         this.robot = robot;
         this.cluster = cluster;
         this.zone = zone;
@@ -51,33 +38,52 @@ public class ReadData {
         this.timestamp = timestamp;
     }
 
-    @JsonProperty(ROBOT)
+
     public String getRobot() {
         return robot;
     }
 
-    @JsonProperty(CLUSTER)
     public String getCluster() {
         return cluster;
     }
 
-    @JsonProperty(ZONE)
     public String getZone() {
         return zone;
     }
 
-    @JsonProperty(SIGNAL)
     public int getSignal() {
         return signal;
     }
 
-    @JsonProperty(VALUE)
     public boolean getValue() {
         return value;
     }
 
-    @JsonProperty(TIMESTAMP)
     public String getTimestamp() {
         return timestamp;
+    }
+
+    public void setRobot(String robot) {
+        this.robot = robot;
+    }
+
+    public void setCluster(String cluster) {
+        this.cluster = cluster;
+    }
+
+    public void setZone(String zone) {
+        this.zone = zone;
+    }
+
+    public void setSignal(int signal) {
+        this.signal = signal;
+    }
+
+    public void setValue(boolean value) {
+        this.value = value;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 }
