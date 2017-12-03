@@ -2,6 +2,7 @@ package HttpServer;
 
 import Controller.ControllerSignals;
 import Database.MongoDB;
+import Model.ReadData;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -27,7 +28,11 @@ public class databaseUploaderHandler implements HttpHandler {
     }
 
     private void insertIntoDB(String data) {
-        mongoDB.insertRobotData(data);
+        try {
+            mongoDB.insertRobotData(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         // TODO Put the following in threads.
 //        ControllerSignals controllerSignals = new ControllerSignals();
 //        controllerSignals.clusterCollectionHandler(data);
