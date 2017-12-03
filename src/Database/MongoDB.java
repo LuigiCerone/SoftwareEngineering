@@ -2,7 +2,6 @@ package Database;
 
 import Model.ReadData;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
@@ -40,10 +39,15 @@ public class MongoDB {
         // DBObject dbObject = (DBObject) JSON.parse(data);
         //robotsCollection.insert(data);
 //        ReadData rd = new ReadData(data);
-//        ReadData rd = new ObjectMapper().readerFor(ReadData.class).readValue(data);
+        ReadData rd = null;
+        try {
+            rd = new ObjectMapper().readerFor(ReadData.class).readValue(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 //        System.out.println(new ObjectMapper().writeValueAsString(rd));
 //        robotsCollection.insertOne(rd);
-        ReadData rd = new ReadData("Prova", "Prova", "Prova", 1, false, "rfrgirgf");
+//        ReadData rd = new ReadData("Prova", "Prova", "Prova", 1, false, "rfrgirgf");
         try {
             robotsCollection.insertOne(rd);
         } catch (Exception e) {

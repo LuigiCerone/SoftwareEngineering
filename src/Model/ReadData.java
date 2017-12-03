@@ -1,9 +1,11 @@
 package Model;
 
 import eu.dozd.mongo.annotation.Entity;
+import org.bson.*;
+import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
-
+import org.bson.conversions.Bson;
 @Entity
 public class ReadData {
     public static final String ROBOT = "robot";
@@ -16,8 +18,8 @@ public class ReadData {
     String robot;
     String cluster;
     String zone;
-    int signal;
-    boolean value;
+    Integer signal;
+    Boolean value;
     String timestamp;
 
     public ReadData(){
@@ -27,8 +29,8 @@ public class ReadData {
     public ReadData(@BsonProperty(ROBOT) String robot,
                     @BsonProperty(CLUSTER) String cluster,
                     @BsonProperty(ZONE) String zone,
-                    @BsonProperty(SIGNAL) int signal,
-                    @BsonProperty(VALUE) boolean value,
+                    @BsonProperty(SIGNAL) Integer signal,
+                    @BsonProperty(VALUE) Boolean value,
                     @BsonProperty(TIMESTAMP) String timestamp) {
         this.robot = robot;
         this.cluster = cluster;
