@@ -29,7 +29,7 @@ public class databaseUploaderHandler implements HttpHandler {
     }
 
     private void insertIntoDB(String data) {
-        mongoDB.getAllRobotsReadingsData();
+//        mongoDB.getAllRobotsReadingsData();
         Thread myThread = new Thread(new ControllerSignals(data));
         myThread.start();
     }

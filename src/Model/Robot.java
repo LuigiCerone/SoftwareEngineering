@@ -1,7 +1,7 @@
 package Model;
 
-import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -26,12 +26,12 @@ public class Robot {
     public Robot(){
     }
 
-    @BsonCreator
-    public Robot(@BsonProperty(ROBOT_ID) String id,
-                 @BsonProperty(CLUSTER_ID) String clusterId,
-                 @BsonProperty(ZONE_ID) String zoneId,
-                 @BsonProperty(SIGNALS) Signal[] signals,
-                 @BsonProperty(INEFFICIENCY_RATE) float inefficiencyRate) {
+    @JsonCreator
+    public Robot(@JsonProperty(ROBOT_ID) String id,
+                 @JsonProperty(CLUSTER_ID) String clusterId,
+                 @JsonProperty(ZONE_ID) String zoneId,
+                 @JsonProperty(SIGNALS) Signal[] signals,
+                 @JsonProperty(INEFFICIENCY_RATE) float inefficiencyRate) {
         this.id = id;
         this.clusterId = clusterId;
         this.zoneId = zoneId;

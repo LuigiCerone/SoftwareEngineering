@@ -1,9 +1,7 @@
 package Model;
 
-import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonProperty;
-
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Signal {
     //JSON field name.
@@ -18,10 +16,10 @@ public class Signal {
     public Signal() {
     }
 
-    @BsonCreator
-    public Signal(@BsonProperty(SIGNAL_NUMER) int singalNumber,
-                  @BsonProperty(SIGNAL_VALUE) boolean signalValue,
-                  @BsonProperty(SIGNAL_TIMESTAMP) String timestamps) {
+    @JsonCreator
+    public Signal(@JsonProperty(SIGNAL_NUMER) int singalNumber,
+                  @JsonProperty(SIGNAL_VALUE) boolean signalValue,
+                  @JsonProperty(SIGNAL_TIMESTAMP) String timestamps) {
         this.singalNumber = singalNumber;
         this.signalValue = signalValue;
         this.timestamps = timestamps;
