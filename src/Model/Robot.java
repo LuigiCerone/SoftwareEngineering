@@ -1,25 +1,42 @@
 package Model;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
 
 public class Robot {
+    //JSON field names.
+    public static final String ROBOT_ID = "robotId";
+    public static final String CLUSTER_ID = "clusterId";
+    public static final String ZONE_ID = "zoneId";
+    public static final String SIGNALS = "signals";
+    public static final String INEFFICIENCY_RATE = "IR";
+
     private String id;
     private String clusterId;
     private String zoneId;
-    private boolean isUp;
     private float inefficiencyRate;
     private Signal[] robotSignals = new Signal[6];
 
+    public Robot(){
+    }
 
-    public Robot(String id, String clusterId, String zoneId, boolean isUp, float inefficiencyRate) {
+    @BsonCreator
+    public Robot(@BsonProperty(ROBOT_ID) String id,
+                 @BsonProperty(CLUSTER_ID) String clusterId,
+                 @BsonProperty(ZONE_ID) String zoneId,
+                 @BsonProperty(SIGNALS) Signal[] signals,
+                 @BsonProperty(INEFFICIENCY_RATE) float inefficiencyRate) {
         this.id = id;
         this.clusterId = clusterId;
         this.zoneId = zoneId;
-        this.isUp = isUp;
         this.inefficiencyRate = inefficiencyRate;
+        this.robotSignals = signals;
     }
 
     public Robot(String id, String clusterId, String zoneId) {
@@ -64,19 +81,22 @@ public class Robot {
         this.zoneId = zoneId;
     }
 
-    public boolean isUp() {
-        return isUp;
-    }
-
-    public void setUp(boolean up) {
-        isUp = up;
-    }
-
     public float getInefficiencyRate() {
         return inefficiencyRate;
     }
 
     public void setInefficiencyRate(float inefficiencyRate) {
         this.inefficiencyRate = inefficiencyRate;
+    }
+
+    @Override
+    public String toString() {
+        return "Robot{" +
+                "id='" + id + '\'' +
+                ", clusterId='" + clusterId + '\'' +
+                ", zoneId='" + zoneId + '\'' +
+                ", inefficiencyRate=" + inefficiencyRate +
+                ", robotSignals=" + Arrays.toString(robotSignals) +
+                '}';
     }
 }

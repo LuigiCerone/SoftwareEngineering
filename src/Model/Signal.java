@@ -1,13 +1,27 @@
 package Model;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 import java.util.Date;
 
 public class Signal {
+    //JSON field name.
+    public static final String SIGNAL_NUMER = "signalNumber";
+    public static final String SIGNAL_VALUE = "signalValue";
+    public static final String SIGNAL_TIMESTAMP = "signalTimestamp";
+
     private int singalNumber;
     private boolean signalValue;
     private String timestamps;
 
-    public Signal(int singalNumber, boolean signalValue, String timestamps) {
+    public Signal() {
+    }
+
+    @BsonCreator
+    public Signal(@BsonProperty(SIGNAL_NUMER) int singalNumber,
+                  @BsonProperty(SIGNAL_VALUE) boolean signalValue,
+                  @BsonProperty(SIGNAL_TIMESTAMP) String timestamps) {
         this.singalNumber = singalNumber;
         this.signalValue = signalValue;
         this.timestamps = timestamps;
@@ -35,5 +49,14 @@ public class Signal {
 
     public void setTimestamps(String timestamps) {
         this.timestamps = timestamps;
+    }
+
+    @Override
+    public String toString() {
+        return "Signal{" +
+                "singalNumber=" + singalNumber +
+                ", signalValue=" + signalValue +
+                ", timestamps='" + timestamps + '\'' +
+                '}';
     }
 }

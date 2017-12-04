@@ -8,6 +8,7 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.conversions.Bson;
 @Entity
 public class ReadData {
+    // JSON field name.
     public static final String ROBOT = "robot";
     public static final String CLUSTER = "cluster";
     public static final String ZONE = "zone";
