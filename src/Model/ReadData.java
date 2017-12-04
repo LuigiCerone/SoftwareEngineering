@@ -88,4 +88,16 @@ public class ReadData {
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
+
+    @Override
+    public String toString() {
+        return "ReadData{" +
+                "robot='" + robot + '\'' +
+                ", cluster='" + cluster + '\'' +
+                ", zone='" + zone + '\'' +
+                ", signal=" + signal +
+                ", value=" + value +
+                ", timestamp='" + timestamp + '\'' +
+                '}';
+    }
 }

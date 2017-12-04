@@ -1,36 +1,31 @@
 package Controller;
 
 import Database.MongoDB;
+import Model.ReadData;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
 
 public class ControllerSignals implements Runnable{
     private MongoDB mongoDB;
-    private String data;
+    private String readDataToDeserialize;
+    private ReadData readData;
 
-    public ControllerSignals(String data){
+    public ControllerSignals(String readDataToDeserialize){
         this.mongoDB = new MongoDB();
-        this.data = data;
-    }
-
-    private void clusterCollectionHandler(){
-        // Does the collection with the _clusterId attributes exists?
-//        Gson gson = new Gson();
-//        System.out.println(json.toString());
-//        String clusterId = json.getJSONObject("robot").getString("_cluster");
-//        DBCollection collection = mongoDB.checkForClusterCollectionOrCreateIt(clusterId);
-//        robotDocumentHandler(collection, json);
-    }
-
-    private void insertRobotDocument(){
-        // Does a document with the _id robot exists within that collection?
-//        JsonParser parser = new JsonParser();
-//        JsonObject json = parser.parse(data).getAsJsonObject();
-//        mongoDB.insertRobotInCluster(json);
+        this.readData = readData;
+        this.readDataToDeserialize = readDataToDeserialize;
     }
 
     @Override
     public void run() {
-       // clusterCollectionHandler();
-        insertRobotDocument();
+        try {
+            readData = new ObjectMapper().readerFor(ReadData.class).readValue(readDataToDeserialize);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mongoDB.insertReadingsData(readData);
 
+        mongoDB.insertRobotInCluster(readData);
     }
 }
