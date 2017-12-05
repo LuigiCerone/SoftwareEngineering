@@ -26,6 +26,7 @@ public class ControllerSignals implements Runnable{
         }
         mongoDB.insertReadingsData(readData);
 
+
         mongoDB.insertRobotInCluster(readData);
     }
 }

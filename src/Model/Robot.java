@@ -2,6 +2,15 @@ package Model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.bson.BsonDocument;
+import org.bson.BsonType;
+import org.bson.BsonValue;
+import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.conversions.Bson;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -16,34 +25,39 @@ public class Robot {
     public static final String ZONE_ID = "zoneId";
     public static final String SIGNALS = "signals";
     public static final String INEFFICIENCY_RATE = "IR";
+    public static final String DOWN_TIME = "downTime";
 
-    private String id;
+    private String robotId;
     private String clusterId;
     private String zoneId;
     private float inefficiencyRate;
-    private Signal[] robotSignals = new Signal[6];
 
-    public Robot(){
+    private Signal[] robotSignals = new Signal[7];
+
+    private int downTime;
+
+    public Robot() {
     }
 
     @JsonCreator
-    public Robot(@JsonProperty(ROBOT_ID) String id,
+    public Robot(@JsonProperty(ROBOT_ID) String robotId,
                  @JsonProperty(CLUSTER_ID) String clusterId,
                  @JsonProperty(ZONE_ID) String zoneId,
-                 @JsonProperty(SIGNALS) Signal[] signals,
-                 @JsonProperty(INEFFICIENCY_RATE) float inefficiencyRate) {
-        this.id = id;
+                 @JsonProperty(DOWN_TIME) int downTime,
+                 @JsonProperty(SIGNALS) Signal[] signals) {
+        this.robotId = robotId;
         this.clusterId = clusterId;
         this.zoneId = zoneId;
-        this.inefficiencyRate = inefficiencyRate;
         this.robotSignals = signals;
+        this.downTime = downTime;
     }
 
-    public Robot(String id, String clusterId, String zoneId) {
-        this.id = id;
+    public Robot(String robotId, String clusterId, String zoneId) {
+        this.robotId = robotId;
         this.clusterId = clusterId;
         this.zoneId = zoneId;
         initRobotsSignals();
+        this.downTime = 0;
     }
 
     // When a Robot is initialized all the signals are set to true-
@@ -53,16 +67,17 @@ public class Robot {
         df.setTimeZone(tz);
         String nowAsISO = df.format(new Date());
         for (int i = 0; i < 7; i++) {
-            robotSignals[i] = new Signal(i+1, true, nowAsISO);
+            robotSignals[i] = new Signal(i + 1, true, nowAsISO);
         }
     }
 
-    public String getId() {
-        return id;
+    @JS
+    public String getRobotId() {
+        return robotId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setRobotId(String robotId) {
+        this.robotId = robotId;
     }
 
     public String getClusterId() {
@@ -89,10 +104,14 @@ public class Robot {
         this.inefficiencyRate = inefficiencyRate;
     }
 
+//    public Signal[] getRobotSignals() {
+//        return robotSignals;
+//    }
+
     @Override
     public String toString() {
         return "Robot{" +
-                "id='" + id + '\'' +
+                "robotId='" + robotId + '\'' +
                 ", clusterId='" + clusterId + '\'' +
                 ", zoneId='" + zoneId + '\'' +
                 ", inefficiencyRate=" + inefficiencyRate +
