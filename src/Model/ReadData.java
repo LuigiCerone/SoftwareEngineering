@@ -1,7 +1,5 @@
 package Model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.json.JSONObject;
 
 public class ReadData {
@@ -20,7 +18,7 @@ public class ReadData {
     int value;
     String timestamp;
 
-    public ReadData(){
+    public ReadData() {
     }
 
     public ReadData(String readDataToDeserialize) {
@@ -28,11 +26,9 @@ public class ReadData {
         this.robot = jsonObject.getString(ROBOT);
         this.cluster = jsonObject.getString(CLUSTER);
         this.zone = jsonObject.getString(ZONE);
-        System.out.println("Nel costruttore");
-
         this.signal = jsonObject.getInt(SIGNAL);
         this.value = jsonObject.getInt(VALUE);
-        // this.timestamp = jsonObject.getString(TIMESTAMP);
+        this.timestamp = jsonObject.getString(TIMESTAMP);
     }
 
 

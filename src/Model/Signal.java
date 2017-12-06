@@ -1,8 +1,5 @@
 package Model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Signal {
     //JSON field name.
     public static final String SIGNAL_NUMER = "signalNumber";
@@ -16,10 +13,7 @@ public class Signal {
     public Signal() {
     }
 
-    @JsonCreator
-    public Signal(@JsonProperty(SIGNAL_NUMER) int singalNumber,
-                  @JsonProperty(SIGNAL_VALUE) boolean signalValue,
-                  @JsonProperty(SIGNAL_TIMESTAMP) String timestamps) {
+    public Signal(int singalNumber, boolean signalValue, String timestamps) {
         this.singalNumber = singalNumber;
         this.signalValue = signalValue;
         this.timestamps = timestamps;

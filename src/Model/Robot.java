@@ -1,14 +1,5 @@
 package Model;
 
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.bson.BsonDocument;
-import org.bson.BsonType;
-import org.bson.BsonValue;
-import org.bson.Document;
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.conversions.Bson;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -28,20 +19,15 @@ public class Robot {
     private String clusterId;
     private String zoneId;
     private float inefficiencyRate;
-
+    private int countInefficencyComponents;
     private Signal[] robotSignals = new Signal[7];
-
     private int downTime;
+
 
     public Robot() {
     }
 
-    @JsonCreator
-    public Robot(@JsonProperty(ROBOT_ID) String robotId,
-                 @JsonProperty(CLUSTER_ID) String clusterId,
-                 @JsonProperty(ZONE_ID) String zoneId,
-                 @JsonProperty(DOWN_TIME) int downTime,
-                 @JsonProperty(SIGNALS) Signal[] signals) {
+    public Robot(String robotId, String clusterId, String zoneId, int downTime, Signal[] signals) {
         this.robotId = robotId;
         this.clusterId = clusterId;
         this.zoneId = zoneId;
@@ -49,13 +35,6 @@ public class Robot {
         this.downTime = downTime;
     }
 
-    public Robot(String robotId, String clusterId, String zoneId) {
-        this.robotId = robotId;
-        this.clusterId = clusterId;
-        this.zoneId = zoneId;
-        initRobotsSignals();
-        this.downTime = 0;
-    }
 
     // When a Robot is initialized all the signals are set to true-
     private void initRobotsSignals() {
@@ -68,7 +47,18 @@ public class Robot {
         }
     }
 
-    @JsonGetter(ROBOT_ID)
+    public void setCountInefficencyComponents(int countInefficencyComponents) {
+        this.countInefficencyComponents = countInefficencyComponents;
+    }
+
+    public void setRobotSignals(Signal[] robotSignals) {
+        this.robotSignals = robotSignals;
+    }
+
+    public void setDownTime(int downTime) {
+        this.downTime = downTime;
+    }
+
     public String getRobotId() {
         return robotId;
     }
@@ -101,9 +91,17 @@ public class Robot {
         this.inefficiencyRate = inefficiencyRate;
     }
 
-//    public Signal[] getRobotSignals() {
-//        return robotSignals;
-//    }
+    public Signal[] getRobotSignals() {
+        return robotSignals;
+    }
+
+    public int getCountInefficencyComponents() {
+        return countInefficencyComponents;
+    }
+
+    public int getDownTime() {
+        return downTime;
+    }
 
     @Override
     public String toString() {

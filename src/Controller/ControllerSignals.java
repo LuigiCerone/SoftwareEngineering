@@ -1,40 +1,31 @@
 package Controller;
 
-import Database.Database;
-import Database.MongoDB;
+import Model.Cluster;
+import Model.DAO.ClusterDAO;
+import Model.DAO.RobotDAO;
 import Model.ReadData;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONObject;
+import Model.DAO.ReadDataDAO;
+import Model.Robot;
 
-import java.io.IOException;
 
-public class ControllerSignals implements Runnable{
-//    private MongoDB mongoDB;
-
-    private Database db;
+public class ControllerSignals implements Runnable {
     private String readDataToDeserialize;
     private ReadData readData;
 
-    public ControllerSignals(String readDataToDeserialize){
-//        this.mongoDB = new MongoDB();
-        this.db = new Database();
+    public ControllerSignals(String readDataToDeserialize) {
         this.readData = new ReadData(readDataToDeserialize);
-        System.out.println("Ho fatto");
     }
 
     @Override
     public void run() {
-//        try {
-//            // readData = new ObjectMapper().readerFor(ReadData.class).readValue(readDataToDeserialize);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        // TODO decide if this should be used or replaced.
+        new ReadDataDAO().insert(this.readData);
 
-        db.insertReadData(this.readData);
-
+        // TODO Check if the cluster exists otherwise create it.
+        Cluster cluster = new ClusterDAO().findClusterByIdOrInsert(readData);
+        // TODO Check if the robot exists otherwise create it.
+        Robot robot = new RobotDAO().findRobotByIdOrInsert(readData);
 //        mongoDB.insertReadingsData(readData);
-
-
 //        mongoDB.insertRobotInCluster(readData);
     }
 }

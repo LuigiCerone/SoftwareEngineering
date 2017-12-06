@@ -1,6 +1,5 @@
 package Main;
 
-import Database.MongoDB;
 import HttpServer.HttpServerInit;
 
 public class Main {

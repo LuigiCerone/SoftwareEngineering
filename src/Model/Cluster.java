@@ -8,6 +8,9 @@ public class Cluster {
     private float inefficiencyRate;
     private List<Robot> robotsList;
 
+    public Cluster(){
+    }
+
     public Cluster(String id, String zoneId, float inefficiencyRate, boolean isUp, List<Robot> robotsList) {
         this.id = id;
         this.zoneId = zoneId;

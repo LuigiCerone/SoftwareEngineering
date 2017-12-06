@@ -15,12 +15,10 @@ public class Database {
     private PreparedStatement statement;
 
     public Database() {
-        if (databaseConnection == null) {
-            this.databaseConnection = connectToDB();
-        }
+
     }
 
-    public static Connection connectToDB() {
+    public Connection connectToDB() {
         Connection con = null;
         try {
             // Carichiamo un driver di tipo 1 (bridge jdbc-odbc).
@@ -29,37 +27,19 @@ public class Database {
             // Creiamo la stringa di connessione.
             // Otteniamo una connessione con username e password.
             con = DriverManager.getConnection(URL, USER, PSW);
-            System.out.println("OK");
-
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return con;
     }
 
-    public void insertReadData(ReadData readData) {
-        String sql = "INSERT INTO read_data (id, robotId, clusterId, zoneId, signals, value, timestamp) " +
-                "VALUES (null, ?,?,?,?,?, NOW()); ";
-        System.out.println(sql);
+    public void closeConnectionToDB(Connection con) {
         try {
-            statement = this.databaseConnection.prepareStatement(sql);
-            statement.setString(1, readData.getRobot());
-            statement.setString(2, readData.getCluster());
-            statement.setString(3, readData.getZone());
-            statement.setInt(4, readData.getSignal());
-            statement.setInt(5, readData.getValue());
-//            statement.setString(6, readData.getTimestamp());
-
-            statement.execute();
-
-
+            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
     }
 }
