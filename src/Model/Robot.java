@@ -1,9 +1,6 @@
 package Model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.bson.BsonDocument;
 import org.bson.BsonType;
@@ -71,7 +68,7 @@ public class Robot {
         }
     }
 
-    @JS
+    @JsonGetter(ROBOT_ID)
     public String getRobotId() {
         return robotId;
     }

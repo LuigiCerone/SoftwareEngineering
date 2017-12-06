@@ -76,7 +76,16 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/src/lib/gson-2.6.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/src/lib/mysql-connector-java-5.1.45.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/src/lib/json.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

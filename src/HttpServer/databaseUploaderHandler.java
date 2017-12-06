@@ -1,6 +1,7 @@
 package HttpServer;
 
 import Controller.ControllerSignals;
+import Database.Database;
 import Database.MongoDB;
 import Model.ReadData;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +14,8 @@ import java.net.HttpURLConnection;
 import org.apache.commons.io.IOUtils;
 
 public class databaseUploaderHandler implements HttpHandler {
-    MongoDB mongoDB = new MongoDB();
+//    MongoDB mongoDB = new MongoDB();
+    Database bs = new Database();
 
     public void handle(HttpExchange t) throws IOException {
         System.out.println("Just received a request.");

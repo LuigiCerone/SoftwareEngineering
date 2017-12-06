@@ -2,6 +2,7 @@ package Model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.json.JSONObject;
 
 public class ReadData {
     // JSON field name.
@@ -15,26 +16,23 @@ public class ReadData {
     String robot;
     String cluster;
     String zone;
-    Integer signal;
-    Boolean value;
+    int signal;
+    int value;
     String timestamp;
 
     public ReadData(){
     }
 
-    @JsonCreator
-    public ReadData(@JsonProperty(ROBOT) String robot,
-                    @JsonProperty(CLUSTER) String cluster,
-                    @JsonProperty(ZONE) String zone,
-                    @JsonProperty(SIGNAL) Integer signal,
-                    @JsonProperty(VALUE) Boolean value,
-                    @JsonProperty(TIMESTAMP) String timestamp) {
-        this.robot = robot;
-        this.cluster = cluster;
-        this.zone = zone;
-        this.signal = signal;
-        this.value = value;
-        this.timestamp = timestamp;
+    public ReadData(String readDataToDeserialize) {
+        JSONObject jsonObject = new JSONObject(readDataToDeserialize);
+        this.robot = jsonObject.getString(ROBOT);
+        this.cluster = jsonObject.getString(CLUSTER);
+        this.zone = jsonObject.getString(ZONE);
+        System.out.println("Nel costruttore");
+
+        this.signal = jsonObject.getInt(SIGNAL);
+        this.value = jsonObject.getInt(VALUE);
+        // this.timestamp = jsonObject.getString(TIMESTAMP);
     }
 
 
@@ -54,7 +52,7 @@ public class ReadData {
         return signal;
     }
 
-    public boolean getValue() {
+    public int getValue() {
         return value;
     }
 
@@ -78,7 +76,7 @@ public class ReadData {
         this.signal = signal;
     }
 
-    public void setValue(boolean value) {
+    public void setValue(int value) {
         this.value = value;
     }
 
