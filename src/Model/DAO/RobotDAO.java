@@ -22,16 +22,15 @@ public class RobotDAO implements RobotDAO_Interface {
         if (connection == null)
             connection = database.connectToDB();
 
-        String query = "INSERT INTO robot (id, clusterId, zoneId, ir, count, downTime) VALUES (?,?,?,?,?,?); ";
+        String query = "INSERT INTO robot (id, clusterId, ir, count, downTime) VALUES (?,?,?,?,?); ";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
 
             statement.setString(1, robot.getRobotId());
             statement.setString(2, robot.getClusterId());
-            statement.setString(3, robot.getZoneId());
-            statement.setFloat(4, robot.getInefficiencyRate());
-            statement.setInt(5, robot.getCountInefficencyComponents());
-            statement.setInt(6, robot.getDownTime());
+            statement.setFloat(3, robot.getInefficiencyRate());
+            statement.setInt(4, robot.getCountInefficencyComponents());
+            statement.setInt(5, robot.getDownTime());
 
             statement.execute();
 
@@ -52,7 +51,7 @@ public class RobotDAO implements RobotDAO_Interface {
         Connection connection = database.connectToDB();
         Robot robot = null;
 
-        String query = "SELECT COUNT(*) FROM robot WHERE robot.id = ? ;";
+        String query = "SELECT * FROM robot WHERE robot.id = ? ;";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
 
@@ -67,7 +66,6 @@ public class RobotDAO implements RobotDAO_Interface {
 
                 robot.setRobotId(readData.getRobot());
                 robot.setClusterId(resultSet.getString("clusterId"));
-                robot.setZoneId(resultSet.getString("zoneId"));
                 robot.setInefficiencyRate(resultSet.getFloat("ir"));
                 robot.setCountInefficencyComponents(resultSet.getInt("count"));
                 robot.setDownTime(resultSet.getInt("downTime"));
@@ -80,7 +78,6 @@ public class RobotDAO implements RobotDAO_Interface {
                 robot = new Robot();
                 robot.setRobotId(readData.getRobot());
                 robot.setClusterId(readData.getCluster());
-                robot.setZoneId(readData.getZone());
                 robot.setInefficiencyRate((float) 0.0);
                 robot.setCountInefficencyComponents(0);
                 robot.setDownTime(0);

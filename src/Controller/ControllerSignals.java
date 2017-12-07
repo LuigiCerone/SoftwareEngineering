@@ -18,8 +18,8 @@ public class ControllerSignals implements Runnable {
 
     @Override
     public void run() {
-        // TODO decide if this should be used or replaced.
-        new ReadDataDAO().insert(this.readData);
+        // TODO Write the following in a file.
+        // new ReadDataDAO().insert(this.readData);
 
         // TODO Check if the cluster exists otherwise create it.
         Cluster cluster = new ClusterDAO().findClusterByIdOrInsert(readData);

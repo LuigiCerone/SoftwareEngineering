@@ -21,7 +21,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
         if (connection == null)
             connection = database.connectToDB();
 
-        String query = "INSERT INTO cluster (id, zoneId, inefficiencyRate) VALUES (?,?,?);";
+        String query = "INSERT INTO cluster (id, zoneId, ir) VALUES (?,?,?);";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, cluster.getId());
@@ -41,7 +41,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
         Connection connection = database.connectToDB();
         Cluster cluster = null;
 
-        String query = "SELECT COUNT(*) FROM cluster WHERE cluster.id = ? ;";
+        String query = "SELECT * FROM cluster WHERE cluster.id = ? ;";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
 

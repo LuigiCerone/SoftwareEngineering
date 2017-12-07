@@ -10,14 +10,12 @@ public class Robot {
     //JSON field names.
     public static final String ROBOT_ID = "robotId";
     public static final String CLUSTER_ID = "clusterId";
-    public static final String ZONE_ID = "zoneId";
     public static final String SIGNALS = "signals";
     public static final String INEFFICIENCY_RATE = "IR";
     public static final String DOWN_TIME = "downTime";
 
     private String robotId;
     private String clusterId;
-    private String zoneId;
     private float inefficiencyRate;
     private int countInefficencyComponents;
     private Signal[] robotSignals = new Signal[7];
@@ -27,10 +25,9 @@ public class Robot {
     public Robot() {
     }
 
-    public Robot(String robotId, String clusterId, String zoneId, int downTime, Signal[] signals) {
+    public Robot(String robotId, String clusterId, int downTime, Signal[] signals) {
         this.robotId = robotId;
         this.clusterId = clusterId;
-        this.zoneId = zoneId;
         this.robotSignals = signals;
         this.downTime = downTime;
     }
@@ -75,14 +72,6 @@ public class Robot {
         this.clusterId = clusterId;
     }
 
-    public String getZoneId() {
-        return zoneId;
-    }
-
-    public void setZoneId(String zoneId) {
-        this.zoneId = zoneId;
-    }
-
     public float getInefficiencyRate() {
         return inefficiencyRate;
     }
@@ -108,7 +97,6 @@ public class Robot {
         return "Robot{" +
                 "robotId='" + robotId + '\'' +
                 ", clusterId='" + clusterId + '\'' +
-                ", zoneId='" + zoneId + '\'' +
                 ", inefficiencyRate=" + inefficiencyRate +
                 ", robotSignals=" + Arrays.toString(robotSignals) +
                 '}';
