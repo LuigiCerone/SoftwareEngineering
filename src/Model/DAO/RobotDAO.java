@@ -1,7 +1,6 @@
 package Model.DAO;
 
 import Database.Database;
-import Model.Cluster;
 import Model.ReadData;
 import Model.Robot;
 
@@ -20,7 +19,7 @@ public class RobotDAO implements RobotDAO_Interface {
     @Override
     public void insert(Robot robot, Connection connection) {
         if (connection == null)
-            connection = database.connectToDB();
+            connection = database.getConnection();
 
         String query = "INSERT INTO robot (robot.id, clusterId, ir, count, downTime) VALUES (?,?,?,?,?); ";
         try {
@@ -29,7 +28,7 @@ public class RobotDAO implements RobotDAO_Interface {
             statement.setString(1, robot.getRobotId());
             statement.setString(2, robot.getClusterId());
             statement.setFloat(3, robot.getInefficiencyRate());
-            statement.setInt(4, robot.getCountInefficencyComponents());
+            statement.setInt(4, robot.getCountInefficiencyComponents());
             statement.setInt(5, robot.getDownTime());
 
             statement.execute();
@@ -48,7 +47,7 @@ public class RobotDAO implements RobotDAO_Interface {
 
     @Override
     public Robot findRobotByIdOrInsert(ReadData readData) {
-        Connection connection = database.connectToDB();
+        Connection connection = database.getConnection();
         Robot robot = null;
 
         String query = "SELECT * FROM robot WHERE robot.id = ? ;";
@@ -67,7 +66,7 @@ public class RobotDAO implements RobotDAO_Interface {
                 robot.setRobotId(readData.getRobot());
                 robot.setClusterId(resultSet.getString("clusterId"));
                 robot.setInefficiencyRate(resultSet.getFloat("ir"));
-                robot.setCountInefficencyComponents(resultSet.getInt("count"));
+                robot.setCountInefficiencyComponents(resultSet.getInt("count"));
                 robot.setDownTime(resultSet.getInt("downTime"));
                 // TODO add other meaningful attributes.
             }
@@ -79,7 +78,7 @@ public class RobotDAO implements RobotDAO_Interface {
                 robot.setRobotId(readData.getRobot());
                 robot.setClusterId(readData.getCluster());
                 robot.setInefficiencyRate((float) 0.0);
-                robot.setCountInefficencyComponents(0);
+                robot.setCountInefficiencyComponents(0);
                 robot.setDownTime(0);
 
                 this.insert(robot, connection);

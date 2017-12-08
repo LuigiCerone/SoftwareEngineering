@@ -1,7 +1,10 @@
 package Database;
 
 import Model.ReadData;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
 public class Database {
@@ -11,29 +14,55 @@ public class Database {
     protected static String USER = "se";
     protected static String PSW = "se";
 
-    private Connection databaseConnection;
-    private PreparedStatement statement;
+    private static DataSource datasource;
 
     public Database() {
 
     }
 
-    public Connection connectToDB() {
-        Connection con = null;
+    private static DataSource getDataSource() {
+        if (datasource == null)
+        {
+            HikariConfig config = new HikariConfig();
+
+            config.setDriverClassName("com.mysql.jdbc.Driver");
+            config.setJdbcUrl(URL);
+            config.setUsername(USER);
+            config.setPassword(PSW);
+            config.setMaximumPoolSize(20);
+
+            datasource = new HikariDataSource(config);
+        }
+
+        return datasource;
+
+    }
+
+    public Connection getConnection(){
         try {
-            // Carichiamo un driver di tipo 1 (bridge jdbc-odbc).
-            //String driver = "sun.jdbc.odbc.JdbcOdbcDriver";
-            Class.forName(DRIVER);
-            // Creiamo la stringa di connessione.
-            // Otteniamo una connessione con username e password.
-            con = DriverManager.getConnection(URL, USER, PSW);
+            return getDataSource().getConnection();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
-        return con;
+        return null;
     }
+//
+//    public Connection connectToDB() {
+//        Connection con = null;
+//        try {
+//            // Carichiamo un driver di tipo 1 (bridge jdbc-odbc).
+//            //String driver = "sun.jdbc.odbc.JdbcOdbcDriver";
+//            Class.forName(DRIVER);
+//            // Creiamo la stringa di connessione.
+//            // Otteniamo una connessione con username e password.
+//            con = DriverManager.getConnection(URL, USER, PSW);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        return con;
+//    }
 
     public void closeConnectionToDB(Connection con) {
         try {

@@ -1,10 +1,6 @@
 package Model;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.TimeZone;
 
 public class Robot {
     //JSON field names.
@@ -17,7 +13,7 @@ public class Robot {
     private String robotId;
     private String clusterId;
     private float inefficiencyRate;
-    private int countInefficencyComponents;
+    private int countInefficiencyComponents;
     private Signal[] robotSignals = new Signal[7];
     private int downTime;
 
@@ -44,8 +40,8 @@ public class Robot {
 //        }
 //    }
 
-    public void setCountInefficencyComponents(int countInefficencyComponents) {
-        this.countInefficencyComponents = countInefficencyComponents;
+    public void setCountInefficiencyComponents(int countInefficiencyComponents) {
+        this.countInefficiencyComponents = countInefficiencyComponents;
     }
 
     public void setRobotSignals(Signal[] robotSignals) {
@@ -84,8 +80,8 @@ public class Robot {
         return robotSignals;
     }
 
-    public int getCountInefficencyComponents() {
-        return countInefficencyComponents;
+    public int getCountInefficiencyComponents() {
+        return countInefficiencyComponents;
     }
 
     public int getDownTime() {
@@ -104,10 +100,10 @@ public class Robot {
 
     public void updateComponentState(boolean value) {
         if(!value){
-            this.countInefficencyComponents--;
+            this.countInefficiencyComponents--;
             System.out.println("A component of this robot is not working.");
         } else if(value){
-            this.countInefficencyComponents++;
+            this.countInefficiencyComponents++;
             System.out.println("A component of this robot is working.");
         }else{
             System.out.println("Something strange has just happened.");

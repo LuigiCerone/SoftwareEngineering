@@ -19,7 +19,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
     @Override
     public void insert(Cluster cluster, Connection connection) {
         if (connection == null)
-            connection = database.connectToDB();
+            connection = database.getConnection();
 
         String query = "INSERT INTO cluster (id, zoneId, ir) VALUES (?,?,?);";
         try {
@@ -38,7 +38,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
 
     @Override
     public Cluster findClusterByIdOrInsert(ReadData readData) {
-        Connection connection = database.connectToDB();
+        Connection connection = database.getConnection();
         Cluster cluster = null;
 
         String query = "SELECT * FROM cluster WHERE cluster.id = ? ;";

@@ -15,7 +15,7 @@ public class ReadDataDAO implements ReadDataDAO_Interface {
 
     @Override
     public void insert(Model.ReadData readData) {
-        Connection connection = database.connectToDB();
+        Connection connection = database.getConnection();
 
         String sql = "INSERT INTO read_data (id, robotId, clusterId, zoneId, signals, value, timestamp) " +
                 "VALUES (null, ?,?,?,?,?,?); ";
