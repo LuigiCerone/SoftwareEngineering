@@ -22,7 +22,7 @@ public class RobotDAO implements RobotDAO_Interface {
         if (connection == null)
             connection = database.connectToDB();
 
-        String query = "INSERT INTO robot (id, clusterId, ir, count, downTime) VALUES (?,?,?,?,?); ";
+        String query = "INSERT INTO robot (robot.id, clusterId, ir, count, downTime) VALUES (?,?,?,?,?); ";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
 

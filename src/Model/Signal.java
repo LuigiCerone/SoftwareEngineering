@@ -9,14 +9,16 @@ public class Signal {
     private int singalNumber;
     private boolean signalValue;
     private String timestamps;
+    private String robotId;
 
     public Signal() {
     }
 
-    public Signal(int singalNumber, boolean signalValue, String timestamps) {
+    public Signal(int singalNumber, boolean signalValue, String timestamps, String robotId) {
         this.singalNumber = singalNumber;
         this.signalValue = signalValue;
         this.timestamps = timestamps;
+        this.robotId = robotId;
     }
 
     public int getSingalNumber() {
@@ -35,6 +37,8 @@ public class Signal {
         this.signalValue = signalValue;
     }
 
+    public boolean getSignalValue() { return this.signalValue;
+    }
     public String getTimestamps() {
         return timestamps;
     }
@@ -50,5 +54,9 @@ public class Signal {
                 ", signalValue=" + signalValue +
                 ", timestamps='" + timestamps + '\'' +
                 '}';
+    }
+
+    public String getRobotId() {
+        return robotId;
     }
 }

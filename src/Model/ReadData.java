@@ -15,7 +15,7 @@ public class ReadData {
     String cluster;
     String zone;
     int signal;
-    int value;
+    boolean value;
     String timestamp;
 
     public ReadData() {
@@ -27,7 +27,10 @@ public class ReadData {
         this.cluster = jsonObject.getString(CLUSTER);
         this.zone = jsonObject.getString(ZONE);
         this.signal = jsonObject.getInt(SIGNAL);
-        this.value = jsonObject.getInt(VALUE);
+        if (jsonObject.getInt(VALUE) == 0)
+            this.value = false;
+        else this.value = true;
+//        this.value = jsonObject.getBoolean(SIGNAL);
         this.timestamp = jsonObject.getString(TIMESTAMP);
     }
 
@@ -48,7 +51,7 @@ public class ReadData {
         return signal;
     }
 
-    public int getValue() {
+    public boolean getValue() {
         return value;
     }
 
@@ -72,7 +75,7 @@ public class ReadData {
         this.signal = signal;
     }
 
-    public void setValue(int value) {
+    public void setValue(boolean value) {
         this.value = value;
     }
 

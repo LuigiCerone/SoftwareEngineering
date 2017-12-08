@@ -25,6 +25,9 @@ public class ControllerSignals implements Runnable {
 
         Robot robot = new RobotDAO().findRobotByIdOrInsert(readData);
 
-
+        // TODO Modify the state of the robot according to the reading just received.
+        new ControllerIRRobot().updateComponentState(robot, readData);
+//        readData.getSignal();
+//        readData.getValue();
     }
 }

@@ -34,15 +34,15 @@ public class Robot {
 
 
     // When a Robot is initialized all the signals are set to true-
-    private void initRobotsSignals() {
-        TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
-        df.setTimeZone(tz);
-        String nowAsISO = df.format(new Date());
-        for (int i = 0; i < 7; i++) {
-            robotSignals[i] = new Signal(i + 1, true, nowAsISO);
-        }
-    }
+//    private void initRobotsSignals() {
+//        TimeZone tz = TimeZone.getTimeZone("UTC");
+//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
+//        df.setTimeZone(tz);
+//        String nowAsISO = df.format(new Date());
+//        for (int i = 0; i < 7; i++) {
+//            robotSignals[i] = new Signal(i + 1, true, nowAsISO);
+//        }
+//    }
 
     public void setCountInefficencyComponents(int countInefficencyComponents) {
         this.countInefficencyComponents = countInefficencyComponents;
@@ -100,5 +100,18 @@ public class Robot {
                 ", inefficiencyRate=" + inefficiencyRate +
                 ", robotSignals=" + Arrays.toString(robotSignals) +
                 '}';
+    }
+
+    public void updateComponentState(boolean value) {
+        if(!value){
+            this.countInefficencyComponents--;
+            System.out.println("A component of this robot is not working.");
+        } else if(value){
+            this.countInefficencyComponents++;
+            System.out.println("A component of this robot is working.");
+        }else{
+            System.out.println("Something strange has just happened.");
+        }
+
     }
 }
