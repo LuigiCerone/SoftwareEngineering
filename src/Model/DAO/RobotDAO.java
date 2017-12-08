@@ -59,6 +59,8 @@ public class RobotDAO implements RobotDAO_Interface {
 
             while (resultSet.next()) {
                 count++;
+                // There is already a robot in the DB.
+
                 robot = new Robot();
 
                 robot.setRobotId(readData.getRobot());
@@ -67,6 +69,7 @@ public class RobotDAO implements RobotDAO_Interface {
                 robot.setCountInefficiencyComponents(resultSet.getInt(Robot.COUNT_INEFFICIENCY_COMPONENTS));
                 robot.setDownTime(resultSet.getInt(Robot.DOWN_TIME));
                 robot.setStartDownTime(resultSet.getTimestamp(Robot.START_DOWN_TIME));
+                robot.setStartUpTime(resultSet.getTimestamp(Robot.START_UP_TIME));
                 // TODO add other meaningful attributes.
             }
 
@@ -98,6 +101,7 @@ public class RobotDAO implements RobotDAO_Interface {
         String query = "UPDATE robot " +
                 "SET count=? , startDownTime=? " +
                 "WHERE id = ?;";
+
         try {
             PreparedStatement statement = connection.prepareStatement(query);
 
