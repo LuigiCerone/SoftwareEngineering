@@ -18,7 +18,7 @@ public class SignalDAO implements SignalDAO_Interface {
     public void update(Signal signal) {
         Connection conn = database.getConnection();
         String query = "UPDATE signals " +
-                "SET value=? AND timestamp=? " +
+                "SET value=? , timestamp=? " +
                 "WHERE robotId = ? AND number=?; ";
 
         try {

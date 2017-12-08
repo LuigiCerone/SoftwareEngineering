@@ -16,7 +16,7 @@ public class ControllerIRRobot {
         long downTimeDiff = 0;
         // Modify the robot counter stat.
         int countInefficiencyComponents = robot.updateComponentState(readData.getValue());
-
+        System.out.println(countInefficiencyComponents);
         // The robot has become down with this reading.
         if (countInefficiencyComponents == -1) {
             // Start counting for down time.
