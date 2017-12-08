@@ -20,6 +20,9 @@ public class Database {
 
     }
 
+//    private static final Logger LOGGER = LoggerFactory.getLogger(MyClass.class);
+//    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private static DataSource getDataSource() {
         if (datasource == null)
         {

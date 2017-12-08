@@ -98,7 +98,8 @@ public class Robot {
                 '}';
     }
 
-    public void updateComponentState(boolean value) {
+    public int updateComponentState(boolean value) {
+        // The reading contains a down signal from this robot.
         if(!value){
             this.countInefficiencyComponents--;
             System.out.println("A component of this robot is not working.");
@@ -108,6 +109,6 @@ public class Robot {
         }else{
             System.out.println("Something strange has just happened.");
         }
-
+        return this.countInefficiencyComponents;
     }
 }
