@@ -2,6 +2,10 @@ package Model;
 
 import org.json.JSONObject;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class ReadData {
     // JSON field name.
     public static final String ROBOT = "robot";
@@ -16,7 +20,7 @@ public class ReadData {
     String zone;
     int signal;
     boolean value;
-    String timestamp;
+    Timestamp timestamp;
 
     public ReadData() {
     }
@@ -31,7 +35,19 @@ public class ReadData {
             this.value = false;
         else this.value = true;
 //        this.value = jsonObject.getBoolean(SIGNAL);
-        this.timestamp = jsonObject.getString(TIMESTAMP);
+        this.timestamp = formatTimestamp(jsonObject.getString(TIMESTAMP));
+    }
+
+    private Timestamp formatTimestamp(String timestampAsString) {
+        Timestamp toTimestamp = null;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            Date parsedDate = dateFormat.parse(timestampAsString);
+            toTimestamp = new Timestamp(parsedDate.getTime());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return toTimestamp;
     }
 
 
@@ -55,7 +71,7 @@ public class ReadData {
         return value;
     }
 
-    public String getTimestamp() {
+    public Timestamp getTimestamp() {
         return timestamp;
     }
 
@@ -79,7 +95,7 @@ public class ReadData {
         this.value = value;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
     }
 

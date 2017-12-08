@@ -1,14 +1,19 @@
 package Model;
 
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Arrays;
 
 public class Robot {
     //JSON field names.
     public static final String ROBOT_ID = "robotId";
     public static final String CLUSTER_ID = "clusterId";
-    public static final String SIGNALS = "signals";
-    public static final String INEFFICIENCY_RATE = "IR";
+    public static final String INEFFICIENCY_RATE = "ir";
     public static final String DOWN_TIME = "downTime";
+    public static final String COUNT_INEFFICIENCY_COMPONENTS = "count";
+    public static final String  START_DOWN_TIME = "startDownTime";
+    public static final String  START_UP_TIME = "startUpTime";
 
     private String robotId;
     private String clusterId;
@@ -16,6 +21,8 @@ public class Robot {
     private int countInefficiencyComponents;
     private Signal[] robotSignals = new Signal[7];
     private int downTime;
+    private Timestamp startUpTime;
+    private Timestamp startDownTime;
 
 
     public Robot() {
@@ -86,6 +93,22 @@ public class Robot {
 
     public int getDownTime() {
         return downTime;
+    }
+
+    public Timestamp getStartUpTime() {
+        return startUpTime;
+    }
+
+    public void setStartUpTime(Timestamp startUpTime) {
+        this.startUpTime = startUpTime;
+    }
+
+    public Timestamp getStartDownTime() {
+        return startDownTime;
+    }
+
+    public void setStartDownTime(Timestamp startDownTime) {
+        this.startDownTime = startDownTime;
     }
 
     @Override

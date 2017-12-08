@@ -1,39 +1,38 @@
-create table cluster
+CREATE TABLE cluster
 (
-  id varchar(30) not null
-    primary key,
-  zoneId varchar(30) not null,
-  ir double default '0' not null
-)
-;
+  id     VARCHAR(30)        NOT NULL
+    PRIMARY KEY,
+  zoneId VARCHAR(30)        NOT NULL,
+  ir     DOUBLE DEFAULT '0' NOT NULL
+);
 
-create table read_data
+CREATE TABLE read_data
 (
-  id int auto_increment
-    primary key,
-  robotId varchar(20) not null,
-  clusterId varchar(20) not null,
-  zoneId varchar(20) not null,
-  signals int(1) not null,
-  value int(6) not null,
-  timestamp varchar(50) not null
-)
-;
+  id        INT AUTO_INCREMENT
+    PRIMARY KEY,
+  robotId   VARCHAR(20) NOT NULL,
+  clusterId VARCHAR(20) NOT NULL,
+  zoneId    VARCHAR(20) NOT NULL,
+  signals   INT(1)      NOT NULL,
+  value     INT(6)      NOT NULL,
+  timestamp VARCHAR(50) NOT NULL
+);
 
-create table robot
+CREATE TABLE robot
 (
-  id varchar(30) not null
-    primary key,
-  clusterId varchar(30) not null,
-  ir double default '0' not null,
-  count int default '0' not null,
-  downTime int default '0' null
-)
-;
+  id            VARCHAR(30)        NOT NULL
+    PRIMARY KEY,
+  clusterId     VARCHAR(30)        NOT NULL,
+  ir            DOUBLE DEFAULT '0' NOT NULL,
+  count         INT DEFAULT '0'    NOT NULL,
+  downTime      INT DEFAULT '0'    NULL,
+  startUpTime   DATETIME           NOT NULL,
+  startDownTime DATETIME           NULL
+);
 
-create trigger signalsinit
-after INSERT on robot
-for each row
+CREATE TRIGGER signalsinit
+AFTER INSERT ON robot
+FOR EACH ROW
   BEGIN
     DECLARE now VARCHAR(40);
     SET now = NOW();
@@ -46,13 +45,12 @@ for each row
     INSERT INTO signals (number, value, timestamp, robotId) VALUES (7, 1, now, NEW.id);
   END;
 
-create table signals
+CREATE TABLE signals
 (
-  number int not null,
-  value tinyint(1) default '1' not null,
-  timestamp varchar(40) not null,
-  robotId varchar(30) not null,
-  primary key (robotId, number)
-)
-;
+  number    INT                    NOT NULL,
+  value     TINYINT(1) DEFAULT '1' NOT NULL,
+  timestamp VARCHAR(40)            NOT NULL,
+  robotId   VARCHAR(30)            NOT NULL,
+  PRIMARY KEY (robotId, number)
+);
 

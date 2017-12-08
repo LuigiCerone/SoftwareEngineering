@@ -1,5 +1,7 @@
 package Model;
 
+import java.sql.Timestamp;
+
 public class Signal {
     //JSON field name.
     public static final String SIGNAL_NUMER = "signalNumber";
@@ -8,13 +10,13 @@ public class Signal {
 
     private int singalNumber;
     private boolean signalValue;
-    private String timestamps;
+    private Timestamp timestamps;
     private String robotId;
 
     public Signal() {
     }
 
-    public Signal(int singalNumber, boolean signalValue, String timestamps, String robotId) {
+    public Signal(int singalNumber, boolean signalValue, Timestamp timestamps, String robotId) {
         this.singalNumber = singalNumber;
         this.signalValue = signalValue;
         this.timestamps = timestamps;
@@ -39,11 +41,11 @@ public class Signal {
 
     public boolean getSignalValue() { return this.signalValue;
     }
-    public String getTimestamps() {
+    public Timestamp getTimestamps() {
         return timestamps;
     }
 
-    public void setTimestamps(String timestamps) {
+    public void setTimestamps(Timestamp timestamps) {
         this.timestamps = timestamps;
     }
 

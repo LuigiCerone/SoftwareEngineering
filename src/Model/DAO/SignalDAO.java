@@ -24,7 +24,7 @@ public class SignalDAO implements SignalDAO_Interface {
         try {
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setBoolean(1, signal.getSignalValue());
-            statement.setString(2, signal.getTimestamps());
+            statement.setTimestamp(2, signal.getTimestamps());
             statement.setString(3, signal.getRobotId());
             statement.setInt(4, signal.getSingalNumber());
 

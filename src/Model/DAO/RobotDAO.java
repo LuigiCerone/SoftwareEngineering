@@ -4,10 +4,7 @@ import Database.Database;
 import Model.ReadData;
 import Model.Robot;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class RobotDAO implements RobotDAO_Interface {
     private Database database;
@@ -21,7 +18,7 @@ public class RobotDAO implements RobotDAO_Interface {
         if (connection == null)
             connection = database.getConnection();
 
-        String query = "INSERT INTO robot (robot.id, clusterId, ir, count, downTime) VALUES (?,?,?,?,?); ";
+        String query = "INSERT INTO robot (robot.id, clusterId, ir, count, downTime, startUpTime) VALUES (?,?,?,?,?,?); ";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
 
@@ -30,6 +27,7 @@ public class RobotDAO implements RobotDAO_Interface {
             statement.setFloat(3, robot.getInefficiencyRate());
             statement.setInt(4, robot.getCountInefficiencyComponents());
             statement.setInt(5, robot.getDownTime());
+            statement.setTimestamp(6, robot.getStartUpTime());
 
             statement.execute();
 
@@ -64,10 +62,11 @@ public class RobotDAO implements RobotDAO_Interface {
                 robot = new Robot();
 
                 robot.setRobotId(readData.getRobot());
-                robot.setClusterId(resultSet.getString("clusterId"));
-                robot.setInefficiencyRate(resultSet.getFloat("ir"));
-                robot.setCountInefficiencyComponents(resultSet.getInt("count"));
-                robot.setDownTime(resultSet.getInt("downTime"));
+                robot.setClusterId(resultSet.getString(Robot.CLUSTER_ID));
+                robot.setInefficiencyRate(resultSet.getFloat(Robot.INEFFICIENCY_RATE));
+                robot.setCountInefficiencyComponents(resultSet.getInt(Robot.COUNT_INEFFICIENCY_COMPONENTS));
+                robot.setDownTime(resultSet.getInt(Robot.DOWN_TIME));
+                robot.setStartDownTime(resultSet.getTimestamp(Robot.START_DOWN_TIME));
                 // TODO add other meaningful attributes.
             }
 
@@ -80,6 +79,7 @@ public class RobotDAO implements RobotDAO_Interface {
                 robot.setInefficiencyRate((float) 0.0);
                 robot.setCountInefficiencyComponents(0);
                 robot.setDownTime(0);
+                robot.setStartUpTime(new Timestamp(System.currentTimeMillis()));
 
                 this.insert(robot, connection);
             }
@@ -89,5 +89,25 @@ public class RobotDAO implements RobotDAO_Interface {
         if (connection != null)
             database.closeConnectionToDB(connection);
         return robot;
+    }
+
+    @Override
+    public void updateCountAndStartDown(Robot robot, ReadData readData) {
+        Connection connection = database.getConnection();
+
+        String query = "UPDATE robot " +
+                "SET count=? , startDownTime=? " +
+                "WHERE id = ?;";
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setInt(1, robot.getCountInefficiencyComponents());
+            statement.setTimestamp(2, readData.getTimestamp());
+            statement.setString(3, robot.getRobotId());
+
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

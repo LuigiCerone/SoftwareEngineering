@@ -20,13 +20,14 @@ public class ControllerSignals implements Runnable {
     public void run() {
         // TODO Write the following in a file.
         // new ReadDataDAO().insert(this.readData);
+        ClusterDAO clusterDAO = new ClusterDAO();
+        Cluster cluster = clusterDAO.findClusterByIdOrInsert(readData);
 
-        Cluster cluster = new ClusterDAO().findClusterByIdOrInsert(readData);
-
-        Robot robot = new RobotDAO().findRobotByIdOrInsert(readData);
+        RobotDAO robotDAO = new RobotDAO();
+        Robot robot = robotDAO.findRobotByIdOrInsert(readData);
 
         // TODO Modify the state of the robot according to the reading just received.
-        new ControllerIRRobot().updateComponentState(robot, readData);
+        new ControllerIRRobot().updateComponentState(robot, readData, robotDAO);
 //        readData.getSignal();
 //        readData.getValue();
     }

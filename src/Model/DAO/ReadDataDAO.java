@@ -27,7 +27,7 @@ public class ReadDataDAO implements ReadDataDAO_Interface {
             statement.setString(3, readData.getZone());
             statement.setInt(4, readData.getSignal());
             statement.setBoolean(5, readData.getValue());
-            statement.setString(6, readData.getTimestamp());
+            statement.setTimestamp(6, readData.getTimestamp());
 
             statement.execute();
         } catch (SQLException e) {
