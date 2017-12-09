@@ -3,11 +3,9 @@ package main.Model.DAO;
 import main.Database.Database;
 import main.Model.Cluster;
 import main.Model.ReadData;
+import main.Model.Robot;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class ClusterDAO implements ClusterDAO_Interface {
     private Database database;
@@ -24,7 +22,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
         String query = "INSERT INTO cluster (id, zoneId, ir) VALUES (?,?,?);";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, cluster.getId());
+            statement.setString(1, cluster.getClusterId());
             statement.setString(2, cluster.getZoneId());
             statement.setFloat(3, cluster.getInefficiencyRate());
 
@@ -54,9 +52,13 @@ public class ClusterDAO implements ClusterDAO_Interface {
                 count++;
                 cluster = new Cluster();
 
-                cluster.setId(readData.getCluster());
-                cluster.setZoneId(resultSet.getString("zoneId"));
-                cluster.setInefficiencyRate(resultSet.getFloat("ir"));
+                cluster.setClusterId(readData.getCluster());
+                cluster.setZoneId(resultSet.getString(Cluster.CLUSTER_ID));
+                cluster.setInefficiencyRate(resultSet.getFloat(Cluster.INEFFICIENCY_RATE));
+                cluster.setCountInefficiencyComponents(resultSet.getInt(Cluster.COUNT_INEFFICIENCY_COMPONENTS));
+                cluster.setDownTime(resultSet.getInt(Cluster.DOWN_TIME));
+                cluster.setStartDownTime(resultSet.getTimestamp(Cluster.START_DOWN_TIME));
+                cluster.setStartUpTime(resultSet.getTimestamp(Cluster.START_UP_TIME));
                 // TODO add other meaningful attributes.
             }
 
@@ -64,9 +66,12 @@ public class ClusterDAO implements ClusterDAO_Interface {
                 System.out.println("Cluster not found.");
                 // The cluster is not present, then we need to initialize it.
                 cluster = new Cluster();
-                cluster.setId(readData.getCluster());
+                cluster.setClusterId(readData.getCluster());
                 cluster.setZoneId(readData.getZone());
                 cluster.setInefficiencyRate((float) 0.0);
+                cluster.setCountInefficiencyComponents(0);
+                cluster.setDownTime(0);
+                cluster.setStartUpTime(new Timestamp(System.currentTimeMillis()));
                 this.insert(cluster, connection);
             }
         } catch (SQLException e) {
@@ -75,5 +80,20 @@ public class ClusterDAO implements ClusterDAO_Interface {
         if (connection != null)
             database.closeConnectionToDB(connection);
         return cluster;
+    }
+
+    @Override
+    public void updateCountAndStartDown(Cluster cluster, ReadData readData) {
+
+    }
+
+    @Override
+    public void updateCountAndStopDown(Cluster cluster, ReadData readData, long downTimeDiffCluster) {
+
+    }
+
+    @Override
+    public void updateCount(Cluster cluster) {
+
     }
 }

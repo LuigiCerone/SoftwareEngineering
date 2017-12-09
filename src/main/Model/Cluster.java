@@ -1,37 +1,57 @@
 package main.Model;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public class Cluster {
-    private String id;
-    private String zoneId;
+    //JSON and Database field names.
+    public static final String ROBOT_ID = "robotId";
+    public static final String CLUSTER_ID = "id";
+    public static final String INEFFICIENCY_RATE = "ir";
+    public static final String DOWN_TIME = "downTime";
+    public static final String COUNT_INEFFICIENCY_COMPONENTS = "count";
+    public static final String START_DOWN_TIME = "startDownTime";
+    public static final String START_UP_TIME = "startUpTime";
+
+    private String robotId;
+    private String clusterId;
     private float inefficiencyRate;
+    private int countInefficiencyComponents;
+    private int downTime;
+    private Timestamp startUpTime;
+    private Timestamp startDownTime;
+    private String zoneId;
     private List<Robot> robotsList;
 
-    public Cluster(){
+    public Cluster() {
     }
 
-    public Cluster(String id, String zoneId, float inefficiencyRate, boolean isUp, List<Robot> robotsList) {
-        this.id = id;
-        this.zoneId = zoneId;
+    public Cluster(String robotId, String clusterId, float inefficiencyRate, int countInefficiencyComponents, int downTime, Timestamp startUpTime, Timestamp startDownTime, String zoneId, List<Robot> robotsList) {
+        this.robotId = robotId;
+        this.clusterId = clusterId;
         this.inefficiencyRate = inefficiencyRate;
+        this.countInefficiencyComponents = countInefficiencyComponents;
+        this.downTime = downTime;
+        this.startUpTime = startUpTime;
+        this.startDownTime = startDownTime;
+        this.zoneId = zoneId;
         this.robotsList = robotsList;
     }
 
-    public String getId() {
-        return id;
+    public String getRobotId() {
+        return robotId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setRobotId(String robotId) {
+        this.robotId = robotId;
     }
 
-    public String getZoneId() {
-        return zoneId;
+    public String getClusterId() {
+        return clusterId;
     }
 
-    public void setZoneId(String zoneId) {
-        this.zoneId = zoneId;
+    public void setClusterId(String clusterId) {
+        this.clusterId = clusterId;
     }
 
     public float getInefficiencyRate() {
@@ -42,11 +62,43 @@ public class Cluster {
         this.inefficiencyRate = inefficiencyRate;
     }
 
-    public List<Robot> getRobotsList() {
-        return robotsList;
+    public int getCountInefficiencyComponents() {
+        return countInefficiencyComponents;
     }
 
-    public void setRobotsList(List<Robot> robotsList) {
-        this.robotsList = robotsList;
+    public void setCountInefficiencyComponents(int countInefficiencyComponents) {
+        this.countInefficiencyComponents = countInefficiencyComponents;
+    }
+
+    public int getDownTime() {
+        return downTime;
+    }
+
+    public void setDownTime(int downTime) {
+        this.downTime = downTime;
+    }
+
+    public Timestamp getStartUpTime() {
+        return startUpTime;
+    }
+
+    public void setStartUpTime(Timestamp startUpTime) {
+        this.startUpTime = startUpTime;
+    }
+
+    public Timestamp getStartDownTime() {
+        return startDownTime;
+    }
+
+    public void setStartDownTime(Timestamp startDownTime) {
+        this.startDownTime = startDownTime;
+    }
+
+    public String getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(String zoneId) {
+        this.zoneId = zoneId;
     }
 }

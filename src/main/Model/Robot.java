@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 
 public class Robot {
-    //JSON field names.
+    //JSON and Database field names.
     public static final String ROBOT_ID = "robotId";
     public static final String CLUSTER_ID = "clusterId";
     public static final String INEFFICIENCY_RATE = "ir";
