@@ -27,9 +27,8 @@ public class ControllerIRRobot {
         else if (countInefficiencyComponents == 0) {
             // Stop counting for downtime, calculate it and add to robot.downTime.
             // Get Y and calculate the time.
-            if(robot.getStartDownTime() != null)
-                downTimeDiff = this.differenceBetweenTimestamps(readData.getTimestamp(), robot.getStartDownTime());
-            System.out.println(downTimeDiff);
+            downTimeDiff = this.differenceBetweenTimestamps(readData.getTimestamp(), robot.getStartDownTime());
+            System.out.println(downTimeDiff + " con count : " + countInefficiencyComponents + "==" + robot.getCountInefficiencyComponents());
 
             robotDAO.updateCountAndStopDown(robot, readData, downTimeDiff);
         } else {
