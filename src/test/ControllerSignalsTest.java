@@ -15,11 +15,12 @@ public class ControllerSignalsTest {
     @Test
     public void main() {
         System.out.println("Testing mode.");
-
+        Thread firstThread , secondThread = null;
         try {
-            insertTestingDownData();
+            firstThread = insertTestingDownData();
             TimeUnit.SECONDS.sleep(SECS_TO_WAIT);
-            insertTestingUpData();
+            secondThread = insertTestingUpData(firstThread);
+            secondThread.join();
             assertEquals(SECS_TO_WAIT, new RobotDAO().getDownTime("P3Z"));
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -27,20 +28,26 @@ public class ControllerSignalsTest {
 
     }
 
-    @Test
-    public void insertTestingDownData() {
+    public Thread insertTestingDownData() {
         // new RobotDAO().delete("P3Z");
         // TODO Delete all signals too.
         String data = "{\"signal\": 1, \"timestamp\": \"2017-12-09 12:43:10\", " +
                 "\"cluster\": \"CZA\", \"zone\": \"U8I\", \"robot\": \"P3Z\", \"value\": 0}";
         Thread myThread = new Thread(new ControllerSignals(data));
         myThread.start();
+        return myThread;
     }
 
-    public void insertTestingUpData() {
+    public Thread insertTestingUpData(Thread firstThread) {
         String data = "{\"signal\": 1, \"timestamp\": \"2017-12-09 12:43:40\", " +
                 "\"cluster\": \"CZA\", \"zone\": \"U8I\", \"robot\": \"P3Z\", \"value\": 1}";
-        Thread myThread = new Thread(new ControllerSignals(data));
-        myThread.start();
+        Thread secondThread = new Thread(new ControllerSignals(data));
+        try {
+            firstThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        secondThread.start();
+        return secondThread;
     }
 }
