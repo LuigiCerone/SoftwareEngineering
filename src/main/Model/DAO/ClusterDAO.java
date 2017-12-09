@@ -1,8 +1,8 @@
-package Model.DAO;
+package main.Model.DAO;
 
-import Database.Database;
-import Model.Cluster;
-import Model.ReadData;
+import main.Database.Database;
+import main.Model.Cluster;
+import main.Model.ReadData;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

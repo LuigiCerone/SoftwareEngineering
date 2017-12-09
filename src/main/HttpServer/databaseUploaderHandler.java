@@ -1,7 +1,7 @@
-package HttpServer;
+package main.HttpServer;
 
-import Controller.ControllerSignals;
-import Database.Database;
+import main.Controller.ControllerSignals;
+import main.Database.Database;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 

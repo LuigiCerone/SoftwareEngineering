@@ -1,10 +1,10 @@
-package Main;
+package main.Main;
 
-import HttpServer.HttpServerInit;
+import main.HttpServer.HttpServerInit;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        System.out.println("test");
+        System.out.println("Running mode");
 
 //        MongoDB mdb = new MongoDB();
 //        mdb.getAllRobotsData();

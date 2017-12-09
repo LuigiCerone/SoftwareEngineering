@@ -1,11 +1,10 @@
-package Controller;
+package main.Controller;
 
-import Model.Cluster;
-import Model.DAO.ClusterDAO;
-import Model.DAO.RobotDAO;
-import Model.ReadData;
-import Model.DAO.ReadDataDAO;
-import Model.Robot;
+import main.Model.Cluster;
+import main.Model.DAO.ClusterDAO;
+import main.Model.DAO.RobotDAO;
+import main.Model.ReadData;
+import main.Model.Robot;
 
 
 public class ControllerSignals implements Runnable {

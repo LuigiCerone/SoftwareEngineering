@@ -1,6 +1,6 @@
-package Model.DAO;
+package main.Model.DAO;
 
-import Database.Database;
+import main.Database.Database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,7 +14,7 @@ public class ReadDataDAO implements ReadDataDAO_Interface {
     }
 
     @Override
-    public void insert(Model.ReadData readData) {
+    public void insert(main.Model.ReadData readData) {
         Connection connection = database.getConnection();
 
         String sql = "INSERT INTO read_data (id, robotId, clusterId, zoneId, signals, value, timestamp) " +
@@ -37,12 +37,12 @@ public class ReadDataDAO implements ReadDataDAO_Interface {
     }
 
     @Override
-    public Model.ReadData getByRobotId(int robotId) {
+    public main.Model.ReadData getByRobotId(int robotId) {
         return null;
     }
 
     @Override
-    public Model.ReadData getByClusterId(int clusterId) {
+    public main.Model.ReadData getByClusterId(int clusterId) {
         return null;
     }
 }

@@ -1,8 +1,8 @@
-package Model.DAO;
+package main.Model.DAO;
 
-import Database.Database;
-import Model.ReadData;
-import Model.Robot;
+import main.Database.Database;
+import main.Model.ReadData;
+import main.Model.Robot;
 
 import java.sql.*;
 
@@ -110,6 +110,89 @@ public class RobotDAO implements RobotDAO_Interface {
             statement.setString(3, robot.getRobotId());
 
             statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateCountAndStopDown(Robot robot, ReadData readData, long downTimeDiff) {
+        Connection connection = database.getConnection();
+
+        String query = "UPDATE robot " +
+                "SET count=? ,  startDownTime=? , downTime=? " +
+                "WHERE id=? ";
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setInt(1, robot.getCountInefficiencyComponents());
+            statement.setTimestamp(2, null);
+            statement.setLong(3, downTimeDiff);
+            statement.setString(4, robot.getRobotId());
+
+            statement.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateCount(Robot robot) {
+        Connection connection = database.getConnection();
+
+        String query = "UPDATE robot " +
+                "SET count = ? " +
+                "WHERE id=?; ";
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setInt(1, robot.getCountInefficiencyComponents());
+            statement.setString(2, robot.getRobotId());
+
+            statement.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public long getDownTime(String robotId) {
+        Connection connection = database.getConnection();
+
+        String query = "SELECT downTime " +
+                "FROM robot " +
+                "WHERE id = ?;";
+        long downTime = 0;
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setString(1, robotId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                downTime = resultSet.getLong(Robot.DOWN_TIME);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return downTime;
+    }
+
+    @Override
+    public void delete(String robotId) {
+        Connection connection = database.getConnection();
+
+        String query = "DELETE FROM robot " +
+                "WHERE id=?;";
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, robotId);
+            statement.execute();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

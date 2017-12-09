@@ -1,7 +1,7 @@
-package Model.DAO;
+package main.Model.DAO;
 
-import Model.ReadData;
-import Model.Robot;
+import main.Model.ReadData;
+import main.Model.Robot;
 
 import java.sql.Connection;
 
@@ -13,4 +13,12 @@ public interface RobotDAO_Interface {
     public Robot findRobotByIdOrInsert(ReadData readData);
 
     public void updateCountAndStartDown(Robot robot, ReadData readData);
+
+    public void updateCountAndStopDown(Robot robot, ReadData readData, long downTimeDiff);
+
+    public void updateCount(Robot robot);
+
+    public long getDownTime(String robotId);
+
+    public void  delete(String p3Z);
 }

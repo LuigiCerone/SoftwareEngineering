@@ -1,6 +1,5 @@
-package Database;
+package main.Database;
 
-import Model.ReadData;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 

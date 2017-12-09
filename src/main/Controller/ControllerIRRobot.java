@@ -1,11 +1,10 @@
-package Controller;
+package main.Controller;
 
-import Model.DAO.RobotDAO;
-import Model.DAO.RobotDAO_Interface;
-import Model.DAO.SignalDAO;
-import Model.ReadData;
-import Model.Robot;
-import Model.Signal;
+import main.Model.DAO.RobotDAO;
+import main.Model.DAO.SignalDAO;
+import main.Model.ReadData;
+import main.Model.Robot;
+import main.Model.Signal;
 
 import java.sql.Timestamp;
 
@@ -23,6 +22,7 @@ public class ControllerIRRobot {
             // Save in the DB the timestamp in witch the robot has gone down, call this Y.
             robotDAO.updateCountAndStartDown(robot, readData);
         }
+
         // The robot has become up with this reading.
         else if (countInefficiencyComponents == 0) {
             // Stop counting for downtime, calculate it and add to robot.downTime.
@@ -30,10 +30,11 @@ public class ControllerIRRobot {
             if(robot.getStartDownTime() != null)
                 downTimeDiff = this.differenceBetweenTimestamps(readData.getTimestamp(), robot.getStartDownTime());
             System.out.println(downTimeDiff);
-            // TODO Update the robot count data in the DB.
-            // TODO Update the robot downtime in the DB.
+
+            robotDAO.updateCountAndStopDown(robot, readData, downTimeDiff);
         } else {
             // The robot is still down/up.
+            robotDAO.updateCount(robot);
         }
 
         // Modify the signal data in the DB.
@@ -41,7 +42,7 @@ public class ControllerIRRobot {
         new SignalDAO().update(signal);
     }
 
-    public long differenceBetweenTimestamps(Timestamp downEnd, Timestamp downStart)
+    private long differenceBetweenTimestamps(Timestamp downEnd, Timestamp downStart)
     {
         long milliseconds1 = downStart.getTime();
         long milliseconds2 = downEnd.getTime();

@@ -1,7 +1,7 @@
-package Model.DAO;
+package main.Model.DAO;
 
-import Database.Database;
-import Model.Signal;
+import main.Database.Database;
+import main.Model.Signal;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

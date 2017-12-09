@@ -1,7 +1,7 @@
-package Model.DAO;
+package main.Model.DAO;
 
-import Model.Cluster;
-import Model.ReadData;
+import main.Model.Cluster;
+import main.Model.ReadData;
 
 import java.sql.Connection;
 
