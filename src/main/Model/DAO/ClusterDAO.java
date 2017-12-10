@@ -84,16 +84,65 @@ public class ClusterDAO implements ClusterDAO_Interface {
 
     @Override
     public void updateCountAndStartDown(Cluster cluster, ReadData readData) {
+        Connection connection = database.getConnection();
 
+        String query = "UPDATE cluster " +
+                "SET count=? , startDownTime=? " +
+                "WHERE id = ?;";
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setInt(1, cluster.getCountInefficiencyComponents());
+            statement.setTimestamp(2, readData.getTimestamp());
+            statement.setString(3, cluster.getRobotId());
+
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void updateCountAndStopDown(Cluster cluster, ReadData readData, long downTimeDiffCluster) {
+        Connection connection = database.getConnection();
 
+        String query = "UPDATE cluster " +
+                "SET count=? ,  startDownTime=? , downTime=? " +
+                "WHERE id=? ";
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setInt(1, cluster.getCountInefficiencyComponents());
+            statement.setTimestamp(2, null);
+            statement.setLong(3, downTimeDiffCluster);
+            statement.setString(4, cluster.getRobotId());
+
+            statement.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    public void updateCount(Cluster cluster) {
-
-    }
+//    @Override
+//    public void updateCount(Cluster cluster) {
+//        Connection connection = database.getConnection();
+//
+//        String query = "UPDATE cluster " +
+//                "SET count = ? " +
+//                "WHERE id=?; ";
+//
+//        try {
+//            PreparedStatement statement = connection.prepareStatement(query);
+//
+//            statement.setInt(1, cluster.getCountInefficiencyComponents());
+//            statement.setString(2, cluster.getRobotId());
+//
+//            statement.execute();
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

@@ -59,7 +59,8 @@ public class ControllerIRRobot {
         } else {
             // The robot is still down/up.
             robotDAO.updateCount(robot);
-            clusterDAO.updateCount(cluster);
+            // TODO is the following required?
+            // clusterDAO.updateCount(cluster);
         }
 
         // Modify the signal data in the DB.
