@@ -19,12 +19,15 @@ public class ClusterDAO implements ClusterDAO_Interface {
         if (connection == null)
             connection = database.getConnection();
 
-        String query = "INSERT INTO cluster (id, zoneId, ir) VALUES (?,?,?);";
+        String query = "INSERT INTO cluster (id, zoneId, ir, count, downTime, startUpTime) VALUES (?,?,?,?,?);";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, cluster.getClusterId());
             statement.setString(2, cluster.getZoneId());
             statement.setFloat(3, cluster.getInefficiencyRate());
+            statement.setInt(4, cluster.getCountInefficiencyComponents());
+            statement.setLong(5, cluster.getDownTime());
+            statement.setTimestamp(6, cluster.getStartUpTime());
 
             statement.execute();
 
