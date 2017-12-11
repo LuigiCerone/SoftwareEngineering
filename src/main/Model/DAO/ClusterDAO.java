@@ -19,7 +19,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
         if (connection == null)
             connection = database.getConnection();
 
-        String query = "INSERT INTO cluster (id, zoneId, ir, count, downTime, startUpTime) VALUES (?,?,?,?,?);";
+        String query = "INSERT INTO cluster (id, zoneId, ir, count, downTime, startUpTime) VALUES (?,?,?,?,?,?);";
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, cluster.getClusterId());
