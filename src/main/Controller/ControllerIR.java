@@ -10,7 +10,7 @@ import main.Model.Signal;
 
 import java.sql.Timestamp;
 
-public class ControllerIRRobot {
+public class ControllerIR {
 
 
     public void updateComponentState(Robot robot, RobotDAO robotDAO, ReadData readData, Cluster cluster, ClusterDAO clusterDAO) {

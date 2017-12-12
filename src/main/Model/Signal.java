@@ -4,9 +4,9 @@ import java.sql.Timestamp;
 
 public class Signal {
     //JSON field name.
-    public static final String SIGNAL_NUMER = "signalNumber";
-    public static final String SIGNAL_VALUE = "signalValue";
-    public static final String SIGNAL_TIMESTAMP = "signalTimestamp";
+    public static final String SIGNAL_NUMER = "number";
+    public static final String SIGNAL_VALUE = "value";
+    public static final String SIGNAL_TIMESTAMP = "timestamp";
 
     private int singalNumber;
     private boolean signalValue;
