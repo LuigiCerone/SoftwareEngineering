@@ -15,7 +15,7 @@ public class ControllerSignals implements Runnable {
     private String readDataToDeserialize;
     private ReadData readData;
 
-    public static HashMap<String, Signal[]> map = new HashMap<String, Signal[]>();
+    public static HashMap<String, HashMap<Integer, Boolean>> map = new HashMap<String, HashMap<Integer, Boolean>>();
 
     public ControllerSignals(String readDataToDeserialize) {
         this.readData = new ReadData(readDataToDeserialize);
@@ -31,13 +31,14 @@ public class ControllerSignals implements Runnable {
         RobotDAO robotDAO = new RobotDAO();
         Robot robot = robotDAO.findRobotByIdOrInsert(readData);
 
-        Signal[] robotSignals = null;
+        HashMap<Integer, Boolean> robotSignals = null;
         robotSignals = map.get(robot.getRobotId());
         if (robotSignals == null) {
             // Search these data in the DB.
             robotSignals = new SignalDAO().getAllSignalsForRobot(robot.getRobotId());
             map.put(robot.getRobotId(), robotSignals);
-        } else robot.setRobotSignals(robotSignals);
+        }
+        robot.setRobotSignals(robotSignals);
 
         // TODO Check if the signal value is already set.
         new ControllerIR().updateComponentState(robot, robotDAO, readData, cluster, clusterDAO);

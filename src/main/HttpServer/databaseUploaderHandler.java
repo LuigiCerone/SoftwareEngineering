@@ -2,6 +2,7 @@ package main.HttpServer;
 
 import main.Controller.ControllerSignals;
 import main.Database.Database;
+import main.HttpServer.HttpServerInit;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -13,6 +14,7 @@ import org.apache.commons.io.IOUtils;
 public class databaseUploaderHandler implements HttpHandler {
 //    MongoDB mongoDB = new MongoDB();
     Database bs = new Database();
+
 
     public void handle(HttpExchange t) throws IOException {
         System.out.println("Just received a request.");
@@ -26,8 +28,9 @@ public class databaseUploaderHandler implements HttpHandler {
     }
 
     private void insertIntoDB(String data) {
-//        mongoDB.getAllRobotsReadingsData();
+        // Add the thread to the threads pool.
+
         Thread myThread = new Thread(new ControllerSignals(data));
-        myThread.start();
+        HttpServerInit.addToThreadPool(myThread);
     }
 }

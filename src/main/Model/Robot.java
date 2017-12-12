@@ -2,6 +2,7 @@ package main.Model;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class Robot {
     //JSON and Database field names.
@@ -10,14 +11,16 @@ public class Robot {
     public static final String INEFFICIENCY_RATE = "ir";
     public static final String DOWN_TIME = "downTime";
     public static final String COUNT_INEFFICIENCY_COMPONENTS = "count";
-    public static final String  START_DOWN_TIME = "startDownTime";
-    public static final String  START_UP_TIME = "startUpTime";
+    public static final String START_DOWN_TIME = "startDownTime";
+    public static final String START_UP_TIME = "startUpTime";
 
     private String robotId;
     private String clusterId;
     private float inefficiencyRate;
     private int countInefficiencyComponents;
-    private Signal[] robotSignals = new Signal[7];
+
+    private HashMap<Integer, Boolean> robotSignals = new HashMap<Integer, Boolean>();
+
     private int downTime;
     private Timestamp startUpTime;
     private Timestamp startDownTime;
@@ -26,10 +29,9 @@ public class Robot {
     public Robot() {
     }
 
-    public Robot(String robotId, String clusterId, int downTime, Signal[] signals) {
+    public Robot(String robotId, String clusterId, int downTime) {
         this.robotId = robotId;
         this.clusterId = clusterId;
-        this.robotSignals = signals;
         this.downTime = downTime;
     }
 
@@ -47,10 +49,6 @@ public class Robot {
 
     public void setCountInefficiencyComponents(int countInefficiencyComponents) {
         this.countInefficiencyComponents = countInefficiencyComponents;
-    }
-
-    public void setRobotSignals(Signal[] robotSignals) {
-        this.robotSignals = robotSignals;
     }
 
     public void setDownTime(int downTime) {
@@ -81,8 +79,12 @@ public class Robot {
         this.inefficiencyRate = inefficiencyRate;
     }
 
-    public Signal[] getRobotSignals() {
-        return robotSignals;
+    public void setRobotSignals(HashMap<Integer, Boolean> robotSignals) {
+        this.robotSignals = robotSignals;
+    }
+
+    public Boolean getRobotSignal(int i) {
+        return robotSignals.get(i);
     }
 
     public int getCountInefficiencyComponents() {
@@ -115,19 +117,18 @@ public class Robot {
                 "robotId='" + robotId + '\'' +
                 ", clusterId='" + clusterId + '\'' +
                 ", inefficiencyRate=" + inefficiencyRate +
-                ", robotSignals=" + Arrays.toString(robotSignals) +
                 '}';
     }
 
     public int updateComponentState(boolean value) {
         // The reading contains a down signal from this robot.
-        if(!value){
+        if (!value) {
             this.countInefficiencyComponents--;
             System.out.println("A component of this robot is not working.");
-        } else if(value){
+        } else if (value) {
             this.countInefficiencyComponents++;
             System.out.println("A component of this robot is working.");
-        }else{
+        } else {
             System.out.println("Something strange has just happened.");
         }
         return this.countInefficiencyComponents;

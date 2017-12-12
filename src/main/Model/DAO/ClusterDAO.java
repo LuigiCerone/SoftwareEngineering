@@ -104,6 +104,8 @@ public class ClusterDAO implements ClusterDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        database.closeConnectionToDB(connection);
+
     }
 
     @Override
@@ -126,6 +128,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        database.closeConnectionToDB(connection);
     }
 
 //    @Override

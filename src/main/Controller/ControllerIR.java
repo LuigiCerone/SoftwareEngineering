@@ -16,6 +16,13 @@ public class ControllerIR {
     public void updateComponentState(Robot robot, RobotDAO robotDAO, ReadData readData, Cluster cluster, ClusterDAO clusterDAO) {
         long downTimeDiffRobot = 0;
         long downTimeDiffCluster = 0;
+
+        // Check if the stored signal is the same of the just received one.
+        if(robot.getRobotSignal(readData.getSignal()) == readData.getValue()){
+            return;
+        }
+
+
         // Modify the robot counter stat.
         int countRobotInefficiencyComponents = robot.updateComponentState(readData.getValue());
         System.out.println(countRobotInefficiencyComponents);

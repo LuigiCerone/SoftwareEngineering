@@ -113,6 +113,7 @@ public class RobotDAO implements RobotDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        database.closeConnectionToDB(connection);
     }
 
     public void updateCountAndStopDown(Robot robot, ReadData readData, long downTimeDiff) {
@@ -134,6 +135,7 @@ public class RobotDAO implements RobotDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        database.closeConnectionToDB(connection);
     }
 
     public void updateCount(Robot robot) {
@@ -154,6 +156,7 @@ public class RobotDAO implements RobotDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        database.closeConnectionToDB(connection);
     }
 
     @Override
@@ -178,6 +181,7 @@ public class RobotDAO implements RobotDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        database.closeConnectionToDB(connection);
         return downTime;
     }
 
@@ -196,5 +200,6 @@ public class RobotDAO implements RobotDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        database.closeConnectionToDB(connection);
     }
 }
