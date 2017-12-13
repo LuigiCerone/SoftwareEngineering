@@ -32,12 +32,12 @@ public class ControllerSignals implements Runnable {
         Robot robot = robotDAO.findRobotByIdOrInsert(readData);
 
         HashMap<Integer, Boolean> robotSignals = null;
-        robotSignals = map.get(robot.getRobotId());
-        if (robotSignals == null) {
-            // Search these data in the DB.
-            robotSignals = new SignalDAO().getAllSignalsForRobot(robot.getRobotId());
-            map.put(robot.getRobotId(), robotSignals);
-        }
+//        robotSignals = map.get(robot.getRobotId());
+//        if (robotSignals == null) {
+//            // Search these data in the DB.
+        robotSignals = new SignalDAO().getAllSignalsForRobot(robot.getRobotId());
+//            map.put(robot.getRobotId(), robotSignals);
+//        }
         robot.setRobotSignals(robotSignals);
 
         // TODO Check if the signal value is already set.

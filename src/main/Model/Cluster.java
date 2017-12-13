@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Cluster {
     //JSON and Database field names.
-    public static final String ROBOT_ID = "robotId";
     public static final String CLUSTER_ID = "id";
     public static final String INEFFICIENCY_RATE = "ir";
     public static final String DOWN_TIME = "downTime";
@@ -13,7 +12,6 @@ public class Cluster {
     public static final String START_DOWN_TIME = "startDownTime";
     public static final String START_UP_TIME = "startUpTime";
 
-    private String robotId;
     private String clusterId;
     private float inefficiencyRate;
     private int countInefficiencyComponents;
@@ -26,8 +24,7 @@ public class Cluster {
     public Cluster() {
     }
 
-    public Cluster(String robotId, String clusterId, float inefficiencyRate, int countInefficiencyComponents, int downTime, Timestamp startUpTime, Timestamp startDownTime, String zoneId, List<Robot> robotsList) {
-        this.robotId = robotId;
+    public Cluster(String clusterId, float inefficiencyRate, int countInefficiencyComponents, int downTime, Timestamp startUpTime, Timestamp startDownTime, String zoneId, List<Robot> robotsList) {
         this.clusterId = clusterId;
         this.inefficiencyRate = inefficiencyRate;
         this.countInefficiencyComponents = countInefficiencyComponents;
@@ -38,13 +35,6 @@ public class Cluster {
         this.robotsList = robotsList;
     }
 
-    public String getRobotId() {
-        return robotId;
-    }
-
-    public void setRobotId(String robotId) {
-        this.robotId = robotId;
-    }
 
     public String getClusterId() {
         return clusterId;

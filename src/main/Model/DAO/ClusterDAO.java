@@ -98,7 +98,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
 
             statement.setInt(1, cluster.getCountInefficiencyComponents());
             statement.setTimestamp(2, readData.getTimestamp());
-            statement.setString(3, cluster.getRobotId());
+            statement.setString(3, cluster.getClusterId());
 
             statement.execute();
         } catch (SQLException e) {
@@ -121,7 +121,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
             statement.setInt(1, cluster.getCountInefficiencyComponents());
             statement.setTimestamp(2, null);
             statement.setLong(3, downTimeDiffCluster);
-            statement.setString(4, cluster.getRobotId());
+            statement.setString(4, cluster.getClusterId());
 
             statement.execute();
 
