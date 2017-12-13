@@ -20,5 +20,7 @@ public interface RobotDAO_Interface {
 
     public long getDownTime(String robotId);
 
-    public void  delete(String p3Z);
+    public void delete(String p3Z);
+
+    public void processRobotIR();
 }

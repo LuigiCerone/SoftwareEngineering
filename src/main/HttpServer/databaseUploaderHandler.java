@@ -12,19 +12,16 @@ import java.net.HttpURLConnection;
 import org.apache.commons.io.IOUtils;
 
 public class databaseUploaderHandler implements HttpHandler {
-//    MongoDB mongoDB = new MongoDB();
-    Database bs = new Database();
 
-
-    public void handle(HttpExchange t) throws IOException {
+    public void handle(HttpExchange exchange) throws IOException {
         System.out.println("Just received a request.");
-        if (t.getRequestMethod().equalsIgnoreCase("POST")) {
-            InputStream is = t.getRequestBody();
+        if (exchange.getRequestMethod().equalsIgnoreCase("POST")) {
+            InputStream is = exchange.getRequestBody();
             String value = IOUtils.toString(is, "UTF-8");
             insertIntoDB(value);
         }
-        t.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-        t.close();
+        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+        exchange.close();
     }
 
     private void insertIntoDB(String data) {

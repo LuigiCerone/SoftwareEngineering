@@ -131,6 +131,11 @@ public class ClusterDAO implements ClusterDAO_Interface {
         database.closeConnectionToDB(connection);
     }
 
+    @Override
+    public void processClusterIR() {
+
+    }
+
 //    @Override
 //    public void updateCount(Cluster cluster) {
 //        Connection connection = database.getConnection();

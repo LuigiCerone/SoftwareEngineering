@@ -14,5 +14,7 @@ public interface ClusterDAO_Interface {
 
     public void updateCountAndStopDown(Cluster cluster, ReadData readData, long downTimeDiffCluster);
 
+    public void processClusterIR();
+
 //    public void updateCount(Cluster cluster);
 }

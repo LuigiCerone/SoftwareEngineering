@@ -1,6 +1,7 @@
 package main.Model.DAO;
 
 import main.Database.Database;
+import main.Main.Util;
 import main.Model.ReadData;
 import main.Model.Robot;
 
@@ -201,5 +202,71 @@ public class RobotDAO implements RobotDAO_Interface {
             e.printStackTrace();
         }
         database.closeConnectionToDB(connection);
+    }
+
+    @Override
+    public void processRobotIR() {
+        Connection connection = database.getConnection();
+
+        String query = "SELECT id, downTime, startUpTime, startDownTime" +
+                " FROM robot;";
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+            
+            while(resultSet.next()){
+                Robot robot = new Robot();
+                
+                robot.setRobotId(resultSet.getString(Robot.ROBOT_ID));
+                robot.setDownTime(resultSet.getInt(Robot.DOWN_TIME));
+                robot.setStartUpTime(resultSet.getTimestamp(Robot.START_UP_TIME));
+                robot.setStartDownTime(resultSet.getTimestamp(Robot.START_DOWN_TIME));
+                
+                calculateIR(robot);
+            }
+        } catch (SQLException e) {
+            
+        }
+        
+
+
+    }
+
+    private void calculateIR(Robot robot) {
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+
+        long upTime = Util.differenceBetweenTimestamps(now, robot.getStartUpTime());
+        long downTime = robot.getDownTime();
+
+        // Is the robot still down?
+        if(robot.getStartDownTime() != null){
+            // Robot is still down.
+            downTime += Util.differenceBetweenTimestamps(now, robot.getStartDownTime());
+        }
+
+        float ir = (downTime / upTime) * 100;
+        robot.setInefficiencyRate(ir);
+
+        // TODO Insert into DB.
+        updateRobotWithIR(robot);
+    }
+
+    private void updateRobotWithIR(Robot robot) {
+        Connection connection = database.getConnection();
+
+        String query = "UPDATE robot" +
+                " SET ir = ? " +
+                " WHERE id = ?;";
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setFloat(1, robot.getInefficiencyRate());
+            statement.setString(2, robot.getRobotId());
+            statement.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

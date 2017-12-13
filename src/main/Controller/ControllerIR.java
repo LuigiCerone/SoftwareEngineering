@@ -1,5 +1,6 @@
 package main.Controller;
 
+import main.Main.Util;
 import main.Model.Cluster;
 import main.Model.DAO.ClusterDAO;
 import main.Model.DAO.RobotDAO;
@@ -50,7 +51,7 @@ public class ControllerIR {
             // Stop counting for downtime, calculate it and add to robot.downTime.
             // Get Y and calculate the time.
             // Notify the cluster that a robot is up by incrementing its count.
-            downTimeDiffRobot = this.differenceBetweenTimestamps(readData.getTimestamp(), robot.getStartDownTime());
+            downTimeDiffRobot = Util.differenceBetweenTimestamps(readData.getTimestamp(), robot.getStartDownTime());
 //            System.out.println(downTimeDiff + " con count : " + countInefficiencyComponents + "==" + robot.getCountInefficiencyComponents());
 
             robotDAO.updateCountAndStopDown(robot, readData, downTimeDiffRobot);
@@ -59,7 +60,7 @@ public class ControllerIR {
             cluster.setCountInefficiencyComponents(countClusterInefficiencyComponents + 1);
             if(cluster.getCountInefficiencyComponents() == 0){
                 // The cluster is now up.
-                downTimeDiffCluster = this.differenceBetweenTimestamps(readData.getTimestamp(), cluster.getStartDownTime());
+                downTimeDiffCluster = Util.differenceBetweenTimestamps(readData.getTimestamp(), cluster.getStartDownTime());
                 clusterDAO.updateCountAndStopDown(cluster, readData, downTimeDiffCluster);
             }
 
@@ -75,16 +76,8 @@ public class ControllerIR {
         new SignalDAO().update(signal);
     }
 
-    private long differenceBetweenTimestamps(Timestamp downEnd, Timestamp downStart) {
-        long milliseconds1 = downStart.getTime();
-        long milliseconds2 = downEnd.getTime();
-
-        long diff = milliseconds2 - milliseconds1;
-        long diffSeconds = diff / 1000;
-//        long diffMinutes = diff / (60 * 1000);
-//        long diffHours = diff / (60 * 60 * 1000);
-//        long diffDays = diff / (24 * 60 * 60 * 1000);
-
-        return diffSeconds;
+    public void calculateIR(RobotDAO robotDAO, ClusterDAO clusterDAO) {
+        robotDAO.processRobotIR();
+        clusterDAO.processClusterIR();
     }
 }
