@@ -1,0 +1,1 @@
+{"value": 0, "zone": "XH0", "timestamp": "2017-12-13 18:11:47", "robot": "84M", "signal": 1, "cluster": "95Y"}{"value": 1, "zone": "XH0", "timestamp": "2017-12-13 18:12:17", "robot": "84M", "signal": 1, "cluster": "95Y"}
