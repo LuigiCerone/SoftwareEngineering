@@ -4,6 +4,7 @@ import main.Model.ReadData;
 import main.Model.Robot;
 
 import java.sql.Connection;
+import java.util.List;
 
 public interface RobotDAO_Interface {
     public void insert(Robot robot, Connection connection);
@@ -23,4 +24,6 @@ public interface RobotDAO_Interface {
     public void delete(String p3Z);
 
     public void processRobotIR();
+
+    public List<Robot> getAllRobots();
 }

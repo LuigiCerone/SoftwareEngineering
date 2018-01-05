@@ -1,5 +1,7 @@
 package main.Model;
 
+import com.google.gson.annotations.Expose;
+
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,13 +16,16 @@ public class Robot {
     public static final String START_DOWN_TIME = "startDownTime";
     public static final String START_UP_TIME = "startUpTime";
 
+    @Expose
     private String robotId;
+    @Expose
     private String clusterId;
+    @Expose
     private float inefficiencyRate;
+
     private int countInefficiencyComponents;
 
     private HashMap<Integer, Boolean> robotSignals = new HashMap<Integer, Boolean>();
-
     private int downTime;
     private Timestamp startUpTime;
     private Timestamp startDownTime;
@@ -33,6 +38,12 @@ public class Robot {
         this.robotId = robotId;
         this.clusterId = clusterId;
         this.downTime = downTime;
+    }
+
+    public Robot(String robotId, String clusterId, float inefficiencyRate) {
+        this.robotId = robotId;
+        this.clusterId = clusterId;
+        this.inefficiencyRate = inefficiencyRate;
     }
 
 

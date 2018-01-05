@@ -6,10 +6,7 @@ import main.Model.ReadData;
 import main.Model.Robot;
 
 import java.sql.*;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 public class RobotDAO implements RobotDAO_Interface {
     private Database database;
@@ -234,8 +231,35 @@ public class RobotDAO implements RobotDAO_Interface {
             e.printStackTrace();
         }
 
+        database.closeConnectionToDB(connection);
         calculateIR(queue);
 
+    }
+
+    @Override
+    public List<Robot> getAllRobots() {
+        Connection connection = database.getConnection();
+        PreparedStatement preparedStatement = null;
+
+        String query = "SELECT id, clusterId, ir FROM robot;";
+        LinkedList<Robot> robotLinkedList = new LinkedList<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                robotLinkedList.add(new Robot(resultSet.getString(Robot.ROBOT_ID),
+                        resultSet.getString(Robot.CLUSTER_ID),
+                        resultSet.getFloat(Robot.INEFFICIENCY_RATE)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        database.closeConnectionToDB(connection);
+
+        return robotLinkedList;
     }
 
     private void calculateIR(Queue<Robot> queue) {
@@ -276,5 +300,6 @@ public class RobotDAO implements RobotDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        database.closeConnectionToDB(connection);
     }
 }
