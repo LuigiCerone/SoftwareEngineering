@@ -32,7 +32,7 @@ public class ReadData {
         this.cluster = jsonObject.getString(CLUSTER);
         this.zone = jsonObject.getString(ZONE);
         this.signal = jsonObject.getInt(SIGNAL);
-        if (jsonObject.getInt(VALUE) == 0)
+        if (jsonObject.getInt(VALUE) == 0 || jsonObject.getBoolean(VALUE) == false)
             this.value = false;
         else this.value = true;
 //        this.value = jsonObject.getBoolean(SIGNAL);
