@@ -1,13 +1,9 @@
 import org.json.JSONObject;
-import sun.jvm.hotspot.utilities.WorkerThread;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -21,7 +17,7 @@ import java.util.concurrent.Executors;
 public class TestingUnit {
     ArrayList<Robot> robots;
     Random random = new Random();
-    int totalRequestsNumber = 0;
+    public static int totalRequestsNumber = 0;
     long startProgram = 0;
 
     public static void main(String[] args) {
@@ -29,6 +25,8 @@ public class TestingUnit {
     }
 
     private void init() {
+
+
         // Create an array of fake Robots.
         robots = new ArrayList<Robot>(90000);
         for (int i = 0; i < 90000; i++) {
@@ -37,7 +35,7 @@ public class TestingUnit {
 
         System.out.println("Array has been created.");
         startProgram = System.currentTimeMillis();
-
+        Runtime.getRuntime().addShutdownHook(new shutDownHook(startProgram));
         ExecutorService executor = Executors.newFixedThreadPool(4);//creating a pool of 4 threads
 
 //        executor.shutdown();
@@ -82,7 +80,6 @@ public class TestingUnit {
         public void run() {
             long start = System.currentTimeMillis();
 
-
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("robot", robot.getRobotId());
             jsonObject.put("cluster", robot.getClusterId());
@@ -103,7 +100,7 @@ public class TestingUnit {
             sendPost(jsonObject);
 
             long end = System.currentTimeMillis();
-            System.out.println("One single request took : " + (start - end) + "ms.");
+            System.out.println("One single request took : " + (end - start) + "ms.");
         }
 
         private void sendPost(JSONObject jsonObject) {
@@ -128,8 +125,23 @@ public class TestingUnit {
                 conn.disconnect();
 
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
+        }
+    }
+
+    public class shutDownHook extends Thread {
+        long startTime;
+
+        public shutDownHook(long startTime) {
+            this.startTime = startTime;
+        }
+
+        @Override
+        public void run() {
+            long endTime = System.currentTimeMillis();
+//            totalRequestsNumber
+            System.out.println("I've run for : " + (endTime - startTime) + "ms and I've done :" + totalRequestsNumber + " requests.");
         }
     }
 }
