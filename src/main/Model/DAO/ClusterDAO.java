@@ -1,11 +1,14 @@
 package main.Model.DAO;
 
 import main.Database.Database;
+import main.Main.Util;
 import main.Model.Cluster;
 import main.Model.ReadData;
 import main.Model.Robot;
 
 import java.sql.*;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class ClusterDAO implements ClusterDAO_Interface {
     private Database database;
@@ -133,27 +136,82 @@ public class ClusterDAO implements ClusterDAO_Interface {
 
     @Override
     public void processClusterIR() {
+        Connection connection = database.getConnection();
+        Queue<Cluster> queue = new LinkedList<Cluster>();
+
+        String query = "SELECT id, downTime, startUpTime, startDownTime" +
+                " FROM cluster;";
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+               Cluster cluster = new Cluster();
+
+                cluster.setClusterId(resultSet.getString(Cluster.CLUSTER_ID));
+                cluster.setDownTime(resultSet.getInt(Cluster.DOWN_TIME));
+                cluster.setStartUpTime(resultSet.getTimestamp(Cluster.START_UP_TIME));
+                cluster.setStartDownTime(resultSet.getTimestamp(Cluster.START_DOWN_TIME));
+
+                queue.add(cluster);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        database.closeConnectionToDB(connection);
+        calculateIR(queue);
 
     }
+    private void calculateIR(Queue<Cluster> queue) {
 
-//    @Override
-//    public void updateCount(Cluster cluster) {
-//        Connection connection = database.getConnection();
-//
-//        String query = "UPDATE cluster " +
-//                "SET count = ? " +
-//                "WHERE id=?; ";
-//
-//        try {
-//            PreparedStatement statement = connection.prepareStatement(query);
-//
-//            statement.setInt(1, cluster.getCountInefficiencyComponents());
-//            statement.setString(2, cluster.getRobotId());
-//
-//            statement.execute();
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        Connection connection = database.getConnection();
+        PreparedStatement statement = null;
+
+        String query = "UPDATE cluster" +
+                " SET ir = ? " +
+                " WHERE id = ?;";
+
+        try {
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(query);
+
+            while (!queue.isEmpty()) {
+                Cluster cluster = queue.remove();
+
+//                long upTime = Util.differenceBetweenTimestamps(now, robot.getStartUpTime());
+                long downTime = cluster.getDownTime();
+
+                // Is the robot still down?
+                if (cluster.getStartDownTime() != null) {
+                    // Robot is still down.
+                    downTime += Util.differenceBetweenTimestamps(now, cluster.getStartDownTime());
+                }
+
+//                float ir = (downTime / upTime) * 100;
+
+                // downTime is in second so I need to cast it in minutes.
+                downTime = downTime / 60;
+
+                // 60 is the temporal window.
+                float ir = ((float) downTime / 60) * 100;
+                ir = (float) (Math.round(ir * 100.0) / 100.0);
+                cluster.setInefficiencyRate(ir);
+
+                statement.setFloat(1, cluster.getInefficiencyRate());
+                statement.setString(2, cluster.getClusterId());
+                statement.addBatch();
+            }
+
+            statement.executeBatch();
+            connection.commit();
+            System.out.println("Fatto!");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        database.closeConnectionToDB(connection);
+    }
 }

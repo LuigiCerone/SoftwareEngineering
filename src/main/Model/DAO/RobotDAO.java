@@ -5,6 +5,7 @@ import main.Main.Util;
 import main.Model.ReadData;
 import main.Model.Robot;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
 
@@ -249,9 +250,10 @@ public class RobotDAO implements RobotDAO_Interface {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                robotLinkedList.add(new Robot(resultSet.getString(Robot.ROBOT_ID),
-                        resultSet.getString(Robot.CLUSTER_ID),
-                        resultSet.getFloat(Robot.INEFFICIENCY_RATE)));
+                robotLinkedList.add(
+                        new Robot(resultSet.getString(Robot.ROBOT_ID),
+                                resultSet.getString(Robot.CLUSTER_ID),
+                                resultSet.getFloat(Robot.INEFFICIENCY_RATE)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -278,7 +280,7 @@ public class RobotDAO implements RobotDAO_Interface {
             while (!queue.isEmpty()) {
                 Robot robot = queue.remove();
 
-                long upTime = Util.differenceBetweenTimestamps(now, robot.getStartUpTime());
+//                long upTime = Util.differenceBetweenTimestamps(now, robot.getStartUpTime());
                 long downTime = robot.getDownTime();
 
                 // Is the robot still down?
@@ -286,7 +288,15 @@ public class RobotDAO implements RobotDAO_Interface {
                     // Robot is still down.
                     downTime += Util.differenceBetweenTimestamps(now, robot.getStartDownTime());
                 }
-                float ir = (downTime / upTime) * 100;
+
+//                float ir = (downTime / upTime) * 100;
+
+                // downTime is in second so I need to cast it in minutes.
+                downTime = downTime / 60;
+
+                // 60 is the temporal window.
+                float ir = ((float) downTime / 60) * 100;
+                ir = (float) (Math.round(ir * 100.0) / 100.0);
                 robot.setInefficiencyRate(ir);
 
                 statement.setFloat(1, robot.getInefficiencyRate());
