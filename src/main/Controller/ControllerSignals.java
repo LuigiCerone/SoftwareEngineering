@@ -15,8 +15,6 @@ public class ControllerSignals implements Runnable {
     private String readDataToDeserialize;
     private ReadData readData;
 
-    public static HashMap<String, HashMap<Integer, Boolean>> map = new HashMap<String, HashMap<Integer, Boolean>>();
-
     public ControllerSignals(String readDataToDeserialize) {
         this.readData = new ReadData(readDataToDeserialize);
     }

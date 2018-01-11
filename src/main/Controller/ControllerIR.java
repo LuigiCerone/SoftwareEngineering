@@ -31,7 +31,8 @@ public class ControllerIR {
         int countClusterInefficiencyComponents = cluster.getCountInefficiencyComponents();
 
         // The robot has become down with this reading.
-        if (countRobotInefficiencyComponents == -1) {
+        if (countRobotInefficiencyComponents == -1 && robot.getStartDownTime() == null) { //  <--------- Puà darsi che era già down ed è risalito a -1.
+
             // Start counting for down time.
             // Save in the DB the timestamp in witch the robot has gone down, call this Y.
             // Notify the cluster that a robot is down by decrementing its count.

@@ -43,4 +43,8 @@ public class Robot {
     public void setSignals(boolean[] signals) {
         this.signals = signals;
     }
+
+    public void invertSignal(int signalNumber) {
+        this.signals[signalNumber] = !this.signals[signalNumber];
+    }
 }

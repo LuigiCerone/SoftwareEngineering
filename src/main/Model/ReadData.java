@@ -32,17 +32,16 @@ public class ReadData {
         this.cluster = jsonObject.getString(CLUSTER);
         this.zone = jsonObject.getString(ZONE);
         this.signal = jsonObject.getInt(SIGNAL);
-        if (jsonObject.getInt(VALUE) == 0 || jsonObject.getBoolean(VALUE) == false)
-            this.value = false;
-        else this.value = true;
-//        this.value = jsonObject.getBoolean(SIGNAL);
+//        if (jsonObject.getInt(VALUE) == 0 || jsonObject.getBoolean(VALUE) == false) this.value = false;
+//        else this.value = true;
+        this.value = jsonObject.getBoolean(VALUE);
         this.timestamp = formatTimestamp(jsonObject.getString(TIMESTAMP));
     }
 
     private Timestamp formatTimestamp(String timestampAsString) {
         Timestamp toTimestamp = null;
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date parsedDate = dateFormat.parse(timestampAsString);
             toTimestamp = new Timestamp(parsedDate.getTime());
         } catch (Exception e) {
