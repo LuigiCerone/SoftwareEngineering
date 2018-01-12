@@ -3,6 +3,7 @@ package main.Controller;
 import main.Main.Util;
 import main.Model.Cluster;
 import main.Model.DAO.ClusterDAO;
+import main.Model.DAO.HistoryDAO;
 import main.Model.DAO.RobotDAO;
 import main.Model.DAO.SignalDAO;
 import main.Model.ReadData;
@@ -15,11 +16,13 @@ public class ControllerIR {
 
 
     public void updateComponentState(Robot robot, RobotDAO robotDAO, ReadData readData, Cluster cluster, ClusterDAO clusterDAO) {
+        HistoryDAO historyDAO = new HistoryDAO();
+
         long downTimeDiffRobot = 0;
         long downTimeDiffCluster = 0;
 
         // Check if the stored signal is the same of the just received one.
-        if(robot.getRobotSignal(readData.getSignal()) == readData.getValue()){
+        if (robot.getRobotSignal(readData.getSignal()) == readData.getValue()) {
             return;
         }
 
@@ -38,12 +41,22 @@ public class ControllerIR {
             // Notify the cluster that a robot is down by decrementing its count.
             robotDAO.updateCountAndStartDown(robot, readData);
 
-            // TODO Decrement the count in the DB for the cluster.
+            // Insert a log history for this downTime period start.
+            // End UP period.
+            historyDAO.insertPeriodEnd(robot.getRobotId(), readData.getTimestamp(), true);  // <--?
+            // Start DOWN period.
+            historyDAO.insertPeriodStart(robot.getRobotId(), readData.getTimestamp(), false);
+
             // The robot is now down.
             cluster.setCountInefficiencyComponents(countClusterInefficiencyComponents - 1);
-            if (cluster.getCountInefficiencyComponents() == -1){
+            if (cluster.getCountInefficiencyComponents() == -1) {
                 // The cluster is now down.
                 clusterDAO.updateCountAndStartDown(cluster, readData);
+
+                // End UP period.
+                historyDAO.insertPeriodEnd(cluster.getClusterId(), readData.getTimestamp(), true); // <--?
+                // Start DOWN period.
+                historyDAO.insertPeriodStart(cluster.getClusterId(), readData.getTimestamp(), false);
             }
         }
 
@@ -57,18 +70,29 @@ public class ControllerIR {
 
             robotDAO.updateCountAndStopDown(robot, readData, downTimeDiffRobot);
 
+            // Update log history entry with time.
+            // End DOWN period.
+            historyDAO.insertPeriodEnd(robot.getRobotId(), readData.getTimestamp(), false);
+            // Start UP period.
+            historyDAO.insertPeriodStart(robot.getRobotId(), readData.getTimestamp(), true);
+
             // The robot is now up.
             cluster.setCountInefficiencyComponents(countClusterInefficiencyComponents + 1);
-            if(cluster.getCountInefficiencyComponents() == 0){
+            if (cluster.getCountInefficiencyComponents() == 0) {
                 // The cluster is now up.
                 downTimeDiffCluster = Util.differenceBetweenTimestamps(readData.getTimestamp(), cluster.getStartDownTime());
                 clusterDAO.updateCountAndStopDown(cluster, readData, downTimeDiffCluster);
+
+                // End DOWN period.
+                historyDAO.insertPeriodEnd(cluster.getClusterId(), readData.getTimestamp(), false);
+                // Start UP period.
+                historyDAO.insertPeriodStart(cluster.getClusterId(), readData.getTimestamp(), true);
             }
 
         } else {
             // The robot is still down/up.
             robotDAO.updateCount(robot);
-            // TODO is the following required?
+            // TODO is the following required? Nope.
             // clusterDAO.updateCount(cluster);
         }
 
@@ -78,6 +102,7 @@ public class ControllerIR {
     }
 
     public void calculateIR(RobotDAO robotDAO, ClusterDAO clusterDAO) {
+        // TODO Chenge with the query on History.
         robotDAO.processRobotIR();
         clusterDAO.processClusterIR();
     }

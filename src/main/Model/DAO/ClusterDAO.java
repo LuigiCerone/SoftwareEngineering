@@ -79,6 +79,9 @@ public class ClusterDAO implements ClusterDAO_Interface {
                 cluster.setDownTime(0);
                 cluster.setStartUpTime(new Timestamp(System.currentTimeMillis()));
                 this.insert(cluster, connection);
+
+                // Also an entry in the table history has to be created.
+                new HistoryDAO().insertPeriodStart(cluster.getClusterId(), cluster.getStartUpTime(), true);
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -86,6 +86,8 @@ public class RobotDAO implements RobotDAO_Interface {
                 robot.setCountInefficiencyComponents(0);
                 robot.setDownTime(0);
                 robot.setStartUpTime(new Timestamp(System.currentTimeMillis()));
+                // Also an entry in the table history has to be created.
+                new HistoryDAO().insertPeriodStart(robot.getRobotId(), robot.getStartUpTime(), true);
 
                 this.insert(robot, connection);
             }

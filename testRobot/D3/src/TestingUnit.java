@@ -53,7 +53,7 @@ public class TestingUnit {
 //            sendData(currRobot);
             totalRequestsNumber++;
             try {
-                Thread.sleep(1000);
+                Thread.sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -63,9 +63,9 @@ public class TestingUnit {
 
     // Create a new robot with random data.
     private Robot createFakeRobot() {
-        String robotId = UUID.randomUUID().toString().replace("-", "").substring(0, 30);
-        String clusterId = UUID.randomUUID().toString().replace("-", "").substring(0, 30);
-        String zoneId = UUID.randomUUID().toString().replace("-", "").substring(0, 30);
+        String robotId = UUID.randomUUID().toString().replace("-", "").substring(0, 17);
+        String clusterId = UUID.randomUUID().toString().replace("-", "").substring(0, 17);
+        String zoneId = UUID.randomUUID().toString().replace("-", "").substring(0, 17);
 
         // [0] is not used
         boolean[] signals = new boolean[8];
