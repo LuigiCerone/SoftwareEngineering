@@ -102,7 +102,7 @@ public class ControllerIR {
     }
 
     public void calculateIR(RobotDAO robotDAO, ClusterDAO clusterDAO) {
-        // TODO Chenge with the query on History.
+        // TODO Change with the query on History.
         robotDAO.processRobotIR();
         clusterDAO.processClusterIR();
     }

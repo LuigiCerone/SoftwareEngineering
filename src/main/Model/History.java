@@ -1,15 +1,23 @@
 package main.Model;
 
 import java.sql.Timestamp;
+import java.util.Comparator;
 
 public class History {
-    private String id;
+    //JSON and Database field names.
+    public static final String HISTORY_ID = "id";
+    public static final String DEVICE_ID = "deviceId";
+    public static final String START = "startTime";
+    public static final String END = "endTime";
+    public static final String STATUS = "status";
+
+    private int id;
     private String deviceId;
     private Timestamp start;
     private Timestamp end;
     private boolean status; // If was 1 (=UP) or 0 (=DOWN)
 
-    public History(String id, String deviceId, Timestamp start, Timestamp end, boolean status) {
+    public History(int id, String deviceId, Timestamp start, Timestamp end, boolean status) {
         this.id = id;
         this.deviceId = deviceId;
         this.start = start;
@@ -17,11 +25,16 @@ public class History {
         this.status = status;
     }
 
-    public String getId() {
+    public History() {
+    }
+
+    ;
+
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -49,11 +62,27 @@ public class History {
         this.end = end;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+
+    public static class HistoryComparator implements Comparator {
+        @Override
+        public int compare(Object o1, Object o2) {
+            History a = (History) o1;
+            History b = (History) o2;
+
+            if (a.getId() == b.getId()) return 0;
+
+            if (a.getId() < b.getId()) {
+                return 1;  //do the other way
+            }
+            return -1;
+        }
     }
 }
