@@ -4,6 +4,7 @@ import main.Model.ReadData;
 import main.Model.Robot;
 
 import java.sql.Connection;
+import java.util.HashMap;
 import java.util.List;
 
 public interface RobotDAO_Interface {
@@ -23,7 +24,7 @@ public interface RobotDAO_Interface {
 
     public void delete(String p3Z);
 
-    public void processRobotIR();
-
     public List<Robot> getAllRobots();
+
+    void updateIR(HashMap<String, Float> robotsIR);
 }

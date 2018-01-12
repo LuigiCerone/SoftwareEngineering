@@ -19,8 +19,6 @@ public class inefficiencyRateCalculatorHandler implements HttpHandler {
     }
 
     private void calculateIR() {
-        RobotDAO robotDAO = new RobotDAO();
-        ClusterDAO clusterDAO = new ClusterDAO();
-        new ControllerIR().calculateIR(robotDAO, clusterDAO);
+        new ControllerIR().calculateIR();
     }
 }

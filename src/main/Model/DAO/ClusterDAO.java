@@ -7,7 +7,9 @@ import main.Model.ReadData;
 import main.Model.Robot;
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 public class ClusterDAO implements ClusterDAO_Interface {
@@ -81,7 +83,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
                 this.insert(cluster, connection);
 
                 // Also an entry in the table history has to be created.
-                new HistoryDAO().insertPeriodStart(cluster.getClusterId(), cluster.getStartUpTime(), true);
+                new HistoryDAO().insertPeriodStart(cluster.getClusterId(), cluster.getStartUpTime(), true, 1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -150,7 +152,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-               Cluster cluster = new Cluster();
+                Cluster cluster = new Cluster();
 
                 cluster.setClusterId(resultSet.getString(Cluster.CLUSTER_ID));
                 cluster.setDownTime(resultSet.getInt(Cluster.DOWN_TIME));
@@ -167,6 +169,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
         calculateIR(queue);
 
     }
+
     private void calculateIR(Queue<Cluster> queue) {
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -208,6 +211,34 @@ public class ClusterDAO implements ClusterDAO_Interface {
                 statement.addBatch();
             }
 
+            statement.executeBatch();
+            connection.commit();
+            System.out.println("Fatto!");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        database.closeConnectionToDB(connection);
+    }
+
+    @Override
+    public void updateIR(HashMap<String, Float> clustersIR) {
+        Connection connection = database.getConnection();
+
+        PreparedStatement statement = null;
+
+        String query = "UPDATE cluster" +
+                " SET ir = ? WHERE id = ?;";
+
+        try {
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(query);
+
+            for (Map.Entry<String, Float> entry : clustersIR.entrySet()) {
+                statement.setFloat(1, entry.getValue());
+                statement.setString(2, entry.getKey());
+                statement.addBatch();
+            }
             statement.executeBatch();
             connection.commit();
             System.out.println("Fatto!");

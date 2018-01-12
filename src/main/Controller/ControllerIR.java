@@ -1,16 +1,20 @@
 package main.Controller;
 
 import main.Main.Util;
-import main.Model.Cluster;
+import main.Model.*;
 import main.Model.DAO.ClusterDAO;
 import main.Model.DAO.HistoryDAO;
 import main.Model.DAO.RobotDAO;
 import main.Model.DAO.SignalDAO;
-import main.Model.ReadData;
-import main.Model.Robot;
-import main.Model.Signal;
 
 import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 public class ControllerIR {
 
@@ -43,9 +47,9 @@ public class ControllerIR {
 
             // Insert a log history for this downTime period start.
             // End UP period.
-            historyDAO.insertPeriodEnd(robot.getRobotId(), readData.getTimestamp(), true);  // <--?
+            historyDAO.insertPeriodEnd(robot.getRobotId(), readData.getTimestamp(), true, 0);  // <--?
             // Start DOWN period.
-            historyDAO.insertPeriodStart(robot.getRobotId(), readData.getTimestamp(), false);
+            historyDAO.insertPeriodStart(robot.getRobotId(), readData.getTimestamp(), false, 0);
 
             // The robot is now down.
             cluster.setCountInefficiencyComponents(countClusterInefficiencyComponents - 1);
@@ -54,9 +58,9 @@ public class ControllerIR {
                 clusterDAO.updateCountAndStartDown(cluster, readData);
 
                 // End UP period.
-                historyDAO.insertPeriodEnd(cluster.getClusterId(), readData.getTimestamp(), true); // <--?
+                historyDAO.insertPeriodEnd(cluster.getClusterId(), readData.getTimestamp(), true, 1); // <--?
                 // Start DOWN period.
-                historyDAO.insertPeriodStart(cluster.getClusterId(), readData.getTimestamp(), false);
+                historyDAO.insertPeriodStart(cluster.getClusterId(), readData.getTimestamp(), false, 1);
             }
         }
 
@@ -72,9 +76,9 @@ public class ControllerIR {
 
             // Update log history entry with time.
             // End DOWN period.
-            historyDAO.insertPeriodEnd(robot.getRobotId(), readData.getTimestamp(), false);
+            historyDAO.insertPeriodEnd(robot.getRobotId(), readData.getTimestamp(), false, 0);
             // Start UP period.
-            historyDAO.insertPeriodStart(robot.getRobotId(), readData.getTimestamp(), true);
+            historyDAO.insertPeriodStart(robot.getRobotId(), readData.getTimestamp(), true, 0);
 
             // The robot is now up.
             cluster.setCountInefficiencyComponents(countClusterInefficiencyComponents + 1);
@@ -84,9 +88,9 @@ public class ControllerIR {
                 clusterDAO.updateCountAndStopDown(cluster, readData, downTimeDiffCluster);
 
                 // End DOWN period.
-                historyDAO.insertPeriodEnd(cluster.getClusterId(), readData.getTimestamp(), false);
+                historyDAO.insertPeriodEnd(cluster.getClusterId(), readData.getTimestamp(), false, 1);
                 // Start UP period.
-                historyDAO.insertPeriodStart(cluster.getClusterId(), readData.getTimestamp(), true);
+                historyDAO.insertPeriodStart(cluster.getClusterId(), readData.getTimestamp(), true, 1);
             }
 
         } else {
@@ -101,9 +105,79 @@ public class ControllerIR {
         new SignalDAO().update(signal);
     }
 
-    public void calculateIR(RobotDAO robotDAO, ClusterDAO clusterDAO) {
+    public void calculateIR() {
         // TODO Change with the query on History.
-        robotDAO.processRobotIR();
-        clusterDAO.processClusterIR();
+        HistoryDAO historyDAO = new HistoryDAO();
+
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        ZonedDateTime zonedDateTime = now.toInstant().atZone(ZoneId.of("UTC"));
+        Timestamp oneHourAgo = Timestamp.from(zonedDateTime.minus(1, ChronoUnit.HOURS).toInstant());
+        System.out.println("Timestamps are oneHourAgo: " + oneHourAgo.toString() + " now: " + now.toString());
+
+        // Robots.
+        HashMap<String, LinkedList<History>> robots = historyDAO.processIR(now, oneHourAgo, 0);
+        HashMap<String, Float> robotsIR = computeIR(robots, now, oneHourAgo, 0);
+        new RobotDAO().updateIR(robotsIR);
+
+        // Clusters.
+        HashMap<String, LinkedList<History>> clusters = historyDAO.processIR(now, oneHourAgo, 1);
+        HashMap<String, Float> clustersIR = computeIR(clusters, now, oneHourAgo, 1);
+        new ClusterDAO().updateIR(clustersIR);
+//        robotDAO.processRobotIR();
+//        clusterDAO.processClusterIR();
+    }
+
+    private HashMap<String, Float> computeIR(HashMap<String, LinkedList<History>> map, Timestamp now, Timestamp oneHourAgo, int type) {
+        HashMap<String, Float> rates = new HashMap<>();
+
+        for (Map.Entry<String, LinkedList<History>> entry : map.entrySet()) {
+            LinkedList<History> histories = entry.getValue();
+            String deviceId = entry.getKey();
+
+            long upTime = 0;
+            long downTime = 0;
+
+            Collections.sort(histories, new History.HistoryComparator()); // Descending order based on history.ID .
+            for (History history : histories) {
+                if (history.getEnd() == null) {
+                    long time = Util.differenceBetweenTimestamps(now, history.getStart());
+                    if (time >= 3600) {
+                        // This means the robot has been in this state for the last hour (and is still in this status).
+                        if (history.getStatus())
+                            upTime = 3600;
+                        else downTime = 3600;
+                    } else {
+                        // This mean this is the currently status.
+                        if (history.getStatus())
+                            upTime += time;
+                        else
+                            downTime += time;
+                    }
+                } else if (history.getStart().after(oneHourAgo) && history.getEnd().before(now)) {
+                    // This means that both startTime and endTime are in last hour.
+                    long time = Util.differenceBetweenTimestamps(history.getEnd(), history.getStart());
+
+                    if (history.getStatus())
+                        upTime += time;
+                    else
+                        downTime += time;
+                } else if (history.getStart() == null) {
+                    // This means that the entry is on the middle.
+                    long time = 3600 - downTime - upTime;
+                    if (history.getStatus())
+                        upTime += time;
+                    else
+                        downTime += time;
+                }
+            }
+
+            downTime = downTime / 60; // downTime in minutes.
+
+            // 60 is the temporal window.
+            float ir = ((float) downTime / 60) * 100;
+            ir = (float) (Math.round(ir * 100.0) / 100.0);
+            rates.put(deviceId, ir);
+        }
+        return rates;
     }
 }
