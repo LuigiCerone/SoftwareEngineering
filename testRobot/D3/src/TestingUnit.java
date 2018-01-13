@@ -27,7 +27,7 @@ public class TestingUnit {
     }
 
     private void init() {
-        int ROBOTS_NUMBER = 4;
+        int ROBOTS_NUMBER = 1000;
         // Create an array of fake Robots.
         robots = new ArrayList<Robot>(ROBOTS_NUMBER);
         for (int i = 0; i < ROBOTS_NUMBER; i++) {

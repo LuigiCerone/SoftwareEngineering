@@ -106,7 +106,6 @@ public class ControllerIR {
     }
 
     public void calculateIR() {
-        // TODO Change with the query on History.
         HistoryDAO historyDAO = new HistoryDAO();
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
