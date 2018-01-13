@@ -1,0 +1,32 @@
+a.row{
+  /*display: inline-block;*/
+
+  /*border: 1px solid black;*/
+  text-align: center
+  height: auto;
+  overflow: hidden;
+}
+
+/*div .row{
+  display: inline-block;
+}*/
+
+.col {
+  padding: 15px 10px 15px 10px;
+  border: 1px solid black;
+  margin: 5px 5px 5px 5px;
+}
+
+.column{
+  float:left;
+  width: 20%;
+}
+
+#app{
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+p{
+  height: 2px;
+}

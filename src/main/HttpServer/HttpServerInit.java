@@ -14,6 +14,7 @@ public class HttpServerInit {
         server.createContext("/robots", new databaseUploaderHandler());
         server.createContext("/ir", new inefficiencyRateCalculatorHandler());
         server.createContext("/display", new displayInefficiencyRateHandler());
+        server.createContext("/dashboard", new dashboardHandler());
         server.setExecutor(null); // creates a default executor
         server.start();
     }

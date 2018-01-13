@@ -171,10 +171,11 @@ public class ControllerIR {
                 }
             }
 
-            downTime = downTime / 60; // downTime in minutes.
+            float downTimeF;
+            downTimeF = (float)downTime / 60; // downTime in minutes.
 
             // 60 is the temporal window.
-            float ir = ((float) downTime / 60) * 100;
+            float ir = ((float) downTimeF / 60) * 100;
             ir = (float) (Math.round(ir * 100.0) / 100.0);
             rates.put(deviceId, ir);
         }

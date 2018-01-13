@@ -5,7 +5,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
@@ -28,7 +27,7 @@ public class TestingUnit {
     }
 
     private void init() {
-        int ROBOTS_NUMBER = 1;
+        int ROBOTS_NUMBER = 4;
         // Create an array of fake Robots.
         robots = new ArrayList<Robot>(ROBOTS_NUMBER);
         for (int i = 0; i < ROBOTS_NUMBER; i++) {
@@ -44,7 +43,7 @@ public class TestingUnit {
 
         while (true) {
 
-            int index = random.nextInt(((ROBOTS_NUMBER - 1) - 0) + 1) + 0;
+            int index = random.nextInt((ROBOTS_NUMBER - 1) + 1);
             Robot currRobot = robots.get(index);
 
             Runnable worker = new SenderThread(currRobot);
@@ -53,7 +52,7 @@ public class TestingUnit {
 //            sendData(currRobot);
             totalRequestsNumber++;
             try {
-                Thread.sleep(10000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
