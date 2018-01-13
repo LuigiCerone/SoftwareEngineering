@@ -1,24 +1,32 @@
 package main.Model;
 
+import com.google.gson.annotations.Expose;
+
 import java.sql.Timestamp;
 import java.util.List;
 
 public class Cluster {
     //JSON and Database field names.
     public static final String CLUSTER_ID = "id";
+    public static final String ZONE_ID = "zoneId";
     public static final String INEFFICIENCY_RATE = "ir";
     public static final String DOWN_TIME = "downTime";
     public static final String COUNT_INEFFICIENCY_COMPONENTS = "count";
     public static final String START_DOWN_TIME = "startDownTime";
     public static final String START_UP_TIME = "startUpTime";
 
+    @Expose
     private String clusterId;
+    @Expose
     private float inefficiencyRate;
+    @Expose
+    private String zoneId;
+
     private int countInefficiencyComponents;
     private int downTime;
     private Timestamp startUpTime;
     private Timestamp startDownTime;
-    private String zoneId;
+
     private List<Robot> robotsList;
 
     public Cluster() {
@@ -33,6 +41,12 @@ public class Cluster {
         this.startDownTime = startDownTime;
         this.zoneId = zoneId;
         this.robotsList = robotsList;
+    }
+
+    public Cluster(String clusterId, String zoneId, float ir) {
+        this.clusterId = clusterId;
+        this.zoneId = zoneId;
+        this.inefficiencyRate = ir;
     }
 
 

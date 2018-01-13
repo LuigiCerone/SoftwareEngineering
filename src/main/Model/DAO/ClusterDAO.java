@@ -248,4 +248,32 @@ public class ClusterDAO implements ClusterDAO_Interface {
         }
         database.closeConnectionToDB(connection);
     }
+
+    @Override
+    public LinkedList<Cluster> getAllClusters() {
+        Connection connection = database.getConnection();
+        PreparedStatement preparedStatement = null;
+
+        String query = "SELECT id, zoneId, ir FROM cluster;";
+        LinkedList<Cluster> clusterLinkedList = new LinkedList<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                clusterLinkedList.add(
+                        new Cluster(
+                                resultSet.getString(Cluster.CLUSTER_ID),
+                                resultSet.getString(Cluster.ZONE_ID),
+                                resultSet.getFloat(Cluster.INEFFICIENCY_RATE)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        database.closeConnectionToDB(connection);
+
+        return clusterLinkedList;
+    }
 }

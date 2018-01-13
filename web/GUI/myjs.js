@@ -10,11 +10,12 @@ ws.onopen = function (data) {
 };
 
 ws.onmessage = function (evt) {
-    var received_msg = JSON.parse(evt.data);
-    received_msg.forEach(function (value) {
+    var data = JSON.parse(evt.data);
+    var robots = JSON.parse(data.robots);
+    robots.forEach(function (value) {
         console.log(value);
     });
-    processAndDisplay(received_msg);
+    processAndDisplayRobots(robots);
     // console.log("Received data: " + received_msg);
 };
 
@@ -35,7 +36,7 @@ var createGroupedArray = function (arr, chunkSize) {
     return groups;
 }
 
-function processAndDisplay(array) {
+function processAndDisplayRobots(array) {
     var chunks = createGroupedArray(array, 5);
 
     var container = $('#container');

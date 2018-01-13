@@ -15,8 +15,7 @@ import java.util.LinkedList;
 public class webSocket extends WebSocketServer {
     HashSet<WebSocket> allClients;
     LinkedList<Robot> robotList;
-    String serializedRobots = null;
-    String serializedClusters = null;
+    String serializedData = null;
 
     public webSocket() {
         super(new InetSocketAddress("127.0.0.1", 9091));
@@ -24,8 +23,9 @@ public class webSocket extends WebSocketServer {
         System.out.println("Constructor");
     }
 
-    public void setRobot(String serializedRobots) { this.serializedRobots = serializedRobots; }
-    public void setCluster(String serializedClusters) { this.serializedClusters = serializedClusters; }
+    public void setData(String serializedData) {
+        this.serializedData = serializedData;
+    }
 
 
     @Override
@@ -58,12 +58,12 @@ public class webSocket extends WebSocketServer {
 
     // Update stats.
     private void sendJSONToAll() {
-        for(WebSocket client : allClients)
-            client.send(serializedRobots.toString());
+        for (WebSocket client : allClients)
+            client.send(serializedData);
     }
 
     private void sendJSONToNew(WebSocket client) {
-        client.send(serializedRobots);
+        client.send(serializedData);
     }
 
 }
