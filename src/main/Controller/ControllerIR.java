@@ -161,7 +161,7 @@ public class ControllerIR {
                         upTime += time;
                     else
                         downTime += time;
-                } else if (history.getStart() == null) {
+                } else if (history.getStart().before(oneHourAgo)) {
                     // This means that the entry is on the middle.
                     long time = 3600 - downTime - upTime;
                     if (history.getStatus())

@@ -68,15 +68,16 @@ public class HistoryDAO implements HistoryDAO_Interface {
         Connection connection = database.getConnection();
 
         String query = "SELECT * FROM history " +
-                "WHERE startTime>= ? OR endTime>=? OR endTime IS NULL ORDER BY deviceId AND type=?;";
+                "WHERE type=? AND (startTime>= ? OR endTime>=? OR endTime IS NULL)  " +
+                "ORDER BY deviceId;";
 
         HashMap<String, LinkedList<History>> map = new HashMap<>();
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setTimestamp(1, oneHourAgo);
+            preparedStatement.setInt(1, type);
             preparedStatement.setTimestamp(2, oneHourAgo);
-            preparedStatement.setInt(3, type);
+            preparedStatement.setTimestamp(3, oneHourAgo);
 
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -93,10 +94,11 @@ public class HistoryDAO implements HistoryDAO_Interface {
                 history.setId(resultSet.getInt(History.HISTORY_ID));
                 history.setDeviceId(deviceId);
 
-                if (resultSet.getTimestamp(History.START).before(oneHourAgo))
-                    history.setStart(null);
-                else
-                    history.setStart(resultSet.getTimestamp(History.START));
+//                if (resultSet.getTimestamp(History.START).before(oneHourAgo))
+//                    history.setStart(null);
+//                else
+//                    history.setStart(resultSet.getTimestamp(History.START));
+                history.setStart(resultSet.getTimestamp(History.START));
 
                 history.setEnd(resultSet.getTimestamp(History.END));
                 history.setStatus(resultSet.getBoolean(History.STATUS));

@@ -13,9 +13,9 @@ public class inefficiencyRateCalculatorHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         System.out.println("Just received a request.");
-        calculateIR();
         exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
         exchange.close();
+        calculateIR();
     }
 
     private void calculateIR() {
