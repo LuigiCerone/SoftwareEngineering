@@ -38,12 +38,9 @@ p {
 body {
     font-size: 14px;
     background-color: rgb(255, 200, 255);
-}
-
-.stats {
     text-align: center;
 }
 
-h4 {
+h6 {
     display: inline;
 }

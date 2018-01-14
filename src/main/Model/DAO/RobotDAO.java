@@ -248,7 +248,7 @@ public class RobotDAO implements RobotDAO_Interface {
         Connection connection = database.getConnection();
         PreparedStatement preparedStatement = null;
 
-        String query = "SELECT id, clusterId, ir FROM robot;";
+        String query = "SELECT id, clusterId, ir FROM robot ORDER BY id;";
         LinkedList<Robot> robotLinkedList = new LinkedList<>();
 
         try {

@@ -254,7 +254,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
         Connection connection = database.getConnection();
         PreparedStatement preparedStatement = null;
 
-        String query = "SELECT id, zoneId, ir FROM cluster;";
+        String query = "SELECT id, zoneId, ir FROM cluster ORDER BY id;";
         LinkedList<Cluster> clusterLinkedList = new LinkedList<>();
 
         try {

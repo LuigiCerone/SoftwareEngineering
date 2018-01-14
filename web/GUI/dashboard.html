@@ -1,0 +1,74 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Dashboard</title>
+    <script src="jquery-3.2.1.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="myjs.js"></script>
+    <!--<script src="lodash.min.js"></script>-->
+    <!--<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>-->
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<div class="row">
+    <div class="col">
+        <h1> Software Engineering Project 2017-18</h1>
+    </div>
+</div>
+<br><br>
+<div class="row">
+    <div class="col-2">
+        <div><h6><b>Robots: </b></h6><span id="robotsCount"></span></div>
+        <div><h6><b>Clusters: </b></h6><span id="clustersCount"></span></div>
+    </div>
+    <div class="col-2">
+        <button class="btn btn-outline-success my-2 my-sm-0" id="wsStart">Connect</button>
+        <button class="btn btn-outline-success my-2 my-sm-0" id="wsStop">Disconnect</button>
+    </div>
+    <div class="col-2">
+        <b><span id="status"></span></b>
+    </div>
+    <div class="col-2">
+        <button id="toggle" class="btn btn-outline-success my-2 my-sm-0">Go to cluster</button>
+    </div>
+    <div class="col-4">
+        <form class="form-inline my-2 my-lg-0">
+            <input id="input_id" class="form-control mr-sm-2" type="text" placeholder="Search">
+            <button id="search" class="btn btn-outline-success my-2 my-sm-0" type="submit" data-toggle="modal"
+                    data-target="#robotModal">Search
+            </button>
+        </form>
+    </div>
+</div>
+<br>
+<div id="robotContainer" class="container">
+</div>
+<div id="clusterContainer" class="container">
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="robotModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Robot info</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modalBody" class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

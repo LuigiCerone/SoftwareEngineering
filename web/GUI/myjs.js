@@ -1,6 +1,10 @@
 console.log("Ok");
 // Let us open a web socket
-var ws;
+var ws, display = 0;
+var robots;
+
+// display == 0 --> display Robots (by default).
+// display == 1 --> display Clusters.
 
 function connectWS() {
     ws = new WebSocket("ws://127.0.0.1:9999");
@@ -38,16 +42,21 @@ function onOpen(data) {
 function onMessage(evt) {
     // console.log("OnMessage");
     var data = JSON.parse(evt.data);
-    var robots = JSON.parse(data.robots);
+    robots = JSON.parse(data.robots);
+    var clusters = JSON.parse(data.clusters);
     // robots.forEach(function (value) {
     //     console.log(value);
     // });
-    console.log("Length: " + robots.length);
+    // console.log("Length: " + robots.length);
     $('#robotsCount').text(robots.length);
+    $('#clustersCount').text(clusters.length);
 
-    processAndDisplayRobots(robots);
+    processRobots(robots);
+    processClusters(clusters);
     // console.log("Received data: " + received_msg);
     setStatus();
+
+    displaySelected();
 }
 
 function onClose(data) {
@@ -70,10 +79,13 @@ function createGroupedArray(arr, chunkSize) {
     return groups;
 }
 
-function processAndDisplayRobots(array) {
+function processRobots(array) {
     var chunks = createGroupedArray(array, 5);
 
-    var container = $('#container');
+    var container = $('#robotContainer');
+    container.empty();
+
+
     for (var i = 0; i < chunks.length; i++) {
         var row = document.createElement('div');
         row.classList.add('row');
@@ -89,6 +101,43 @@ function processAndDisplayRobots(array) {
             var cluster = document.createElement('p');
             cluster.innerHTML = "<b>Cluster:</b> " + data.clusterId;
             col.appendChild(cluster);
+
+            var ir = document.createElement('p');
+            ir.innerHTML = "<b>IR:</b> " + data.inefficiencyRate;
+            col.appendChild(ir);
+
+            if (data.inefficiencyRate >= 40.0) {
+                col.classList.add('bg-danger');
+            } else
+                col.classList.add('bg-success');
+
+            row.appendChild(col);
+        });
+        container.append(row);
+    }
+}
+
+function processClusters(array) {
+    var chunks = createGroupedArray(array, 5);
+
+    var container = $('#clusterContainer');
+    container.empty();
+
+    for (var i = 0; i < chunks.length; i++) {
+        var row = document.createElement('div');
+        row.classList.add('row');
+
+        chunks[i].forEach(function (data) {
+            var col = document.createElement('div');
+            col.classList.add('col');
+
+            var cluster = document.createElement('p');
+            cluster.innerHTML = "<b>Cluster:</b>" + data.clusterId;
+            col.appendChild(cluster);
+
+            var zone = document.createElement('p');
+            zone.innerHTML = "<b>Zone:</b> " + data.zoneId;
+            col.appendChild(zone);
 
             var ir = document.createElement('p');
             ir.innerHTML = "<b>IR:</b> " + data.inefficiencyRate;
@@ -135,6 +184,17 @@ function setStatus() {
     }
 }
 
+// Elements are just hidden so there is no need to reprocess them when users change screen.
+function displaySelected() {
+    if (display == 0) {
+        $('#clusterContainer').hide();
+        $('#robotContainer').show();
+    } else if (display == 1) {
+        $('#clusterContainer').show();
+        $('#robotContainer').hide();
+    }
+}
+
 
 $(function () {
     setStatus();
@@ -149,5 +209,53 @@ $(function () {
         if (ws != null && (ws.readyState == 2 || ws.readyState == 3))
             return;
         disconnectWS();
+    });
+
+    $('#toggle').on('click', function () {
+        display = 1 - display;
+        displaySelected();
+
+        if (display === 1)
+            $('#toggle').html("Go to Robots");
+        else
+            $('#toggle').html("Go to Clusters");
+    });
+
+    $('#search').on('click', function (event) {
+        event.preventDefault();
+        var idToSearch = $('#input_id').val();
+        // console.log(idToSearch);
+
+        var searchedRobot = null;
+        if (robots != null) {
+            searchedRobot = robots.find(function (robot) {
+                if (robot.robotId === idToSearch)
+                    return true;
+            });
+            console.log(searchedRobot);
+        }
+
+        $('#modalBody').empty();
+
+        var body = document.createElement('div');
+        if (searchedRobot == null) {
+            var p = document.createElement('p');
+            p.innerHTML = "<b>Not found </b>";
+        } else {
+            var robot = document.createElement('p');
+            robot.innerHTML = "<b>Robot:</b>" + searchedRobot.robotId;
+            body.appendChild(robot);
+
+            var cluster = document.createElement('p');
+            cluster.innerHTML = "<b>Cluster:</b> " + searchedRobot.clusterId;
+            body.appendChild(cluster);
+
+            var ir = document.createElement('p');
+            ir.innerHTML = "<b>IR:</b> " + searchedRobot.inefficiencyRate;
+            body.appendChild(ir);
+        }
+
+        $('#modalBody').append(body);
+
     });
 });
