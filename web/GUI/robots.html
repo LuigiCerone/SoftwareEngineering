@@ -14,17 +14,36 @@
 
 </head>
 <body>
-<nav class="navbar navbar-light bg-faded">
-    <a class="navbar-brand" href="#">Software Engineering Project 2017-18</a>
-    <button class="btn btn-outline-success my-2 my-sm-0"> Cluster</button>
-    <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="text" placeholder="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
-</nav>
-
+<div class="row">
+    <div class="col">
+        <h1> Software Engineering Project 2017-18</h1>
+    </div>
+</div>
+<br><br>
+<div class="row">
+    <div class="col-2">
+        <div><h4><b>Robots: </b></h4><span id="robotsCount"></span></div>
+        <div><h4><b>Clusters: </b></h4><span id="clustersCount"></span></div>
+    </div>
+    <div class="col-2">
+        <button class="btn btn-outline-success my-2 my-sm-0" id="wsStart">Connect</button>
+        <button class="btn btn-outline-success my-2 my-sm-0" id="wsStop">Disconnect</button>
+    </div>
+    <div class="col-2">
+        <span id="status"></span>
+    </div>
+    <div class="col-2">
+        <button class="btn btn-outline-success my-2 my-sm-0">Cluster</button>
+    </div>
+    <div class="col-4">
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+</div>
+<br>
 <div id="container" class="container">
-
 </div>
 
 </body>

@@ -17,6 +17,10 @@ a.row {
     margin: 5px 5px 5px 5px;
 }
 
+.no-border {
+    border: 0px solid black;
+}
+
 .column {
     float: left;
     width: 20%;
@@ -34,4 +38,12 @@ p {
 body {
     font-size: 14px;
     background-color: rgb(255, 200, 255);
+}
+
+.stats {
+    text-align: center;
+}
+
+h4 {
+    display: inline;
 }

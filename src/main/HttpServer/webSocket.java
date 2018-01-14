@@ -1,24 +1,18 @@
 package main.HttpServer;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import main.Model.DAO.RobotDAO;
-import main.Model.Robot;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 import java.net.InetSocketAddress;
 import java.util.HashSet;
-import java.util.LinkedList;
 
 public class webSocket extends WebSocketServer {
-    HashSet<WebSocket> allClients;
-    LinkedList<Robot> robotList;
-    String serializedData = null;
+    private HashSet<WebSocket> allClients;
+    private String serializedData = null;
 
     public webSocket() {
-        super(new InetSocketAddress("127.0.0.1", 9091));
+        super(new InetSocketAddress("127.0.0.1", 9999));
         allClients = new HashSet<WebSocket>();
         System.out.println("Constructor");
     }
@@ -27,9 +21,16 @@ public class webSocket extends WebSocketServer {
         this.serializedData = serializedData;
     }
 
+    public boolean isSomeoneConnected() {
+        if (allClients.size() > 0)
+            return true;
+        else return false;
+    }
 
     @Override
     public void onOpen(WebSocket client, ClientHandshake handshake) {
+        System.out.println("Address: " + client.getRemoteSocketAddress().getAddress().getHostAddress());
+        System.out.println("Port: " + client.getRemoteSocketAddress().getPort());
         allClients.add(client);
         sendJSONToNew(client);
     }
@@ -48,7 +49,9 @@ public class webSocket extends WebSocketServer {
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
-//        System.err.println("an error occured on connection " + conn.getRemoteSocketAddress() + ":" + ex.getMessage());
+        ex.printStackTrace();
+        if (conn.getRemoteSocketAddress() != null)
+            System.err.println("an error occured on connection " + conn.getRemoteSocketAddress() + ":" + ex.getMessage());
     }
 
     @Override
@@ -57,7 +60,7 @@ public class webSocket extends WebSocketServer {
     }
 
     // Update stats.
-    private void sendJSONToAll() {
+    public void sendJSONToAll() {
         for (WebSocket client : allClients)
             client.send(serializedData);
     }
