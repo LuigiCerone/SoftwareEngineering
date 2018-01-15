@@ -47,7 +47,7 @@ public class Robot {
     }
 
 
-    // When a Robot is initialized all the signals are set to true-
+    // When a src.test.Robot is initialized all the signals are set to true-
 //    private void initRobotsSignals() {
 //        TimeZone tz = TimeZone.getTimeZone("UTC");
 //        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
@@ -124,7 +124,7 @@ public class Robot {
 
     @Override
     public String toString() {
-        return "Robot{" +
+        return "src.test.Robot{" +
                 "robotId='" + robotId + '\'' +
                 ", clusterId='" + clusterId + '\'' +
                 ", inefficiencyRate=" + inefficiencyRate +

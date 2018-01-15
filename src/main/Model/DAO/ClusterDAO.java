@@ -192,7 +192,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
 
                 // Is the robot still down?
                 if (cluster.getStartDownTime() != null) {
-                    // Robot is still down.
+                    // src.test.Robot is still down.
                     downTime += Util.differenceBetweenTimestamps(now, cluster.getStartDownTime());
                 }
 

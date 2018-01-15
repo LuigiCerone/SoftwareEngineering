@@ -81,7 +81,7 @@ public class RobotDAO implements RobotDAO_Interface {
             }
 
             if (count == 0) {
-                System.out.println("Robot not found.");
+                System.out.println("src.test.Robot not found.");
                 // The cluster is not present, then we need to initialize it.
                 robot = new Robot();
                 robot.setRobotId(readData.getRobot());
@@ -215,7 +215,7 @@ public class RobotDAO implements RobotDAO_Interface {
 //    @Override
 //    public void processRobotIR() {
 //        Connection connection = database.getConnection();
-//        Queue<Robot> queue = new LinkedList<Robot>();
+//        Queue<src.test.Robot> queue = new LinkedList<src.test.Robot>();
 //
 //        String query = "SELECT id, downTime, startUpTime, startDownTime" +
 //                " FROM robot;";
@@ -225,12 +225,12 @@ public class RobotDAO implements RobotDAO_Interface {
 //            ResultSet resultSet = statement.executeQuery();
 //
 //            while (resultSet.next()) {
-//                Robot robot = new Robot();
+//                src.test.Robot robot = new src.test.Robot();
 //
-//                robot.setRobotId(resultSet.getString(Robot.ROBOT_ID));
-//                robot.setDownTime(resultSet.getInt(Robot.DOWN_TIME));
-//                robot.setStartUpTime(resultSet.getTimestamp(Robot.START_UP_TIME));
-//                robot.setStartDownTime(resultSet.getTimestamp(Robot.START_DOWN_TIME));
+//                robot.setRobotId(resultSet.getString(src.test.Robot.ROBOT_ID));
+//                robot.setDownTime(resultSet.getInt(src.test.Robot.DOWN_TIME));
+//                robot.setStartUpTime(resultSet.getTimestamp(src.test.Robot.START_UP_TIME));
+//                robot.setStartDownTime(resultSet.getTimestamp(src.test.Robot.START_DOWN_TIME));
 //
 //                queue.add(robot);
 //            }
@@ -302,7 +302,7 @@ public class RobotDAO implements RobotDAO_Interface {
         database.closeConnectionToDB(connection);
     }
 
-//    private void calculateIR(Queue<Robot> queue) {
+//    private void calculateIR(Queue<src.test.Robot> queue) {
 //        Timestamp now = new Timestamp(System.currentTimeMillis());
 //        Connection connection = database.getConnection();
 //        PreparedStatement statement = null;
@@ -316,14 +316,14 @@ public class RobotDAO implements RobotDAO_Interface {
 //            statement = connection.prepareStatement(query);
 //
 //            while (!queue.isEmpty()) {
-//                Robot robot = queue.remove();
+//                src.test.Robot robot = queue.remove();
 //
 ////                long upTime = Util.differenceBetweenTimestamps(now, robot.getStartUpTime());
 //                long downTime = robot.getDownTime();
 //
 //                // Is the robot still down?
 //                if (robot.getStartDownTime() != null) {
-//                    // Robot is still down.
+//                    // src.test.Robot is still down.
 //                    downTime += Util.differenceBetweenTimestamps(now, robot.getStartDownTime());
 //                }
 //

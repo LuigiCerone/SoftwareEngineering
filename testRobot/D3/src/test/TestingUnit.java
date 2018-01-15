@@ -1,3 +1,5 @@
+package src.test;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,7 +11,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -22,7 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class TestingUnit extends JFrame {
-    ArrayList<Robot> robots;
+    ArrayList<src.test.Robot> robots;
     Random random = new Random();
     public static int totalRequestsNumber = 0;
     static long startTime = 0;

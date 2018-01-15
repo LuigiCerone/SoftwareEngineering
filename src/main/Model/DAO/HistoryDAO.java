@@ -37,7 +37,7 @@ public class HistoryDAO implements HistoryDAO_Interface {
         database.closeConnectionToDB(connection);
     }
 
-    // type=0 means Robot, type=1 means Cluster.
+    // type=0 means src.test.Robot, type=1 means Cluster.
     @Override
     public void insertPeriodEnd(String deviceId, Timestamp end, boolean status, int type) {
         Connection connection = database.getConnection();
