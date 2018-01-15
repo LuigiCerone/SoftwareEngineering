@@ -160,7 +160,10 @@ public class ControllerIR {
                         upTime += time;
                     else
                         downTime += time;
-                } else if (history.getStart().before(oneHourAgo)) {
+
+                    // Il caso in cui è iniziata più di un'ora fa ed ed è finita dopo Start ma prima di End.
+                } else if (history.getStart().before(oneHourAgo) ) {
+                    // TODO Test this case.
                     // This means that the entry is on the middle.
                     long time = 3600 - downTime - upTime;
                     if (history.getStatus())
