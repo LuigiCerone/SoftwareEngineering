@@ -5,7 +5,7 @@ import main.Model.History;
 
 import java.sql.*;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.HashSet;
 
 public class HistoryDAO implements HistoryDAO_Interface {
     private Database database;
@@ -64,14 +64,14 @@ public class HistoryDAO implements HistoryDAO_Interface {
 
     // If type = 1 then clusters' IR will be calculated, else if type = 0 robots' IR will be.
     @Override
-    public HashMap<String, LinkedList<History>> processIR(Timestamp now, Timestamp oneHourAgo, int type) {
+    public HashMap<String, HashSet<History>> processIR(Timestamp now, Timestamp oneHourAgo, int type) {
         Connection connection = database.getConnection();
 
         String query = "SELECT * FROM history " +
                 "WHERE type=? AND (startTime>= ? OR endTime>=? OR endTime IS NULL)  " +
                 "ORDER BY deviceId;";
 
-        HashMap<String, LinkedList<History>> map = new HashMap<>();
+        HashMap<String, HashSet<History>> map = new HashMap<>();
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -86,9 +86,9 @@ public class HistoryDAO implements HistoryDAO_Interface {
                 String deviceId = resultSet.getString(History.DEVICE_ID);
 
                 if (!map.containsKey(deviceId)) {
-                    map.put(deviceId, new LinkedList<History>());
+                    map.put(deviceId, new HashSet<History>());
                 }
-                LinkedList<History> histories = map.get(deviceId);
+                HashSet<History> histories = map.get(deviceId);
 
                 History history = new History();
                 history.setId(resultSet.getInt(History.HISTORY_ID));

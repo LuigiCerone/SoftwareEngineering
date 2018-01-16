@@ -3,7 +3,7 @@ package main.Model;
 import com.google.gson.annotations.Expose;
 
 import java.sql.Timestamp;
-import java.util.List;
+import java.util.HashSet;
 
 public class Cluster {
     //JSON and Database field names.
@@ -27,26 +27,17 @@ public class Cluster {
     private Timestamp startUpTime;
     private Timestamp startDownTime;
 
-    private List<Robot> robotsList;
+    @Expose
+    private HashSet<Robot> robotsList;
 
     public Cluster() {
-    }
-
-    public Cluster(String clusterId, float inefficiencyRate, int countInefficiencyComponents, int downTime, Timestamp startUpTime, Timestamp startDownTime, String zoneId, List<Robot> robotsList) {
-        this.clusterId = clusterId;
-        this.inefficiencyRate = inefficiencyRate;
-        this.countInefficiencyComponents = countInefficiencyComponents;
-        this.downTime = downTime;
-        this.startUpTime = startUpTime;
-        this.startDownTime = startDownTime;
-        this.zoneId = zoneId;
-        this.robotsList = robotsList;
     }
 
     public Cluster(String clusterId, String zoneId, float ir) {
         this.clusterId = clusterId;
         this.zoneId = zoneId;
         this.inefficiencyRate = ir;
+        this.robotsList = new HashSet<>();
     }
 
 
@@ -104,5 +95,24 @@ public class Cluster {
 
     public void setZoneId(String zoneId) {
         this.zoneId = zoneId;
+    }
+
+    public void addRobot(Robot r) {
+        this.robotsList.add(r);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.clusterId.equals(((Cluster) obj).getClusterId());
+    }
+
+    @Override
+    public String toString() {
+        return " {" +
+                "\"clusterId\":\" " + clusterId + "\"" +
+                ", \"inefficiencyRate\": " + inefficiencyRate +
+                ", \"zoneId\": \"" + zoneId + "\"" +
+                ", \"robotsList\": " + robotsList +
+                "}";
     }
 }

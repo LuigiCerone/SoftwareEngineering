@@ -11,10 +11,7 @@ import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 public class ControllerIR {
 
@@ -26,14 +23,14 @@ public class ControllerIR {
         long downTimeDiffCluster = 0;
 
         // Check if the stored signal is the same of the just received one.
-        if (robot.getRobotSignal(readData.getSignal()) == readData.getValue()) {
-            return;
-        }
+//        if (robot.getRobotSignal(readData.getSignal()) == readData.getValue()) {
+//            return;
+//        }
 
 
         // Modify the robot counter stat.
         int countRobotInefficiencyComponents = robot.updateComponentState(readData.getValue());
-        System.out.println(countRobotInefficiencyComponents);
+//        System.out.println(countRobotInefficiencyComponents);
 
         int countClusterInefficiencyComponents = cluster.getCountInefficiencyComponents();
 
@@ -114,29 +111,31 @@ public class ControllerIR {
         System.out.println("Timestamps are oneHourAgo: " + oneHourAgo.toString() + " now: " + now.toString());
 
         // Robots.
-        HashMap<String, LinkedList<History>> robots = historyDAO.processIR(now, oneHourAgo, 0);
+        HashMap<String, HashSet<History>> robots = historyDAO.processIR(now, oneHourAgo, 0);
         HashMap<String, Float> robotsIR = computeIR(robots, now, oneHourAgo, 0);
         new RobotDAO().updateIR(robotsIR);
 
         // Clusters.
-        HashMap<String, LinkedList<History>> clusters = historyDAO.processIR(now, oneHourAgo, 1);
+        HashMap<String, HashSet<History>> clusters = historyDAO.processIR(now, oneHourAgo, 1);
         HashMap<String, Float> clustersIR = computeIR(clusters, now, oneHourAgo, 1);
         new ClusterDAO().updateIR(clustersIR);
 //        robotDAO.processRobotIR();
 //        clusterDAO.processClusterIR();
     }
 
-    private HashMap<String, Float> computeIR(HashMap<String, LinkedList<History>> map, Timestamp now, Timestamp oneHourAgo, int type) {
+    private HashMap<String, Float> computeIR(HashMap<String, HashSet<History>> map, Timestamp now, Timestamp oneHourAgo, int type) {
         HashMap<String, Float> rates = new HashMap<>();
 
-        for (Map.Entry<String, LinkedList<History>> entry : map.entrySet()) {
-            LinkedList<History> histories = entry.getValue();
+        for (Map.Entry<String, HashSet<History>> entry : map.entrySet()) {
+            HashSet<History> histories = entry.getValue();
             String deviceId = entry.getKey();
 
             long upTime = 0;
             long downTime = 0;
 
-            Collections.sort(histories, new History.HistoryComparator()); // Descending order based on history.ID .
+            ArrayList<History> list = new ArrayList<>(histories);
+
+            Collections.sort(list, new History.HistoryComparator()); // Descending order based on history.ID .
             for (History history : histories) {
                 if (history.getEnd() == null) {
                     long time = Util.differenceBetweenTimestamps(now, history.getStart());

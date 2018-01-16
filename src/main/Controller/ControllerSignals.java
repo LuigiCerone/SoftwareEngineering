@@ -3,12 +3,8 @@ package main.Controller;
 import main.Model.Cluster;
 import main.Model.DAO.ClusterDAO;
 import main.Model.DAO.RobotDAO;
-import main.Model.DAO.SignalDAO;
 import main.Model.ReadData;
 import main.Model.Robot;
-import main.Model.Signal;
-
-import java.util.HashMap;
 
 
 public class ControllerSignals implements Runnable {
@@ -29,10 +25,10 @@ public class ControllerSignals implements Runnable {
         RobotDAO robotDAO = new RobotDAO();
         Robot robot = robotDAO.findRobotByIdOrInsert(readData);
 
-        HashMap<Integer, Boolean> robotSignals = null;
+//        HashMap<Integer, Boolean> robotSignals = null;
 //            // Search these data in the DB.
-        robotSignals = new SignalDAO().getAllSignalsForRobot(robot.getRobotId());
-        robot.setRobotSignals(robotSignals);
+//        robotSignals = new SignalDAO().getAllSignalsForRobot(robot.getRobotId());
+//        robot.setRobotSignals(robotSignals);
 
         // TODO Check if the signal value is already set.
         new ControllerIR().updateComponentState(robot, robotDAO, readData, cluster, clusterDAO);

@@ -1,4 +1,3 @@
-package src.test;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +22,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class TestingUnit extends JFrame {
-    ArrayList<src.test.Robot> robots;
+    ArrayList<Robot> robots;
     Random random = new Random();
     public static int totalRequestsNumber = 0;
     static long startTime = 0;
@@ -48,9 +47,7 @@ public class TestingUnit extends JFrame {
         frame.setResizable(false);
 
         Container frameContentPane = frame.getContentPane();
-
         frameContentPane.setLayout(new BoxLayout(frameContentPane, BoxLayout.Y_AXIS));
-
 
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new FlowLayout());
@@ -81,11 +78,10 @@ public class TestingUnit extends JFrame {
         logPanel.setLayout(new FlowLayout());
         JLabel infoLabel = new JLabel("Info: ");
         logPanel.add(infoLabel);
-
         logPanel.add(stats);
-
         frameContentPane.add(logPanel);
 
+        // ==================================================================
 
 //        frame.setContentPane(new StartTest().panelMain);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -112,7 +108,10 @@ public class TestingUnit extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 long endTime = System.currentTimeMillis();
 //                stats.setText("AAA");
+                System.out.println("Requests: " + totalRequestsNumber);
+
                 stats.setText(" " + totalRequestsNumber + " requests made in " + (endTime - startTime) + " ms.");
+
 //                System.exit(0);
                 userWants = false;
             }
@@ -122,11 +121,11 @@ public class TestingUnit extends JFrame {
     private void run(String ipAddressText, String robotNumber, String pauseSize) {
         URL url = null;
         try {
-            url = new URL("http://" + ipAddressText + ":9000/robots");
+            url = new URL("http://" + ipAddressText);
         } catch (MalformedURLException e) {
             e.printStackTrace();
             try {
-                url = new URL("http://127.0.0.1:9000/robots");
+                url = new URL("http://127.0.0.1");
             } catch (MalformedURLException e1) {
                 e1.printStackTrace();
             }

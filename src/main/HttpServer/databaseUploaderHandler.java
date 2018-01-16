@@ -1,15 +1,13 @@
 package main.HttpServer;
 
-import main.Controller.ControllerSignals;
-import main.Database.Database;
-import main.HttpServer.HttpServerInit;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-
-import java.io.*;
-import java.net.HttpURLConnection;
-
+import main.Controller.ControllerSignals;
 import org.apache.commons.io.IOUtils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 
 public class databaseUploaderHandler implements HttpHandler {
     String value = null;
@@ -19,7 +17,7 @@ public class databaseUploaderHandler implements HttpHandler {
         if (exchange.getRequestMethod().equalsIgnoreCase("POST")) {
             InputStream is = exchange.getRequestBody();
             value = IOUtils.toString(is, "UTF-8");
-            System.out.println("Just received a request: " + value);
+//            System.out.println("Just received a request: " + value);
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             exchange.close();
 

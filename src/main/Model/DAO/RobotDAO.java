@@ -1,17 +1,15 @@
 package main.Model.DAO;
 
 import main.Database.Database;
-import main.Main.Util;
-import main.Model.History;
+import main.Model.Cluster;
 import main.Model.ReadData;
 import main.Model.Robot;
 
-import java.math.BigDecimal;
 import java.sql.*;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class RobotDAO implements RobotDAO_Interface {
     private Database database;
@@ -81,7 +79,7 @@ public class RobotDAO implements RobotDAO_Interface {
             }
 
             if (count == 0) {
-                System.out.println("src.test.Robot not found.");
+//                System.out.println("src.test.Robot not found.");
                 // The cluster is not present, then we need to initialize it.
                 robot = new Robot();
                 robot.setRobotId(readData.getRobot());
@@ -89,7 +87,12 @@ public class RobotDAO implements RobotDAO_Interface {
                 robot.setInefficiencyRate((float) 0.0);
                 robot.setCountInefficiencyComponents(0);
                 robot.setDownTime(0);
-                robot.setStartUpTime(new Timestamp(System.currentTimeMillis()));
+
+                Timestamp now = new Timestamp(System.currentTimeMillis());
+                if (now.after(readData.getTimestamp()))
+                    robot.setStartUpTime(readData.getTimestamp());
+                else
+                    robot.setStartUpTime(now);
                 // Also an entry in the table history has to be created.
                 new HistoryDAO().insertPeriodStart(robot.getRobotId(), robot.getStartUpTime(), true, 0);
 
@@ -270,6 +273,32 @@ public class RobotDAO implements RobotDAO_Interface {
         return robotLinkedList;
     }
 
+    // TODO Here
+    public HashMap<String, Robot> getAllRobotsMap() {
+        Connection connection = database.getConnection();
+        PreparedStatement preparedStatement = null;
+
+        String query = "SELECT id, clusterId, ir FROM robot ORDER BY id;";
+
+        HashMap<String, Robot> map = new HashMap<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                map.put(resultSet.getString(Robot.ROBOT_ID),
+                        new Robot(resultSet.getString(Robot.ROBOT_ID),
+                                resultSet.getString(Robot.CLUSTER_ID),
+                                resultSet.getFloat(Robot.INEFFICIENCY_RATE)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        database.closeConnectionToDB(connection);
+        return map;
+    }
+
     @Override
     public void updateIR(HashMap<String, Float> robotsIR) {
         Connection connection = database.getConnection();
@@ -302,7 +331,7 @@ public class RobotDAO implements RobotDAO_Interface {
         database.closeConnectionToDB(connection);
     }
 
-//    private void calculateIR(Queue<src.test.Robot> queue) {
+    //    private void calculateIR(Queue<src.test.Robot> queue) {
 //        Timestamp now = new Timestamp(System.currentTimeMillis());
 //        Connection connection = database.getConnection();
 //        PreparedStatement statement = null;
@@ -350,4 +379,29 @@ public class RobotDAO implements RobotDAO_Interface {
 //        }
 //        database.closeConnectionToDB(connection);
 //    }
+    public void populateWithRobots(HashMap<String, Cluster> clusters) {
+        Connection connection = database.getConnection();
+
+        String query = "SELECT id, clusterId, ir " +
+                " FROM robot " +
+                " GROUP BY clusterId ORDER BY clusterId;";
+
+        // Il primo string è il cluster Id, il secondo è il robotId
+//        HashMap<String, HashMap<String, Robot>> map;
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                Robot robot = new Robot(
+                        resultSet.getString(Robot.ROBOT_ID),
+                        resultSet.getString(Robot.CLUSTER_ID),
+                        resultSet.getFloat(Robot.INEFFICIENCY_RATE));
+                clusters.get(resultSet.getString(Robot.CLUSTER_ID)).addRobot(robot);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -85,4 +85,10 @@ public class History {
             return -1;
         }
     }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        return id == ((History) obj).getId();
+    }
 }

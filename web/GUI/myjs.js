@@ -40,19 +40,26 @@ function onOpen(data) {
 }
 
 function onMessage(evt) {
-    // console.log("OnMessage");
-    var data = JSON.parse(evt.data);
-    robots = JSON.parse(data.robots);
-    var clusters = JSON.parse(data.clusters);
+    var zones = JSON.parse(evt.data);
+
+    // console.log(evt.data);
+    // debugger;
+
+
+    // console.log(zones);
+    // robots = JSON.parse(data.robots);
+    // var clusters = JSON.parse(data.clusters);
     // robots.forEach(function (value) {
     //     console.log(value);
     // });
     // console.log("Length: " + robots.length);
-    $('#robotsCount').text(robots.length);
-    $('#clustersCount').text(clusters.length);
+    // $('#robotsCount').text(robots.length);
+    // $('#clustersCount').text(clusters.length);
+    debugger;
 
-    processRobots(robots);
-    processClusters(clusters);
+    processZones(zones);
+    // processRobots(robots);
+    // processClusters(clusters);
     // console.log("Received data: " + received_msg);
     setStatus();
 
@@ -78,6 +85,40 @@ function createGroupedArray(arr, chunkSize) {
     }
     return groups;
 }
+
+function processZones(zones) {
+    console.log(zones);
+    var array = Object.values(zones);
+
+    var chunks = createGroupedArray(array, 5);
+
+    var container = $('#zoneContainer');
+    container.empty();
+
+    for (var i = 0; i < chunks.length; i++) {
+        var row = document.createElement('div');
+        row.classList.add('row');
+
+        chunks[i].forEach(function (data) {
+            // console.log(data);
+            var col = document.createElement('div');
+            col.classList.add('col');
+            col.dataset.id = data.id;
+
+            var zone = document.createElement('p');
+            zone.innerHTML = "<b>Zone:</b>" + data.id;
+            col.appendChild(zone);
+
+            var clusterLength = document.createElement('p');
+            clusterLength.innerHTML = "<b>Number of clusters:</b> " + data.clustersList.length;
+            col.appendChild(clusterLength);
+
+            row.appendChild(col);
+        });
+        container.append(row);
+    }
+}
+
 
 function processRobots(array) {
     var chunks = createGroupedArray(array, 5);
@@ -209,6 +250,11 @@ $(function () {
         if (ws != null && (ws.readyState == 2 || ws.readyState == 3))
             return;
         disconnectWS();
+    });
+
+    $('body').on('click', 'div.col', function() {
+        var zoneId = $(this).attr('data-id');
+        console.log(zoneId);
     });
 
     $('#toggle').on('click', function () {

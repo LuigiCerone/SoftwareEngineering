@@ -4,7 +4,6 @@ import main.Database.Database;
 import main.Main.Util;
 import main.Model.Cluster;
 import main.Model.ReadData;
-import main.Model.Robot;
 
 import java.sql.*;
 import java.util.HashMap;
@@ -71,7 +70,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
             }
 
             if (count == 0) {
-                System.out.println("Cluster not found.");
+//                System.out.println("Cluster not found.");
                 // The cluster is not present, then we need to initialize it.
                 cluster = new Cluster();
                 cluster.setClusterId(readData.getCluster());
@@ -79,7 +78,13 @@ public class ClusterDAO implements ClusterDAO_Interface {
                 cluster.setInefficiencyRate((float) 0.0);
                 cluster.setCountInefficiencyComponents(0);
                 cluster.setDownTime(0);
-                cluster.setStartUpTime(new Timestamp(System.currentTimeMillis()));
+
+                Timestamp now = new Timestamp(System.currentTimeMillis());
+                if (now.after(readData.getTimestamp()))
+                    cluster.setStartUpTime(readData.getTimestamp());
+                else
+                    cluster.setStartUpTime(now);
+
                 this.insert(cluster, connection);
 
                 // Also an entry in the table history has to be created.
@@ -275,5 +280,36 @@ public class ClusterDAO implements ClusterDAO_Interface {
         database.closeConnectionToDB(connection);
 
         return clusterLinkedList;
+    }
+
+
+    public HashMap<String, Cluster> getAllClusterMap() {
+        Connection connection = database.getConnection();
+
+        String query = "SELECT id, zoneId, ir FROM cluster GROUP BY id ORDER BY id;";
+        HashMap<String, Cluster> clusters = new HashMap<>();
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                clusters.put(resultSet.getString(Cluster.CLUSTER_ID),
+                        new Cluster(
+                                resultSet.getString(Cluster.CLUSTER_ID),
+                                resultSet.getString(Cluster.ZONE_ID),
+                                resultSet.getFloat(Cluster.INEFFICIENCY_RATE)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        database.closeConnectionToDB(connection);
+
+//
+//        for(Map.Entry<String, Cluster> entry : map.entrySet()){
+//            entry.getValue().addRobot();
+//        }
+
+        return clusters;
     }
 }

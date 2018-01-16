@@ -1,14 +1,20 @@
 package main.Model;
 
-import java.util.List;
+import com.google.gson.annotations.Expose;
+
+import java.util.HashSet;
 
 public class Zone {
-    private String id;
-    private List<Cluster> clustersList;
+    public static String ZONE_ID = "zoneId";
 
-    public Zone(String id, List<Cluster> clustersList) {
+    @Expose
+    private String id;
+    @Expose
+    private HashSet<Cluster> clustersList;
+
+    public Zone(String id) {
         this.id = id;
-        this.clustersList = clustersList;
+        this.clustersList = new HashSet<>();
     }
 
     public String getId() {
@@ -19,11 +25,19 @@ public class Zone {
         this.id = id;
     }
 
-    public List<Cluster> getClustersList() {
+    public HashSet<Cluster> getClustersList() {
         return clustersList;
     }
 
-    public void setClustersList(List<Cluster> clustersList) {
-        this.clustersList = clustersList;
+    public void addCluster(Cluster cluster) {
+        this.clustersList.add(cluster);
+    }
+
+    @Override
+    public String toString() {
+        return " {" +
+                "\"id\": \"" + id + "\"" +
+                ", \"clustersList\": " + clustersList +
+                "}";
     }
 }

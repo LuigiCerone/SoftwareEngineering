@@ -1,4 +1,3 @@
-package src.test;
 
 public class Robot {
     private String robotId;

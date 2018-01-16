@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class HttpServerInit {
-    private static ExecutorService pool = Executors.newFixedThreadPool(16);
+    private static ExecutorService pool = Executors.newFixedThreadPool(32);
 
     public HttpServerInit() throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(9000), 0);

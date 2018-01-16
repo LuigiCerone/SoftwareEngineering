@@ -7,10 +7,10 @@ import main.HttpServer.webSocket;
 import main.Model.Cluster;
 import main.Model.DAO.ClusterDAO;
 import main.Model.DAO.RobotDAO;
-import main.Model.Robot;
-import org.java_websocket.WebSocketImpl;
-import org.json.JSONObject;
+import main.Model.DAO.ZoneDAO;
+import main.Model.Zone;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class DashboardIRThread implements Runnable {
@@ -19,7 +19,10 @@ public class DashboardIRThread implements Runnable {
 
     public DashboardIRThread() {
         GsonBuilder b = new GsonBuilder();
-        gson = b.excludeFieldsWithoutExposeAnnotation().create();
+        gson = b
+                .excludeFieldsWithoutExposeAnnotation()
+                .enableComplexMapKeySerialization()
+                .create();
 
 
 //        WebSocketImpl.DEBUG = true;
@@ -39,21 +42,28 @@ public class DashboardIRThread implements Runnable {
             // Update IR.
             new ControllerIR().calculateIR();
 
-            LinkedList<Robot> allRobots = new LinkedList<>();
-            allRobots = getAllRobots();
+            HashMap<String, Cluster> clusters = new ClusterDAO().getAllClusterMap();
+            new RobotDAO().populateWithRobots(clusters);
+            HashMap<String, Zone> zones = new ZoneDAO().populateWithZones(clusters);
 
-            LinkedList<Cluster> allClusters = new LinkedList<>();
-            allClusters = getAllClusters();
+//            LinkedList<Robot> allRobots = (LinkedList<Robot>) new RobotDAO().getAllRobots();
+//
+//            LinkedList<Cluster> allClusters = new LinkedList<>();
+//            allClusters = getAllClusters();
+//
+//            JSONObject jsonObject = new JSONObject();
+//
+//            String robots = gson.toJson(allRobots);
+//            jsonObject.put("robots", robots);
 
-            JSONObject jsonObject = new JSONObject();
+//            String clusters = gson.toJson(allClusters);
+//            jsonObject.put("clusters", clusters);
+//
+//            HashMap<String, Robot> map = new HashMap<>();
 
-            String robots = gson.toJson(allRobots);
-            jsonObject.put("robots", robots);
+//            webSocket.setData(jsonObject.toString());
 
-            String clusters = gson.toJson(allClusters);
-            jsonObject.put("clusters", clusters);
-
-            webSocket.setData(jsonObject.toString());
+            webSocket.setData(gson.toJson(zones));
             webSocket.sendJSONToAll();
 //            }
 
@@ -69,10 +79,5 @@ public class DashboardIRThread implements Runnable {
 
     private LinkedList<Cluster> getAllClusters() {
         return (LinkedList<Cluster>) new ClusterDAO().getAllClusters();
-    }
-
-    private LinkedList<Robot> getAllRobots() {
-        // Get all the information related to the robots here and update the robotList list.
-        return (LinkedList<Robot>) new RobotDAO().getAllRobots();
     }
 }

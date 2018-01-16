@@ -29,8 +29,8 @@ public class webSocket extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket client, ClientHandshake handshake) {
-        System.out.println("Address: " + client.getRemoteSocketAddress().getAddress().getHostAddress());
-        System.out.println("Port: " + client.getRemoteSocketAddress().getPort());
+//        System.out.println("Address: " + client.getRemoteSocketAddress().getAddress().getHostAddress());
+//        System.out.println("Port: " + client.getRemoteSocketAddress().getPort());
         allClients.add(client);
         sendJSONToNew(client);
     }

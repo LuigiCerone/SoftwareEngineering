@@ -3,7 +3,6 @@ package main.Model;
 import com.google.gson.annotations.Expose;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class Robot {
@@ -122,26 +121,31 @@ public class Robot {
         this.startDownTime = startDownTime;
     }
 
-    @Override
-    public String toString() {
-        return "src.test.Robot{" +
-                "robotId='" + robotId + '\'' +
-                ", clusterId='" + clusterId + '\'' +
-                ", inefficiencyRate=" + inefficiencyRate +
-                '}';
-    }
-
     public int updateComponentState(boolean value) {
         // The reading contains a down signal from this robot.
         if (!value) {
             this.countInefficiencyComponents--;
-            System.out.println("A component of this robot is not working.");
+//            System.out.println("A component of this robot is not working.");
         } else if (value) {
             this.countInefficiencyComponents++;
-            System.out.println("A component of this robot is working.");
+//            System.out.println("A component of this robot is working.");
         } else {
-            System.out.println("Something strange has just happened.");
+//            System.out.println("Something strange has just happened.");
         }
         return this.countInefficiencyComponents;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Robot a = (Robot) obj;
+        return this.robotId.equals(a.getRobotId());
+    }
+
+    @Override
+    public String toString() {
+        return " {" +
+                "\"robotId\": \"" + robotId + "\"" +
+                ", \"inefficiencyRate\": " + inefficiencyRate +
+                "}";
     }
 }
