@@ -1,7 +1,7 @@
 console.log("Ok");
 // Let us open a web socket
 var ws, display = 0;
-var robots;
+var zones;
 
 // display == 0 --> display Robots (by default).
 // display == 1 --> display Clusters.
@@ -40,27 +40,8 @@ function onOpen(data) {
 }
 
 function onMessage(evt) {
-    var zones = JSON.parse(evt.data);
-
-    // console.log(evt.data);
-    // debugger;
-
-
-    // console.log(zones);
-    // robots = JSON.parse(data.robots);
-    // var clusters = JSON.parse(data.clusters);
-    // robots.forEach(function (value) {
-    //     console.log(value);
-    // });
-    // console.log("Length: " + robots.length);
-    // $('#robotsCount').text(robots.length);
-    // $('#clustersCount').text(clusters.length);
-    debugger;
-
+    zones = Object.values(JSON.parse(evt.data));
     processZones(zones);
-    // processRobots(robots);
-    // processClusters(clusters);
-    // console.log("Received data: " + received_msg);
     setStatus();
 
     displaySelected();
@@ -88,81 +69,126 @@ function createGroupedArray(arr, chunkSize) {
 
 function processZones(zones) {
     console.log(zones);
-    var array = Object.values(zones);
-
-    var chunks = createGroupedArray(array, 5);
-
+    // var chunks = createGroupedArray(zones, 5);
     var container = $('#zoneContainer');
     container.empty();
-
-    for (var i = 0; i < chunks.length; i++) {
+    zones.forEach(function (zone) {
+        // Row is the container of a single zone.
         var row = document.createElement('div');
         row.classList.add('row');
 
-        chunks[i].forEach(function (data) {
-            // console.log(data);
-            var col = document.createElement('div');
-            col.classList.add('col');
-            col.dataset.id = data.id;
+        // console.log(data);
+        // Col is a single zone.
+        var col = document.createElement('div');
+        col.classList.add('col');
+        col.id = zone.id;
 
-            var zone = document.createElement('p');
-            zone.innerHTML = "<b>Zone:</b>" + data.id;
-            col.appendChild(zone);
+        var zoneId = document.createElement('p');
+        zoneId.innerHTML = "<b>Zone:</b>" + zone.id;
+        col.appendChild(zoneId);
 
-            var clusterLength = document.createElement('p');
-            clusterLength.innerHTML = "<b>Number of clusters:</b> " + data.clustersList.length;
-            col.appendChild(clusterLength);
-
-            row.appendChild(col);
-        });
+        var clusterLength = document.createElement('p');
+        clusterLength.innerHTML = "<b>Number of clusters:</b> " + zone.clustersList.length;
+        col.appendChild(clusterLength);
+        row.appendChild(col);
         container.append(row);
-    }
+
+        // Now the iterate over the clustersList.
+        var chunks = createGroupedArray(zone.clustersList, 4);
+
+        // We create a container in the single zone.
+        var clusterContainer = document.createElement('div');
+        clusterContainer.classList.add('container');
+        col.appendChild(clusterContainer);
+        $(col).find('.container').empty();
+
+        for (var i = 0; i < chunks.length; i++) {
+            var clusterRow = document.createElement('div');
+            clusterRow.classList.add('row');
+
+            chunks[i].forEach(function (cluster) {
+                var clusterCol = document.createElement('div');
+                clusterCol.classList.add('col-3');
+                var innerCol = document.createElement('div');
+                innerCol.classList.add('inner');
+                clusterCol.appendChild(innerCol);
+
+                var clusterId = document.createElement('p');
+                clusterId.innerHTML = "<b>Cluster:</b>" + cluster.clusterId;
+                innerCol.appendChild(clusterId);
+
+                var ir = document.createElement('p');
+                ir.innerHTML = "<b>IR:</b> " + cluster.inefficiencyRate;
+                innerCol.appendChild(ir);
+
+                var robotsNumber = document.createElement('p');
+                robotsNumber.innerHTML = "<b>Number of robots:</b> " + cluster.robotsList.length;
+                innerCol.appendChild(robotsNumber);
+
+                if (cluster.inefficiencyRate >= 40.0) {
+                    innerCol.classList.add('bg-danger');
+                } else
+                    innerCol.classList.add('bg-success');
+
+                clusterRow.appendChild(clusterCol);
+            });
+            clusterContainer.append(clusterRow);
+        }
+    });
 }
 
 
-function processRobots(array) {
+// function processRobots(array) {
+//     var chunks = createGroupedArray(array, 5);
+//
+//     var container = $('#robotContainer');
+//     container.empty();
+//
+//
+//     for (var i = 0; i < chunks.length; i++) {
+//         var row = document.createElement('div');
+//         row.classList.add('row');
+//
+//         chunks[i].forEach(function (data) {
+//             var col = document.createElement('div');
+//             col.classList.add('col');
+//
+//             var robot = document.createElement('p');
+//             robot.innerHTML = "<b>Robot:</b>" + data.robotId;
+//             col.appendChild(robot);
+//
+//             var cluster = document.createElement('p');
+//             cluster.innerHTML = "<b>Cluster:</b> " + data.clusterId;
+//             col.appendChild(cluster);
+//
+//             var ir = document.createElement('p');
+//             ir.innerHTML = "<b>IR:</b> " + data.inefficiencyRate;
+//             col.appendChild(ir);
+//
+//             if (data.inefficiencyRate >= 40.0) {
+//                 col.classList.add('bg-danger');
+//             } else
+//                 col.classList.add('bg-success');
+//
+//             row.appendChild(col);
+//         });
+//         container.append(row);
+//     }
+// }
+
+function processClusters(array, zoneId) {
     var chunks = createGroupedArray(array, 5);
 
-    var container = $('#robotContainer');
-    container.empty();
+    // var container = document.createElement('div');
+    // container.id = ""
+    var container = $("#" + zoneId).parent();
+    var div = document.createElement('div');
+    div.classList.add('container');
+    container.find('.container').empty();
 
+    // var container = $(".col").find("[data-id='" + zoneId + "']").parent();
 
-    for (var i = 0; i < chunks.length; i++) {
-        var row = document.createElement('div');
-        row.classList.add('row');
-
-        chunks[i].forEach(function (data) {
-            var col = document.createElement('div');
-            col.classList.add('col');
-
-            var robot = document.createElement('p');
-            robot.innerHTML = "<b>Robot:</b>" + data.robotId;
-            col.appendChild(robot);
-
-            var cluster = document.createElement('p');
-            cluster.innerHTML = "<b>Cluster:</b> " + data.clusterId;
-            col.appendChild(cluster);
-
-            var ir = document.createElement('p');
-            ir.innerHTML = "<b>IR:</b> " + data.inefficiencyRate;
-            col.appendChild(ir);
-
-            if (data.inefficiencyRate >= 40.0) {
-                col.classList.add('bg-danger');
-            } else
-                col.classList.add('bg-success');
-
-            row.appendChild(col);
-        });
-        container.append(row);
-    }
-}
-
-function processClusters(array) {
-    var chunks = createGroupedArray(array, 5);
-
-    var container = $('#clusterContainer');
-    container.empty();
+    // var container = $('#robotContainer');
 
     for (var i = 0; i < chunks.length; i++) {
         var row = document.createElement('div');
@@ -176,13 +202,13 @@ function processClusters(array) {
             cluster.innerHTML = "<b>Cluster:</b>" + data.clusterId;
             col.appendChild(cluster);
 
-            var zone = document.createElement('p');
-            zone.innerHTML = "<b>Zone:</b> " + data.zoneId;
-            col.appendChild(zone);
-
             var ir = document.createElement('p');
             ir.innerHTML = "<b>IR:</b> " + data.inefficiencyRate;
             col.appendChild(ir);
+
+            var robotsNumber = document.createElement('p');
+            robotsNumber.innerHTML = "<b>Number of robots:</b> " + data.robotsList.length;
+            col.appendChild(robotsNumber);
 
             if (data.inefficiencyRate >= 40.0) {
                 col.classList.add('bg-danger');
@@ -191,8 +217,13 @@ function processClusters(array) {
 
             row.appendChild(col);
         });
-        container.append(row);
+        div.append(row);
+        container.append(div);
+
+        // var parent = div.parentNode;
+        // div.append(container);
     }
+    // parent.append(container);
 }
 
 // CONNECTING	0	The connection is not yet open.
@@ -252,9 +283,18 @@ $(function () {
         disconnectWS();
     });
 
-    $('body').on('click', 'div.col', function() {
-        var zoneId = $(this).attr('data-id');
-        console.log(zoneId);
+    $('body').on('click', 'div.col', function () {
+        var zoneId = $(this).attr('id');
+
+        // console.log(zoneId);
+        // var selectedZone = zones.find(function (zone) {
+        //     if (zone.id === zoneId)
+        //         return true;
+        // });
+        // var clusterList = selectedZone.clustersList;
+        // // debugger;
+        // console.log(clusterList);
+        // processClusters(clusterList, zoneId);
     });
 
     $('#toggle').on('click', function () {

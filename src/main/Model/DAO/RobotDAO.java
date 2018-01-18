@@ -384,7 +384,7 @@ public class RobotDAO implements RobotDAO_Interface {
 
         String query = "SELECT id, clusterId, ir " +
                 " FROM robot " +
-                " GROUP BY clusterId ORDER BY clusterId;";
+                " ORDER BY clusterId;";
 
         // Il primo string è il cluster Id, il secondo è il robotId
 //        HashMap<String, HashMap<String, Robot>> map;

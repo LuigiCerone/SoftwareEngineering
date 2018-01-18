@@ -18,7 +18,7 @@ public class ZoneDAO implements ZoneDAO_Interface {
     public HashMap<String, Zone> populateWithZones(HashMap<String, Cluster> clusters) {
         Connection connection = database.getConnection();
 
-        String query = "SELECT * FROM cluster GROUP BY zoneId ORDER BY zoneId; ";
+        String query = "SELECT * FROM cluster ORDER BY zoneId; ";
 
         HashMap<String, Zone> zones = new HashMap<>();
 

@@ -147,7 +147,7 @@ public class TestingUnit extends JFrame {
         startTime = System.currentTimeMillis();
 //        Runtime.getRuntime().addShutdownHook(new shutDownHook(startProgram));
 
-        ExecutorService executor = Executors.newFixedThreadPool(4);//creating a pool of 4 threads
+        ExecutorService executor = Executors.newFixedThreadPool(8);//creating a pool of 4 threads
 
         while (userWants) {
 

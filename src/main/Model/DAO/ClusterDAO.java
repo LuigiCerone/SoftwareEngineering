@@ -286,7 +286,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
     public HashMap<String, Cluster> getAllClusterMap() {
         Connection connection = database.getConnection();
 
-        String query = "SELECT id, zoneId, ir FROM cluster GROUP BY id ORDER BY id;";
+        String query = "SELECT id, zoneId, ir FROM cluster ORDER BY id;";
         HashMap<String, Cluster> clusters = new HashMap<>();
 
         try {

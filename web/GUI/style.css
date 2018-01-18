@@ -11,19 +11,19 @@ a.row {
   display: inline-block;
 }*/
 
-.col {
+.col, .col-3 {
+
+}
+
+.inner, .col {
     padding: 15px 10px 15px 10px;
     border: 1px solid black;
     margin: 5px 5px 5px 5px;
+    overflow: hidden;
 }
 
 .no-border {
     border: 0px solid black;
-}
-
-.column {
-    float: left;
-    width: 20%;
 }
 
 #app {

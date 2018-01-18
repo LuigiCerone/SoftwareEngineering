@@ -31,7 +31,7 @@ public class Database {
             config.setJdbcUrl(URL);
             config.setUsername(USER);
             config.setPassword(PSW);
-            config.setMaximumPoolSize(300);
+            config.setMaximumPoolSize(15);
 
             datasource = new HikariDataSource(config);
         }
