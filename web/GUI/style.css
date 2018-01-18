@@ -1,29 +1,26 @@
-a.row {
-    /*display: inline-block;*/
-
-    /*border: 1px solid black;*/
-    text-align: center;
-    height: auto;
-    overflow: hidden;
-}
-
-/*div .row{
-  display: inline-block;
-}*/
-
 .col, .col-3 {
-
+    padding-right: 3px;
+    padding-left: 3px;
 }
 
 .inner, .col {
-    padding: 15px 10px 15px 10px;
+    padding: auto;
     border: 1px solid black;
-    margin: 5px 5px 5px 5px;
-    overflow: hidden;
+    margin: 5px 2px 5px 2px;
+    overflow: auto;
+}
+
+.inner{
+    box-shadow: 2px 2px 1px 2px #888888;
 }
 
 .no-border {
     border: 0px solid black;
+}
+
+.bg-danger:hover{
+    /*background-color: #d9191c;*/
+    background-color: black;
 }
 
 #app {
@@ -37,7 +34,7 @@ p {
 
 body {
     font-size: 14px;
-    background-color: rgb(255, 200, 255);
+    background-color: #06d3ff;
     text-align: center;
 }
 

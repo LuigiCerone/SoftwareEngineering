@@ -14,28 +14,20 @@
 
 </head>
 <body>
-<div class="row">
-    <div class="col">
-        <h1> Software Engineering Project 2017-18</h1>
-    </div>
-</div>
+<h1> Software Engineering Project 2017-18</h1>
 <br><br>
 <div class="row">
-    <div class="col-2">
-        <div><h6><b>Robots: </b></h6><span id="robotsCount"></span></div>
-        <div><h6><b>Clusters: </b></h6><span id="clustersCount"></span></div>
-    </div>
-    <div class="col-2">
+    <div class="col no-border">
         <button class="btn btn-outline-success my-2 my-sm-0" id="wsStart">Connect</button>
         <button class="btn btn-outline-success my-2 my-sm-0" id="wsStop">Disconnect</button>
     </div>
-    <div class="col-2">
+    <div class="col no-border">
         <b><span id="status"></span></b>
     </div>
-    <div class="col-2">
-        <button id="toggle" class="btn btn-outline-success my-2 my-sm-0">Go to cluster</button>
+    <div class="col no-border">
+        <button id="toggle" class="btn btn-outline-success my-2 my-sm-0" disabled>Go back</button>
     </div>
-    <div class="col-4">
+    <div class="col no-border">
         <form class="form-inline my-2 my-lg-0">
             <input id="input_id" class="form-control mr-sm-2" type="text" placeholder="Search">
             <button id="search" class="btn btn-outline-success my-2 my-sm-0" type="submit" data-toggle="modal"
@@ -49,8 +41,6 @@
 </div>
 <div id="robotContainer" class="container">
 </div>
-<div id="clusterContainer" class="container">
-</div>
 
 <!-- Modal -->
 <div class="modal fade" id="robotModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -58,7 +48,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">src.test.Robot info</h5>
+                <h5 class="modal-title">Robot info</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

@@ -111,6 +111,9 @@ function processZones(zones) {
                 clusterCol.classList.add('col-3');
                 var innerCol = document.createElement('div');
                 innerCol.classList.add('inner');
+                innerCol.dataset.clusterId = cluster.clusterId;
+                innerCol.dataset.zoneId = cluster.zoneId;
+
                 clusterCol.appendChild(innerCol);
 
                 var clusterId = document.createElement('p');
@@ -138,92 +141,82 @@ function processZones(zones) {
 }
 
 
-// function processRobots(array) {
-//     var chunks = createGroupedArray(array, 5);
-//
-//     var container = $('#robotContainer');
-//     container.empty();
-//
-//
-//     for (var i = 0; i < chunks.length; i++) {
-//         var row = document.createElement('div');
-//         row.classList.add('row');
-//
-//         chunks[i].forEach(function (data) {
-//             var col = document.createElement('div');
-//             col.classList.add('col');
-//
-//             var robot = document.createElement('p');
-//             robot.innerHTML = "<b>Robot:</b>" + data.robotId;
-//             col.appendChild(robot);
-//
-//             var cluster = document.createElement('p');
-//             cluster.innerHTML = "<b>Cluster:</b> " + data.clusterId;
-//             col.appendChild(cluster);
-//
-//             var ir = document.createElement('p');
-//             ir.innerHTML = "<b>IR:</b> " + data.inefficiencyRate;
-//             col.appendChild(ir);
-//
-//             if (data.inefficiencyRate >= 40.0) {
-//                 col.classList.add('bg-danger');
-//             } else
-//                 col.classList.add('bg-success');
-//
-//             row.appendChild(col);
-//         });
-//         container.append(row);
-//     }
-// }
-
-function processClusters(array, zoneId) {
-    var chunks = createGroupedArray(array, 5);
-
-    // var container = document.createElement('div');
-    // container.id = ""
-    var container = $("#" + zoneId).parent();
-    var div = document.createElement('div');
-    div.classList.add('container');
-    container.find('.container').empty();
-
-    // var container = $(".col").find("[data-id='" + zoneId + "']").parent();
-
-    // var container = $('#robotContainer');
-
-    for (var i = 0; i < chunks.length; i++) {
-        var row = document.createElement('div');
-        row.classList.add('row');
-
-        chunks[i].forEach(function (data) {
-            var col = document.createElement('div');
-            col.classList.add('col');
-
-            var cluster = document.createElement('p');
-            cluster.innerHTML = "<b>Cluster:</b>" + data.clusterId;
-            col.appendChild(cluster);
-
-            var ir = document.createElement('p');
-            ir.innerHTML = "<b>IR:</b> " + data.inefficiencyRate;
-            col.appendChild(ir);
-
-            var robotsNumber = document.createElement('p');
-            robotsNumber.innerHTML = "<b>Number of robots:</b> " + data.robotsList.length;
-            col.appendChild(robotsNumber);
-
-            if (data.inefficiencyRate >= 40.0) {
-                col.classList.add('bg-danger');
-            } else
-                col.classList.add('bg-success');
-
-            row.appendChild(col);
+function processRobots(zoneId, clusterId) {
+    var selectedZone = zones.find(function (zone) {
+        if (zone.id === zoneId)
+            return true;
+    });
+    var selectedCluster = null;
+    if (selectedZone != null) {
+        selectedCluster = selectedZone.clustersList.find(function (cluster) {
+            if (cluster.clusterId === clusterId)
+                return true;
         });
-        div.append(row);
-        container.append(div);
-
-        // var parent = div.parentNode;
-        // div.append(container);
     }
-    // parent.append(container);
+
+    console.log(selectedCluster);
+    // debugger;
+
+    var container = $('#robotContainer');
+    container.empty();
+
+    var clusterInfo = document.createElement('div');
+    clusterInfo.classList.add('row');
+    var clusterInfoCol = document.createElement('div');
+    clusterInfoCol.classList.add('col');
+    clusterInfoCol.classList.add('no-border');
+    clusterInfo.appendChild(clusterInfoCol);
+    container.append(clusterInfo);
+
+    var clusterIdInfo = document.createElement('p');
+    clusterIdInfo.innerHTML = "<b>Cluster:</b>" + selectedCluster.clusterId;
+    clusterInfoCol.appendChild(clusterIdInfo);
+
+    var ir = document.createElement('p');
+    ir.innerHTML = "<b>IR:</b> " + selectedCluster.inefficiencyRate;
+    clusterInfoCol.appendChild(ir);
+
+    var robotsNumber = document.createElement('p');
+    robotsNumber.innerHTML = "<b>Number of robots:</b> " + selectedCluster.robotsList.length;
+    clusterInfoCol.appendChild(robotsNumber);
+
+    if (selectedCluster.robotsList.length == 0) {
+        var error = document.createElement('h3');
+        error.innerHTML = "<p>No robots in this clusters</p>";
+        container.append(error);
+    } else {
+        var chunks = createGroupedArray(selectedCluster.robotsList, 5);
+        for (var i = 0; i < chunks.length; i++) {
+            var row = document.createElement('div');
+            row.classList.add('row');
+
+            chunks[i].forEach(function (data) {
+                var col = document.createElement('div');
+                col.classList.add('col');
+                col.classList.add('inner');
+
+                var robot = document.createElement('p');
+                robot.innerHTML = "<b>Robot:</b>" + data.robotId;
+                col.appendChild(robot);
+
+                var cluster = document.createElement('p');
+                cluster.innerHTML = "<b>Cluster:</b> " + data.clusterId;
+                col.appendChild(cluster);
+
+                var ir = document.createElement('p');
+                ir.innerHTML = "<b>IR:</b> " + data.inefficiencyRate;
+                col.appendChild(ir);
+
+                if (data.inefficiencyRate >= 40.0) {
+                    col.classList.add('bg-danger');
+                } else
+                    col.classList.add('bg-success');
+
+                row.appendChild(col);
+            });
+            container.append(row);
+        }
+    }
 }
 
 // CONNECTING	0	The connection is not yet open.
@@ -259,11 +252,13 @@ function setStatus() {
 // Elements are just hidden so there is no need to reprocess them when users change screen.
 function displaySelected() {
     if (display == 0) {
-        $('#clusterContainer').hide();
-        $('#robotContainer').show();
-    } else if (display == 1) {
-        $('#clusterContainer').show();
         $('#robotContainer').hide();
+        $('#zoneContainer').show();
+        $('#toggle').prop("disabled", true);
+    } else if (display == 1) {
+        $('#robotContainer').show();
+        $('#zoneContainer').hide();
+        $('#toggle').prop("disabled", false);
     }
 }
 
@@ -283,28 +278,19 @@ $(function () {
         disconnectWS();
     });
 
-    $('body').on('click', 'div.col', function () {
-        var zoneId = $(this).attr('id');
+    $('body').on('click', 'div.inner', function () {
+        var zoneId = $(this).data('zoneId');
+        var clusterId = $(this).data('clusterId');
+        console.log(zoneId + " " + clusterId);
 
-        // console.log(zoneId);
-        // var selectedZone = zones.find(function (zone) {
-        //     if (zone.id === zoneId)
-        //         return true;
-        // });
-        // var clusterList = selectedZone.clustersList;
-        // // debugger;
-        // console.log(clusterList);
-        // processClusters(clusterList, zoneId);
+        display = 1;
+        displaySelected();
+        processRobots(zoneId, clusterId);
     });
 
     $('#toggle').on('click', function () {
         display = 1 - display;
         displaySelected();
-
-        if (display === 1)
-            $('#toggle').html("Go to Robots");
-        else
-            $('#toggle').html("Go to Clusters");
     });
 
     $('#search').on('click', function (event) {
@@ -313,13 +299,18 @@ $(function () {
         // console.log(idToSearch);
 
         var searchedRobot = null;
-        if (robots != null) {
-            searchedRobot = robots.find(function (robot) {
-                if (robot.robotId === idToSearch)
-                    return true;
+
+        zones.forEach(function (zone) {
+            zone.clustersList.forEach(function (cluster) {
+                cluster.robotsList.forEach(function (robot) {
+                    if (robot.robotId === idToSearch) {
+                        searchedRobot = robot;
+                    }
+                });
             });
-            console.log(searchedRobot);
-        }
+        });
+
+        console.log(searchedRobot);
 
         $('#modalBody').empty();
 
@@ -327,6 +318,7 @@ $(function () {
         if (searchedRobot == null) {
             var p = document.createElement('p');
             p.innerHTML = "<b>Not found </b>";
+            body.appendChild(p);
         } else {
             var robot = document.createElement('p');
             robot.innerHTML = "<b>Robot:</b>" + searchedRobot.robotId;
