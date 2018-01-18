@@ -81,6 +81,7 @@ function processZones(zones) {
         // Col is a single zone.
         var col = document.createElement('div');
         col.classList.add('col');
+        col.classList.add('shadow');
         col.id = zone.id;
 
         var zoneId = document.createElement('p');

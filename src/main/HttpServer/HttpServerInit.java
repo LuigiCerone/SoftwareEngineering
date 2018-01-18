@@ -18,7 +18,7 @@ public class HttpServerInit {
         server.start();
     }
 
-    public static void addToThreadPool(Thread thread){
-        pool.execute(thread);
-    }
+//    public static void addToThreadPool(Thread thread){
+//        pool.execute(thread);
+//    }
 }

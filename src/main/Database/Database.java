@@ -27,11 +27,13 @@ public class Database {
         {
             HikariConfig config = new HikariConfig();
 
-            config.setDriverClassName("com.mysql.jdbc.Driver");
+            config.setDriverClassName(DRIVER);
             config.setJdbcUrl(URL);
             config.setUsername(USER);
             config.setPassword(PSW);
-            config.setMaximumPoolSize(15);
+            config.setMaximumPoolSize(20);
+            config.setMinimumIdle(3);
+            config.setLeakDetectionThreshold(2000);
 
             datasource = new HikariDataSource(config);
         }

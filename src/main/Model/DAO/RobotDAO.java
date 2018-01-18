@@ -404,4 +404,50 @@ public class RobotDAO implements RobotDAO_Interface {
             e.printStackTrace();
         }
     }
+
+    public Robot callProcedure(ReadData readData) {
+        Connection connection = database.getConnection();
+        CallableStatement cs = null;
+        Robot robot = null;
+
+        try {
+            cs = connection.prepareCall("{call robotSelectOrInsert(?,?,?,?)}");
+            cs.setString(1, readData.getRobot());
+            cs.setString(2, readData.getCluster());
+            cs.registerOutParameter(4,Types.INTEGER);
+
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            if (now.after(readData.getTimestamp()))
+                cs.setTimestamp(3, readData.getTimestamp());
+            else
+                cs.setTimestamp(3, now);
+
+            cs.execute();
+
+            int inserted = cs.getInt(4);
+            ResultSet resultSet = cs.getResultSet();
+
+            while (resultSet.next()) {
+                robot = new Robot();
+
+                robot.setRobotId(readData.getRobot());
+                robot.setClusterId(resultSet.getString(Robot.CLUSTER_ID));
+                robot.setInefficiencyRate(resultSet.getFloat(Robot.INEFFICIENCY_RATE));
+                robot.setCountInefficiencyComponents(resultSet.getInt(Robot.COUNT_INEFFICIENCY_COMPONENTS));
+                robot.setDownTime(resultSet.getInt(Robot.DOWN_TIME));
+                robot.setStartDownTime(resultSet.getTimestamp(Robot.START_DOWN_TIME));
+                robot.setStartUpTime(resultSet.getTimestamp(Robot.START_UP_TIME));
+            }
+
+            if(inserted == 0){
+                new HistoryDAO().insertPeriodStart(robot.getClusterId(), robot.getStartUpTime(), true, 0);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+        } finally {
+            database.closeConnectionToDB(connection);
+        }
+        return robot;
+    }
 }
