@@ -1,6 +1,6 @@
 package main.Model.DAO;
 
-import main.Database.Database;
+import main.Database.DatabaseConnector;
 import main.Model.Signal;
 
 import java.sql.Connection;
@@ -10,15 +10,15 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 public class SignalDAO implements SignalDAO_Interface {
-    private Database database;
+    private DatabaseConnector databaseConnector;
 
     public SignalDAO() {
-        this.database = new Database();
+        this.databaseConnector = new DatabaseConnector();
     }
 
     @Override
     public void update(Signal signal) {
-        Connection connection = database.getConnection();
+        Connection connection = databaseConnector.getConnection();
         String query = "UPDATE signals " +
                 "SET value=? , timestamp=? " +
                 "WHERE robotId = ? AND number=?; ";
@@ -35,12 +35,12 @@ public class SignalDAO implements SignalDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        database.closeConnectionToDB(connection);
+        databaseConnector.closeConnectionToDB(connection);
     }
 
     @Override
     public HashMap<Integer, Boolean> getAllSignalsForRobot(String robotId) {
-        Connection connection = database.getConnection();
+        Connection connection = databaseConnector.getConnection();
 
         String query = "SELECT robotId, number, value " +
                 "FROM signals " +
@@ -62,7 +62,7 @@ public class SignalDAO implements SignalDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        database.closeConnectionToDB(connection);
+        databaseConnector.closeConnectionToDB(connection);
         return robotSignal;
     }
 }

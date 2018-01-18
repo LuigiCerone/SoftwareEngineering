@@ -3,13 +3,18 @@ package main.Controller;
 import main.Model.Cluster;
 import main.Model.DAO.ClusterDAO;
 import main.Model.DAO.RobotDAO;
+import main.Model.DAO.ZoneDAO;
 import main.Model.ReadData;
 import main.Model.Robot;
+import main.Model.Zone;
+
+import java.util.HashMap;
 
 
 public class ControllerSignals implements Runnable {
-    private String readDataToDeserialize;
     private ReadData readData;
+
+    private HashMap<String, Zone> zones = null;
 
     public ControllerSignals(String readDataToDeserialize) {
         this.readData = new ReadData(readDataToDeserialize);
@@ -25,13 +30,8 @@ public class ControllerSignals implements Runnable {
         RobotDAO robotDAO = new RobotDAO();
         Robot robot = robotDAO.findRobotByIdOrInsert(readData);
 
-//        HashMap<Integer, Boolean> robotSignals = null;
-//            // Search these data in the DB.
-//        robotSignals = new SignalDAO().getAllSignalsForRobot(robot.getRobotId());
-//        robot.setRobotSignals(robotSignals);
-
         // TODO Check if the signal value is already set.
-        new ControllerIR().updateComponentState(robot, robotDAO, readData, cluster, clusterDAO);
+//        new ControllerIR().updateComponentState(robot, robotDAO, readData, cluster, clusterDAO);
 //        readData.getSignal();
 //        readData.getValue();
     }
@@ -39,21 +39,30 @@ public class ControllerSignals implements Runnable {
     public void work() {
         // TODO Write the following in a file.
         // new ReadDataDAO().insert(this.readData);
-        ClusterDAO clusterDAO = new ClusterDAO();
-//        Cluster cluster = clusterDAO.findClusterByIdOrInsert(readData);
-        Cluster cluster = clusterDAO.callProcedure(readData);
-        RobotDAO robotDAO = new RobotDAO();
-//        Robot robot = robotDAO.findRobotByIdOrInsert(readData);
-        Robot robot = robotDAO.callProcedure(readData);
+        zones = new ZoneDAO().getZones();
 
-//        HashMap<Integer, Boolean> robotSignals = null;
-//            // Search these data in the DB.
-//        robotSignals = new SignalDAO().getAllSignalsForRobot(robot.getRobotId());
-//        robot.setRobotSignals(robotSignals);
+        if (zones.get(readData.getZone()) == null) {
+            // We need to add the zone, but for this we only need to add a new cluster with this zoneId.
+        } else {
+            // The zone is already present.
+            Zone workingZone = zones.get(readData.getZone());
+            if (workingZone.getCluster(readData.getCluster()) == null) {
+                // We need to add the cluster.
+                new ClusterDAO().insert(readData);
+            } else {
+                // The cluster is already present.
+                Cluster workingCluster = workingZone.getCluster(readData.getCluster());
+                if (workingCluster.getRobot(readData.getRobot()) == null) {
+                    // We need to add the robot.
+                    new RobotDAO().insert(readData);
+                } else {
+                    // The robot is already present, then update the count.
+                    new ControllerIR().updateComponentState(readData, workingCluster.getRobot(readData.getRobot()), workingCluster);
+                }
+            }
 
-        // TODO Check if the signal value is already set.
-        new ControllerIR().updateComponentState(robot, robotDAO, readData, cluster, clusterDAO);
 //        readData.getSignal();
 //        readData.getValue();
+        }
     }
 }

@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.util.Comparator;
 
 public class History {
-    //JSON and Database field names.
+    //JSON and DatabaseConnector field names.
     public static final String HISTORY_ID = "id";
     public static final String DEVICE_ID = "deviceId";
     public static final String START = "startTime";

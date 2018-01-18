@@ -3,12 +3,12 @@ package main.Model.DAO;
 import main.Model.ReadData;
 import main.Model.Robot;
 
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 
 public interface RobotDAO_Interface {
-    public void insert(Robot robot, Connection connection);
+
+    void insert(ReadData readData);
 
     public Robot get(int robotId);
 

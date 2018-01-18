@@ -6,8 +6,8 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 
 public class Robot {
-    //JSON and Database field names.
-    public static final String ROBOT_ID = "id";
+    //JSON and DatabaseConnector field names.
+    public static final String ROBOT_ID = "_id";
     public static final String CLUSTER_ID = "clusterId";
     public static final String INEFFICIENCY_RATE = "ir";
     public static final String DOWN_TIME = "downTime";
@@ -20,7 +20,7 @@ public class Robot {
     @Expose
     private String clusterId;
     @Expose
-    private float inefficiencyRate;
+    private Double inefficiencyRate;
 
     private int countInefficiencyComponents;
 
@@ -39,7 +39,7 @@ public class Robot {
         this.downTime = downTime;
     }
 
-    public Robot(String robotId, String clusterId, float inefficiencyRate) {
+    public Robot(String robotId, String clusterId, double inefficiencyRate) {
         this.robotId = robotId;
         this.clusterId = clusterId;
         this.inefficiencyRate = inefficiencyRate;
@@ -81,11 +81,11 @@ public class Robot {
         this.clusterId = clusterId;
     }
 
-    public float getInefficiencyRate() {
+    public double getInefficiencyRate() {
         return inefficiencyRate;
     }
 
-    public void setInefficiencyRate(float inefficiencyRate) {
+    public void setInefficiencyRate(Double inefficiencyRate) {
         this.inefficiencyRate = inefficiencyRate;
     }
 

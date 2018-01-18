@@ -3,12 +3,12 @@ package main.Model.DAO;
 import main.Model.Cluster;
 import main.Model.ReadData;
 
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public interface ClusterDAO_Interface {
-    public void insert(Cluster cluster, Connection connection);
+
+    void insert(ReadData readData);
 
     public Cluster findClusterByIdOrInsert(ReadData readData);
 

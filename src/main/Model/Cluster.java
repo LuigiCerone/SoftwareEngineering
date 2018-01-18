@@ -3,11 +3,11 @@ package main.Model;
 import com.google.gson.annotations.Expose;
 
 import java.sql.Timestamp;
-import java.util.HashSet;
+import java.util.HashMap;
 
 public class Cluster {
-    //JSON and Database field names.
-    public static final String CLUSTER_ID = "id";
+    //JSON and DatabaseConnector field names.
+    public static final String CLUSTER_ID = "_id";
     public static final String ZONE_ID = "zoneId";
     public static final String INEFFICIENCY_RATE = "ir";
     public static final String DOWN_TIME = "downTime";
@@ -18,7 +18,7 @@ public class Cluster {
     @Expose
     private String clusterId;
     @Expose
-    private float inefficiencyRate;
+    private Double inefficiencyRate;
     @Expose
     private String zoneId;
 
@@ -28,16 +28,16 @@ public class Cluster {
     private Timestamp startDownTime;
 
     @Expose
-    private HashSet<Robot> robotsList;
+    private HashMap<String, Robot> robotsList;
 
     public Cluster() {
     }
 
-    public Cluster(String clusterId, String zoneId, float ir) {
+    public Cluster(String clusterId, String zoneId, double ir) {
         this.clusterId = clusterId;
         this.zoneId = zoneId;
         this.inefficiencyRate = ir;
-        this.robotsList = new HashSet<>();
+        this.robotsList = new HashMap<String, Robot>();
     }
 
 
@@ -49,11 +49,11 @@ public class Cluster {
         this.clusterId = clusterId;
     }
 
-    public float getInefficiencyRate() {
+    public double getInefficiencyRate() {
         return inefficiencyRate;
     }
 
-    public void setInefficiencyRate(float inefficiencyRate) {
+    public void setInefficiencyRate(Double inefficiencyRate) {
         this.inefficiencyRate = inefficiencyRate;
     }
 
@@ -97,8 +97,16 @@ public class Cluster {
         this.zoneId = zoneId;
     }
 
-    public void addRobot(Robot r) {
-        this.robotsList.add(r);
+    public void addRobot(String robotId, Robot r) {
+        this.robotsList.put(robotId, r);
+    }
+
+    public void setRobotsList(HashMap<String, Robot> robotsList) {
+        this.robotsList = robotsList;
+    }
+
+    public Robot getRobot(String robotId) {
+        return robotsList.get(robotId);
     }
 
     @Override

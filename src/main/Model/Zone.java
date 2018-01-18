@@ -2,7 +2,7 @@ package main.Model;
 
 import com.google.gson.annotations.Expose;
 
-import java.util.HashSet;
+import java.util.HashMap;
 
 public class Zone {
     public static String ZONE_ID = "zoneId";
@@ -10,11 +10,16 @@ public class Zone {
     @Expose
     private String id;
     @Expose
-    private HashSet<Cluster> clustersList;
+    private HashMap<String, Cluster> clustersList;
 
     public Zone(String id) {
         this.id = id;
-        this.clustersList = new HashSet<>();
+        this.clustersList = new HashMap<>();
+    }
+
+    public Zone(String id, HashMap<String, Cluster> clusters) {
+        this.id = id;
+        this.clustersList = clusters;
     }
 
     public String getId() {
@@ -25,12 +30,16 @@ public class Zone {
         this.id = id;
     }
 
-    public HashSet<Cluster> getClustersList() {
+    public HashMap<String, Cluster> getClustersList() {
         return clustersList;
     }
 
-    public void addCluster(Cluster cluster) {
-        this.clustersList.add(cluster);
+    public Cluster getCluster(String clusterId) {
+        return clustersList.get(clusterId);
+    }
+
+    public void addCluster(String zoneId, Cluster cluster) {
+        this.clustersList.put(zoneId, cluster);
     }
 
     @Override

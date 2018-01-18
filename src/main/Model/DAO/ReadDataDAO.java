@@ -1,21 +1,21 @@
 package main.Model.DAO;
 
-import main.Database.Database;
+import main.Database.DatabaseConnector;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class ReadDataDAO implements ReadDataDAO_Interface {
-    private Database database;
+    private DatabaseConnector databaseConnector;
 
     public ReadDataDAO() {
-        this.database = new Database();
+        this.databaseConnector = new DatabaseConnector();
     }
 
     @Override
     public void insert(main.Model.ReadData readData) {
-        Connection connection = database.getConnection();
+        Connection connection = databaseConnector.getConnection();
 
         String sql = "INSERT INTO read_data (id, robotId, clusterId, zoneId, signals, value, timestamp) " +
                 "VALUES (null, ?,?,?,?,?,?); ";
@@ -33,7 +33,7 @@ public class ReadDataDAO implements ReadDataDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        database.closeConnectionToDB(connection);
+        databaseConnector.closeConnectionToDB(connection);
     }
 
     @Override

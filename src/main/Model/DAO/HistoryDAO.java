@@ -1,6 +1,6 @@
 package main.Model.DAO;
 
-import main.Database.Database;
+import main.Database.DatabaseConnector;
 import main.Model.History;
 
 import java.sql.*;
@@ -8,15 +8,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class HistoryDAO implements HistoryDAO_Interface {
-    private Database database;
+    private DatabaseConnector databaseConnector;
 
     public HistoryDAO() {
-        this.database = new Database();
+        this.databaseConnector = new DatabaseConnector();
     }
 
     @Override
     public void insertPeriodStart(String deviceId, Timestamp start, boolean status, int type) {
-        Connection connection = database.getConnection();
+        Connection connection = databaseConnector.getConnection();
 
         String query = "INSERT INTO history (deviceId, startTime, status, type) " +
                 "VALUES (?,?,?,?);";
@@ -34,13 +34,13 @@ public class HistoryDAO implements HistoryDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        database.closeConnectionToDB(connection);
+        databaseConnector.closeConnectionToDB(connection);
     }
 
     // type=0 means src.test.Robot, type=1 means Cluster.
     @Override
     public void insertPeriodEnd(String deviceId, Timestamp end, boolean status, int type) {
-        Connection connection = database.getConnection();
+        Connection connection = databaseConnector.getConnection();
 
         String query = "UPDATE history " +
                 "SET endTime=? " +
@@ -59,13 +59,13 @@ public class HistoryDAO implements HistoryDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        database.closeConnectionToDB(connection);
+        databaseConnector.closeConnectionToDB(connection);
     }
 
     // If type = 1 then clusters' IR will be calculated, else if type = 0 robots' IR will be.
     @Override
     public HashMap<String, HashSet<History>> processIR(Timestamp now, Timestamp oneHourAgo, int type) {
-        Connection connection = database.getConnection();
+        Connection connection = databaseConnector.getConnection();
 
         String query = "SELECT * FROM history " +
                 "WHERE type=? AND (startTime>= ? OR endTime>=? OR endTime IS NULL)  " +
@@ -110,7 +110,7 @@ public class HistoryDAO implements HistoryDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        database.closeConnectionToDB(connection);
+        databaseConnector.closeConnectionToDB(connection);
         return map;
     }
 }
