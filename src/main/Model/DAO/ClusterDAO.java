@@ -4,6 +4,8 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.FindOneAndUpdateOptions;
+import com.mongodb.client.model.ReturnDocument;
 import main.Database.DatabaseConnector;
 import main.Model.Cluster;
 import main.Model.ReadData;
@@ -15,11 +17,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class ClusterDAO implements ClusterDAO_Interface {
-    private DatabaseConnector databaseConnector;
-
-    public ClusterDAO() {
-        this.databaseConnector = new DatabaseConnector();
-    }
 
 //    @Override
 //    public void insert(Cluster cluster, Connection connection) {
@@ -465,8 +462,39 @@ public class ClusterDAO implements ClusterDAO_Interface {
 //    }
 
 
+    public Cluster getCluster(ReadData readData) {
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+        MongoCollection<Document> clustersCollection = mongoDatabase.getCollection("clusters");
+
+        Cluster cluster = null;
+
+        // Where clause of the query.
+        Document whereQuery = new Document("_id", readData.getCluster());
+
+        // Item to insert if no cluster is already present.
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        Document setOnInsert = new Document()
+                .append(Cluster.CLUSTER_ID, readData.getCluster())
+                .append(Cluster.ZONE_ID, readData.getZone())
+                .append(Cluster.INEFFICIENCY_RATE, 0.0)
+                .append(Cluster.COUNT_INEFFICIENCY_COMPONENTS, 0)
+                .append(Cluster.START_UP_TIME, (now.after(readData.getTimestamp()) ? readData.getTimestamp().getTime() : now.getTime()))
+                .append(Cluster.START_DOWN_TIME, null)
+                .append(Cluster.DOWN_TIME, 0);
+        Document update = new Document("$setOnInsert", setOnInsert);
+
+        FindOneAndUpdateOptions options = new FindOneAndUpdateOptions();
+        options.returnDocument(ReturnDocument.AFTER);
+        options.upsert(true);
+
+        Document document = clustersCollection.findOneAndUpdate(whereQuery, update, options);
+        cluster = new Cluster(document);
+
+        return cluster;
+    }
+
     public HashMap<String, Cluster> getClustersForZone(String zoneId) {
-        MongoDatabase mongoDatabase = databaseConnector.getDatabase();
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
         MongoCollection<Document> clustersCollection = mongoDatabase.getCollection("clusters");
 
         HashMap<String, Cluster> clusters = new HashMap<String, Cluster>();
@@ -482,7 +510,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
                 Cluster cluster = new Cluster();
                 cluster.setClusterId(item.getString(Cluster.CLUSTER_ID));
                 cluster.setZoneId(item.getString(Cluster.ZONE_ID));
-                cluster.setStartUpTime((Timestamp) item.get(Cluster.START_UP_TIME));
+                cluster.setStartUpTime(new Timestamp(item.getLong(Cluster.START_UP_TIME)));
                 cluster.setInefficiencyRate(item.getDouble(Cluster.INEFFICIENCY_RATE));
                 cluster.setCountInefficiencyComponents(item.getInteger(Cluster.COUNT_INEFFICIENCY_COMPONENTS));
 
@@ -500,8 +528,8 @@ public class ClusterDAO implements ClusterDAO_Interface {
 
     @Override
     public void insert(ReadData readData) {
-        MongoDatabase database = databaseConnector.getDatabase();
-        MongoCollection<Document> clusters = database.getCollection("cluster");
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+        MongoCollection<Document> clusters = mongoDatabase.getCollection("cluster");
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Document newCluster = new Document()
@@ -523,29 +551,28 @@ public class ClusterDAO implements ClusterDAO_Interface {
 
     @Override
     public void updateCountAndStartDown(Cluster cluster, ReadData readData) {
-        MongoDatabase database = databaseConnector.getDatabase();
-        MongoCollection<Document> clusters = database.getCollection("cluster");
-
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+        MongoCollection<Document> clusters = mongoDatabase.getCollection("cluster");
 
         BasicDBObject searchQuery = new BasicDBObject();
-        searchQuery.put("_id", cluster.getClusterId());
+        searchQuery.put(Cluster.CLUSTER_ID, cluster.getClusterId());
 
-        BasicDBObject set = new BasicDBObject("$set", new BasicDBObject("count", cluster.getCountInefficiencyComponents()));
-        set.append("$set", new BasicDBObject("startDown", readData.getTimestamp().toString()));
+        BasicDBObject set = new BasicDBObject("$set", new BasicDBObject(Cluster.COUNT_INEFFICIENCY_COMPONENTS, cluster.getCountInefficiencyComponents()));
+        set.append("$set", new BasicDBObject(Cluster.START_DOWN_TIME, readData.getTimestamp().toString()));
         clusters.updateOne(searchQuery, set);
     }
 
     @Override
     public void updateCountAndStopDown(Cluster cluster, ReadData readData, long downTimeDiffCluster) {
-        MongoDatabase database = databaseConnector.getDatabase();
+        MongoDatabase database = DatabaseConnector.getInstance().getMongoDatabase();
         MongoCollection<Document> clusters = database.getCollection("cluster");
 
         BasicDBObject searchQuery = new BasicDBObject();
-        searchQuery.put("_id", cluster.getClusterId());
+        searchQuery.put(Cluster.CLUSTER_ID, cluster.getClusterId());
 
-        BasicDBObject set = new BasicDBObject("$set", new BasicDBObject("count", cluster.getCountInefficiencyComponents()));
-        set.append("$set", new BasicDBObject("startDown", null));
-        set.append("$inc", new BasicDBObject("downTime", downTimeDiffCluster));
+        BasicDBObject set = new BasicDBObject("$set", new BasicDBObject(Cluster.COUNT_INEFFICIENCY_COMPONENTS, cluster.getCountInefficiencyComponents()));
+        set.append("$set", new BasicDBObject(Cluster.START_DOWN_TIME, null));
+        set.append("$inc", new BasicDBObject(Cluster.DOWN_TIME, downTimeDiffCluster));
         clusters.updateOne(searchQuery, set);
     }
 

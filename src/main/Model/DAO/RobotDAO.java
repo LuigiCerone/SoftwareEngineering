@@ -4,6 +4,8 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.FindOneAndUpdateOptions;
+import com.mongodb.client.model.ReturnDocument;
 import main.Database.DatabaseConnector;
 import main.Model.ReadData;
 import main.Model.Robot;
@@ -14,12 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class RobotDAO implements RobotDAO_Interface {
-    private DatabaseConnector databaseConnector;
-
-    public RobotDAO() {
-        this.databaseConnector = new DatabaseConnector();
-    }
-
 //    @Override
 //    public void insert(Robot robot, Connection connection) {
 //        if (connection == null)
@@ -455,7 +451,7 @@ public class RobotDAO implements RobotDAO_Interface {
 
     public HashMap<String, Robot> getRobotsForCluster(String clusterId) {
 
-        MongoDatabase mongoDatabase = databaseConnector.getDatabase();
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
         MongoCollection<Document> robotsCollection = mongoDatabase.getCollection("robots");
         HashMap<String, Robot> robots = new HashMap<String, Robot>();
 
@@ -470,7 +466,7 @@ public class RobotDAO implements RobotDAO_Interface {
                 Robot robot = new Robot();
                 robot.setRobotId(item.getString(Robot.ROBOT_ID));
                 robot.setClusterId(item.getString(Robot.CLUSTER_ID));
-                robot.setStartUpTime((Timestamp) item.get(Robot.START_UP_TIME));
+                robot.setStartUpTime(new Timestamp(item.getLong(Robot.START_UP_TIME)));
                 robot.setInefficiencyRate(item.getDouble(Robot.INEFFICIENCY_RATE));
                 robot.setCountInefficiencyComponents(item.getInteger(Robot.COUNT_INEFFICIENCY_COMPONENTS));
 
@@ -486,8 +482,8 @@ public class RobotDAO implements RobotDAO_Interface {
 
     @Override
     public void insert(ReadData readData) {
-        MongoDatabase database = databaseConnector.getDatabase();
-        MongoCollection<Document> robots = database.getCollection("robot");
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+        MongoCollection<Document> robots = mongoDatabase.getCollection("robot");
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Document newRobot = new Document()
@@ -513,8 +509,8 @@ public class RobotDAO implements RobotDAO_Interface {
 
     @Override
     public void updateCountAndStartDown(Robot robot, ReadData readData) {
-        MongoDatabase database = databaseConnector.getDatabase();
-        MongoCollection<Document> robots = database.getCollection("robot");
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+        MongoCollection<Document> robots = mongoDatabase.getCollection("robot");
 
 
         BasicDBObject searchQuery = new BasicDBObject();
@@ -527,8 +523,8 @@ public class RobotDAO implements RobotDAO_Interface {
 
     @Override
     public void updateCountAndStopDown(Robot robot, ReadData readData, long downTimeDiff) {
-        MongoDatabase database = databaseConnector.getDatabase();
-        MongoCollection<Document> robots = database.getCollection("robot");
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+        MongoCollection<Document> robots = mongoDatabase.getCollection("robot");
 
         BasicDBObject searchQuery = new BasicDBObject();
         searchQuery.put("_id", robot.getRobotId());
@@ -541,8 +537,8 @@ public class RobotDAO implements RobotDAO_Interface {
 
     @Override
     public void updateCount(Robot robot) {
-        MongoDatabase database = databaseConnector.getDatabase();
-        MongoCollection<Document> robots = database.getCollection("robot");
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+        MongoCollection<Document> robots = mongoDatabase.getCollection("robot");
 
         BasicDBObject searchQuery = new BasicDBObject();
         searchQuery.put("_id", robot.getRobotId());
@@ -569,5 +565,35 @@ public class RobotDAO implements RobotDAO_Interface {
     @Override
     public void updateIR(HashMap<String, Float> robotsIR) {
 
+    }
+
+    public Robot getRobot(ReadData readData) {
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+        MongoCollection<Document> robotsCollection = mongoDatabase.getCollection("robots");
+
+        Robot robot = null;
+
+        // Where clause of the query.
+        Document whereQuery = new Document("_id", readData.getRobot());
+
+        // Item to insert if no cluster is already present.
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        Document setOnInsert = new Document()
+                .append(Robot.ROBOT_ID, readData.getRobot())
+                .append(Robot.CLUSTER_ID, readData.getCluster())
+                .append(Robot.INEFFICIENCY_RATE, 0.0)
+                .append(Robot.COUNT_INEFFICIENCY_COMPONENTS, 0)
+                .append(Robot.START_UP_TIME, (now.after(readData.getTimestamp()) ? readData.getTimestamp().toString() : now.toString()))
+                .append(Robot.START_DOWN_TIME, 0)
+                .append(Robot.DOWN_TIME, 0);
+        Document update = new Document("$setOnInsert", setOnInsert);
+
+        FindOneAndUpdateOptions options = new FindOneAndUpdateOptions();
+        options.returnDocument(ReturnDocument.AFTER);
+        options.upsert(true);
+
+        Document document = robotsCollection.findOneAndUpdate(whereQuery, update, options);
+        robot = new Robot(document);
+        return robot;
     }
 }

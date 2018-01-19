@@ -5,23 +5,35 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
 
 public class DatabaseConnector {
-    private static MongoClient mongoClient;
     // Singleton for MongoClient
     // Creates a single connection pool internally
 
-    private MongoDatabase database = null;
+    private MongoClient mongoClient = null;
+    private MongoDatabase mongoDatabase = null;
+    private static DatabaseConnector instance = null;
 
-    private MongoClient getMongoClient() {
-        if (mongoClient == null) {
+    private DatabaseConnector() {
+        try {
             mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
-            database = mongoClient.getDatabase("SEProject");
+            mongoDatabase = mongoClient.getDatabase("SEProject");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return mongoClient;
     }
 
-    public MongoDatabase getDatabase() {
-        if (database == null || mongoClient == null)
-            getMongoClient();
-        return database;
+//    public static MongoDatabase getDatabase() {
+////        if (mongoDatabase == null || mongoClient == null)
+//        return mongoDatabase;
+//    }
+
+    public static DatabaseConnector getInstance() {
+        if(instance == null) {
+            instance = new DatabaseConnector();
+        }
+        return instance;
+    }
+
+    public MongoDatabase getMongoDatabase() {
+        return mongoDatabase;
     }
 }

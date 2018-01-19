@@ -1,6 +1,7 @@
 package main.Model;
 
 import com.google.gson.annotations.Expose;
+import org.bson.Document;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -43,6 +44,16 @@ public class Robot {
         this.robotId = robotId;
         this.clusterId = clusterId;
         this.inefficiencyRate = inefficiencyRate;
+    }
+
+    public Robot(Document document) {
+        robotId = document.getString(Robot.ROBOT_ID);
+        clusterId = document.getString(Robot.CLUSTER_ID);
+        inefficiencyRate = document.getDouble(Robot.INEFFICIENCY_RATE);
+        countInefficiencyComponents = document.getInteger(Robot.COUNT_INEFFICIENCY_COMPONENTS);
+        downTime = document.getInteger(Robot.DOWN_TIME);
+        startUpTime = new Timestamp(document.getLong(Robot.START_UP_TIME));
+        startDownTime = new Timestamp(document.getLong(Robot.START_DOWN_TIME));
     }
 
 

@@ -1,6 +1,7 @@
 package main.Model;
 
 import com.google.gson.annotations.Expose;
+import org.bson.Document;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -40,6 +41,21 @@ public class Cluster {
         this.robotsList = new HashMap<String, Robot>();
     }
 
+
+    public Cluster(Document document) {
+        clusterId = document.getString(Cluster.CLUSTER_ID);
+        zoneId = document.getString(Cluster.ZONE_ID);
+        inefficiencyRate = document.getDouble(Cluster.INEFFICIENCY_RATE);
+        countInefficiencyComponents = document.getInteger(Cluster.COUNT_INEFFICIENCY_COMPONENTS);
+        downTime = document.getInteger(Cluster.DOWN_TIME);
+        startUpTime = new Timestamp(document.getLong(Cluster.START_UP_TIME));
+        try {
+            startDownTime = new Timestamp(document.getLong(Cluster.START_DOWN_TIME));
+        } catch (Exception e) {
+            startDownTime = null;
+        }
+
+    }
 
     public String getClusterId() {
         return clusterId;

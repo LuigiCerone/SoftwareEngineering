@@ -12,13 +12,6 @@ import java.util.HashMap;
 
 public class ZoneDAO implements ZoneDAO_Interface {
 
-    DatabaseConnector databaseConnector = null;
-
-
-    public ZoneDAO() {
-        databaseConnector = new DatabaseConnector();
-    }
-
 //    @Override
 //    public HashMap<String, Zone> populateWithZones(HashMap<String, Cluster> clusters) {
 //        Connection connection = databaseConnector.getConnection();
@@ -52,7 +45,7 @@ public class ZoneDAO implements ZoneDAO_Interface {
 
 
     public HashMap<String, Zone> getZones() {
-        MongoDatabase mongoDatabase = databaseConnector.getDatabase();
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
         MongoCollection<Document> clusters = mongoDatabase.getCollection("clusters");
         HashMap<String, Zone> zones = new HashMap<String, Zone>();
 

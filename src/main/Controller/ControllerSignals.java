@@ -3,7 +3,6 @@ package main.Controller;
 import main.Model.Cluster;
 import main.Model.DAO.ClusterDAO;
 import main.Model.DAO.RobotDAO;
-import main.Model.DAO.ZoneDAO;
 import main.Model.ReadData;
 import main.Model.Robot;
 import main.Model.Zone;
@@ -39,30 +38,33 @@ public class ControllerSignals implements Runnable {
     public void work() {
         // TODO Write the following in a file.
         // new ReadDataDAO().insert(this.readData);
-        zones = new ZoneDAO().getZones();
+//        zones = new ZoneDAO().getZones();
+//
+//        if (zones.get(readData.getZone()) == null) {
+//            // We need to add the zone, but for this we only need to add a new cluster with this zoneId.
+//        } else {
+//            // The zone is already present.
+//            Zone workingZone = zones.get(readData.getZone());
+//            if (workingZone.getCluster(readData.getCluster()) == null) {
+//                // We need to add the cluster.
+//                new ClusterDAO().insert(readData);
+//            } else {
+//                // The cluster is already present.
+//                Cluster workingCluster = workingZone.getCluster(readData.getCluster());
+//                if (workingCluster.getRobot(readData.getRobot()) == null) {
+//                    // We need to add the robot.
+//                    new RobotDAO().insert(readData);
+//                } else {
+//                    // The robot is already present, then update the count.
+//                    new ControllerIR().updateComponentState(readData, workingCluster.getRobot(readData.getRobot()), workingCluster);
+//                }
+//            }
 
-        if (zones.get(readData.getZone()) == null) {
-            // We need to add the zone, but for this we only need to add a new cluster with this zoneId.
-        } else {
-            // The zone is already present.
-            Zone workingZone = zones.get(readData.getZone());
-            if (workingZone.getCluster(readData.getCluster()) == null) {
-                // We need to add the cluster.
-                new ClusterDAO().insert(readData);
-            } else {
-                // The cluster is already present.
-                Cluster workingCluster = workingZone.getCluster(readData.getCluster());
-                if (workingCluster.getRobot(readData.getRobot()) == null) {
-                    // We need to add the robot.
-                    new RobotDAO().insert(readData);
-                } else {
-                    // The robot is already present, then update the count.
-                    new ControllerIR().updateComponentState(readData, workingCluster.getRobot(readData.getRobot()), workingCluster);
-                }
-            }
 
-//        readData.getSignal();
-//        readData.getValue();
-        }
+        Cluster workingCluster = new ClusterDAO().getCluster(readData);
+        Robot workingRobot = new RobotDAO().getRobot(readData);
+        new ControllerIR().updateComponentState(readData, workingRobot, workingCluster);
+
+
     }
 }
