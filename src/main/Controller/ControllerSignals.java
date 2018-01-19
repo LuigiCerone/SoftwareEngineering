@@ -61,6 +61,10 @@ public class ControllerSignals implements Runnable {
 
         Cluster workingCluster = new ClusterDAO().getCluster(readData);
         Robot workingRobot = new RobotDAO().getRobot(readData);
-        new ControllerIR().updateComponentState(readData, workingRobot, workingCluster);
+        try {
+            new ControllerIR().updateComponentState(readData, workingRobot, workingCluster);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

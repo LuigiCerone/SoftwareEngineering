@@ -5,14 +5,13 @@ import org.bson.Document;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 
 public class Cluster {
     //JSON and DatabaseConnector field names.
     public static final String CLUSTER_ID = "_id";
     public static final String ZONE_ID = "zoneId";
     public static final String INEFFICIENCY_RATE = "ir";
-    public static final String DOWN_TIME = "downTime";
     public static final String COUNT_INEFFICIENCY_COMPONENTS = "count";
     public static final String START_DOWN_TIME = "startDownTime";
     public static final String START_UP_TIME = "startUpTime";
@@ -27,12 +26,11 @@ public class Cluster {
     private String zoneId;
 
     private int countInefficiencyComponents;
-    private int downTime;
     private Timestamp startUpTime;
     private Timestamp startDownTime;
 
     @Expose
-    private HashMap<String, Robot> robotsList;
+    private HashSet<Robot> robotsList;
 
     ArrayList<History> histories;
 
@@ -43,7 +41,7 @@ public class Cluster {
         this.clusterId = clusterId;
         this.zoneId = zoneId;
         this.inefficiencyRate = ir;
-        this.robotsList = new HashMap<String, Robot>();
+        this.robotsList = new HashSet<Robot>();
     }
 
 
@@ -52,7 +50,6 @@ public class Cluster {
         zoneId = document.getString(Cluster.ZONE_ID);
         inefficiencyRate = document.getDouble(Cluster.INEFFICIENCY_RATE);
         countInefficiencyComponents = document.getInteger(Cluster.COUNT_INEFFICIENCY_COMPONENTS);
-        downTime = document.getInteger(Cluster.DOWN_TIME);
         startUpTime = new Timestamp(document.getLong(Cluster.START_UP_TIME));
         try {
             startDownTime = new Timestamp(document.getLong(Cluster.START_DOWN_TIME));
@@ -91,14 +88,6 @@ public class Cluster {
         this.countInefficiencyComponents = countInefficiencyComponents;
     }
 
-    public int getDownTime() {
-        return downTime;
-    }
-
-    public void setDownTime(int downTime) {
-        this.downTime = downTime;
-    }
-
     public Timestamp getStartUpTime() {
         return startUpTime;
     }
@@ -123,21 +112,33 @@ public class Cluster {
         this.zoneId = zoneId;
     }
 
-    public void addRobot(String robotId, Robot r) {
-        this.robotsList.put(robotId, r);
+    public void addRobot(Robot r) {
+        this.robotsList.add(r);
     }
 
-    public void setRobotsList(HashMap<String, Robot> robotsList) {
+    public void setRobotsList(HashSet<Robot> robotsList) {
         this.robotsList = robotsList;
     }
 
-    public Robot getRobot(String robotId) {
-        return robotsList.get(robotId);
+    public HashSet<Robot> getRobotsList() {
+        return robotsList;
     }
 
     @Override
     public boolean equals(Object obj) {
         return this.clusterId.equals(((Cluster) obj).getClusterId());
+    }
+
+    public void setHistories(ArrayList<Document> historiesDoc) {
+        ArrayList<History> histories = new ArrayList<>(historiesDoc.size());
+        for (Document document : historiesDoc) {
+            histories.add(new History(document));
+        }
+        this.histories = histories;
+    }
+
+    public ArrayList<History> getHistories() {
+        return histories;
     }
 
     @Override

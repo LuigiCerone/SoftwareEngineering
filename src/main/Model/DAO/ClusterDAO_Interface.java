@@ -4,7 +4,7 @@ import main.Model.Cluster;
 import main.Model.ReadData;
 
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.HashSet;
 
 public interface ClusterDAO_Interface {
 
@@ -20,7 +20,7 @@ public interface ClusterDAO_Interface {
 
     void updateIR(HashMap<String, Float> clustersIR);
 
-    LinkedList<Cluster> getAllClusters();
+    HashSet<Cluster> getAllClusters();
 
 //    public void updateCount(Cluster cluster);
 }

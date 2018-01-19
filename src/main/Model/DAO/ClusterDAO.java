@@ -14,9 +14,9 @@ import main.Model.Robot;
 import org.bson.Document;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 
 public class ClusterDAO implements ClusterDAO_Interface {
 
@@ -487,7 +487,6 @@ public class ClusterDAO implements ClusterDAO_Interface {
                 .append(Cluster.COUNT_INEFFICIENCY_COMPONENTS, 0)
                 .append(Cluster.START_UP_TIME, startUp.getTime())
                 .append(Cluster.START_DOWN_TIME, null)
-                .append(Cluster.DOWN_TIME, 0)
                 .append(Cluster.HISTORIES, historiesAsDoc);
         Document update = new Document("$setOnInsert", setOnInsert);
 
@@ -501,38 +500,38 @@ public class ClusterDAO implements ClusterDAO_Interface {
         return cluster;
     }
 
-    public HashMap<String, Cluster> getClustersForZone(String zoneId) {
-        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
-        MongoCollection<Document> clustersCollection = mongoDatabase.getCollection("clusters");
-
-        HashMap<String, Cluster> clusters = new HashMap<String, Cluster>();
-
-        BasicDBObject searchQuery = new BasicDBObject();
-        searchQuery.put("zoneId", zoneId);
-
-        MongoCursor<Document> cursor = clustersCollection.find(searchQuery).iterator();
-        try {
-            while (cursor.hasNext()) {
-                Document item = cursor.next();
-
-                Cluster cluster = new Cluster();
-                cluster.setClusterId(item.getString(Cluster.CLUSTER_ID));
-                cluster.setZoneId(item.getString(Cluster.ZONE_ID));
-                cluster.setStartUpTime(new Timestamp(item.getLong(Cluster.START_UP_TIME)));
-                cluster.setInefficiencyRate(item.getDouble(Cluster.INEFFICIENCY_RATE));
-                cluster.setCountInefficiencyComponents(item.getInteger(Cluster.COUNT_INEFFICIENCY_COMPONENTS));
-
-                // We need to get the robots in this cluster.
-                HashMap<String, Robot> robots = new RobotDAO().getRobotsForCluster(cluster.getClusterId());
-                cluster.setRobotsList(robots);
-                clusters.put(cluster.getClusterId(), cluster);
-            }
-        } finally {
-            cursor.close();
-        }
-        cursor.close();
-        return clusters;
-    }
+//    public HashMap<String, Cluster> getClustersForZone(String zoneId) {
+//        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+//        MongoCollection<Document> clustersCollection = mongoDatabase.getCollection("clusters");
+//
+//        HashMap<String, Cluster> clusters = new HashMap<String, Cluster>();
+//
+//        BasicDBObject searchQuery = new BasicDBObject();
+//        searchQuery.put("zoneId", zoneId);
+//
+//        MongoCursor<Document> cursor = clustersCollection.find(searchQuery).iterator();
+//        try {
+//            while (cursor.hasNext()) {
+//                Document item = cursor.next();
+//
+//                Cluster cluster = new Cluster();
+//                cluster.setClusterId(item.getString(Cluster.CLUSTER_ID));
+//                cluster.setZoneId(item.getString(Cluster.ZONE_ID));
+//                cluster.setStartUpTime(new Timestamp(item.getLong(Cluster.START_UP_TIME)));
+//                cluster.setInefficiencyRate(item.getDouble(Cluster.INEFFICIENCY_RATE));
+//                cluster.setCountInefficiencyComponents(item.getInteger(Cluster.COUNT_INEFFICIENCY_COMPONENTS));
+//
+//                // We need to get the robots in this cluster.
+//                HashMap<String, Robot> robots = new RobotDAO().getRobotsForCluster(cluster.getClusterId());
+//                cluster.setRobotsList(robots);
+//                clusters.put(cluster.getClusterId(), cluster);
+//            }
+//        } finally {
+//            cursor.close();
+//        }
+//        cursor.close();
+//        return clusters;
+//    }
 
     @Override
     public void insert(ReadData readData) {
@@ -546,8 +545,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
                 .append(Cluster.INEFFICIENCY_RATE, 0.0)
                 .append(Cluster.COUNT_INEFFICIENCY_COMPONENTS, 0)
                 .append(Cluster.START_UP_TIME, (now.after(readData.getTimestamp()) ? readData.getTimestamp().toString() : now.toString()))
-                .append(Cluster.START_DOWN_TIME, null)
-                .append(Cluster.DOWN_TIME, 0);
+                .append(Cluster.START_DOWN_TIME, null);
         clusters.insertOne(newCluster);
     }
 
@@ -587,7 +585,6 @@ public class ClusterDAO implements ClusterDAO_Interface {
         updateFields.append(Cluster.START_DOWN_TIME, null);
         BasicDBObject setQuery = new BasicDBObject();
         setQuery.append("$set", updateFields);
-        setQuery.append("$inc", new BasicDBObject(Cluster.DOWN_TIME, downTimeDiffCluster));
 
         clusters.updateOne(searchQuery, setQuery);
     }
@@ -603,7 +600,33 @@ public class ClusterDAO implements ClusterDAO_Interface {
     }
 
     @Override
-    public LinkedList<Cluster> getAllClusters() {
-        return null;
+    public HashSet<Cluster> getAllClusters() {
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+        MongoCollection<Document> clustersCollection = mongoDatabase.getCollection("clusters");
+
+        HashSet<Cluster> clusters = new HashSet<Cluster>();
+        MongoCursor<Document> cursor = clustersCollection.find().iterator();
+        try {
+            while (cursor.hasNext()) {
+                Document item = cursor.next();
+
+                Cluster cluster = new Cluster();
+                cluster.setClusterId(item.getString(Cluster.CLUSTER_ID));
+                cluster.setZoneId(item.getString(Cluster.ZONE_ID));
+                cluster.setStartUpTime(new Timestamp(item.getLong(Cluster.START_UP_TIME)));
+                cluster.setInefficiencyRate(item.getDouble(Cluster.INEFFICIENCY_RATE));
+                cluster.setCountInefficiencyComponents(item.getInteger(Cluster.COUNT_INEFFICIENCY_COMPONENTS));
+                // Cluster histories.
+                cluster.setHistories((ArrayList<Document>) item.get(Cluster.HISTORIES));
+
+                // We need to get the robots in this cluster.
+                HashSet<Robot> robots = new RobotDAO().getRobotsForCluster(cluster.getClusterId());
+                cluster.setRobotsList(robots);
+                clusters.add(cluster);
+            }
+        } finally {
+            cursor.close();
+        }
+        return clusters;
     }
 }

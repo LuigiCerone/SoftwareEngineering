@@ -3,7 +3,6 @@ package main.Model.DAO;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.result.UpdateResult;
 import main.Database.DatabaseConnector;
 import main.Model.Cluster;
 import main.Model.History;
@@ -17,7 +16,29 @@ import java.util.HashSet;
 public class HistoryDAO implements HistoryDAO_Interface {
     @Override
     public void insertPeriodStart(String deviceId, Timestamp start, boolean status, int type) {
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+        MongoCollection<Document> collection = null;
 
+        try {
+            String KEY = null;
+            if (type == 0) {
+                collection = mongoDatabase.getCollection("robots");
+                KEY = Robot.HISTORIES;
+            } else if (type == 1) {
+                collection = mongoDatabase.getCollection("clusters");
+                KEY = Cluster.HISTORIES;
+            }
+
+            // Where clause of the query.
+            Document whereQuery = new Document();
+            whereQuery.append("_id", deviceId);
+
+            Document historyDoc = new History(deviceId, start, status).toDocument();
+            BasicDBObject updateQuery = new BasicDBObject("$push", new BasicDBObject(KEY, historyDoc));
+            collection.updateOne(whereQuery, updateQuery);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -29,26 +50,32 @@ public class HistoryDAO implements HistoryDAO_Interface {
             String KEY = null;
             if (type == 0) {
                 collection = mongoDatabase.getCollection("robots");
-                KEY = Robot.HISTORIES + ".$." + History.END;
+                KEY = Robot.HISTORIES;
             } else if (type == 1) {
                 collection = mongoDatabase.getCollection("clusters");
-                KEY = Cluster.HISTORIES + ".$." + History.END;
+                KEY = Cluster.HISTORIES;
             }
 
             // Where clause of the query.
             Document whereQuery = new Document();
             whereQuery.append("_id", deviceId);
-            whereQuery.append(KEY, new Document("$eq", null));
+            whereQuery.append(KEY + "." + History.END, null);
+
+//            Document clause1 = new Document("_id", deviceId);
+//            Document clause2 = new Document(KEY, null);
+//            BasicDBList and = new BasicDBList();
+//            and.add(clause1);
+//            and.add(clause2);
+//            Document whereQuery = new Document("$and", and);
 
             // Update clause of the query.
             BasicDBObject updateFields = new BasicDBObject();
-            updateFields.append(KEY, end.getTime());
+            updateFields.append(KEY + ".$." + History.END, end.getTime());
             BasicDBObject setQuery = new BasicDBObject();
             setQuery.append("$set", updateFields);
 
-            UpdateResult document = collection.updateOne(whereQuery, setQuery);
-        }
-        catch (Exception e){
+            collection.updateOne(whereQuery, setQuery);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -15,11 +15,11 @@ public class History {
 
     private int id;
     private String deviceId;
-    private Timestamp start;
-    private Timestamp end;
+    private Long start;
+    private Long end;
     private boolean status; // If was 1 (=UP) or 0 (=DOWN)
 
-    public History(int id, String deviceId, Timestamp start, Timestamp end, boolean status) {
+    public History(int id, String deviceId, long start, long end, boolean status) {
         this.id = id;
         this.deviceId = deviceId;
         this.start = start;
@@ -33,16 +33,30 @@ public class History {
             this.deviceId = readData.getRobot();
         else if (type == 1)
             this.deviceId = readData.getCluster();
-        this.start = startUp;
+        this.start = startUp.getTime();
         this.end = null;
         this.status = true;
+    }
+
+    public History(String deviceId, Timestamp start, boolean status) {
+        this.deviceId = deviceId;
+        this.start = start.getTime();
+        this.end = null;
+        this.status = status;
+    }
+
+    public History(Document document) {
+        this.deviceId = document.getString(History.DEVICE_ID);
+        this.start = document.getLong(History.START);
+        this.end = document.getLong(History.END);
+        this.status = document.getBoolean(History.STATUS);
     }
 
     public Document toDocument() {
         return new Document()
                 .append(History.DEVICE_ID, deviceId)
-                .append(History.START, (start == null ? null : start.getTime()))
-                .append(History.END, (end == null ? null : end.getTime()))
+                .append(History.START, start)
+                .append(History.END, end)
                 .append(History.STATUS, status);
     }
 
@@ -62,20 +76,20 @@ public class History {
         this.deviceId = deviceId;
     }
 
-    public Timestamp getStart() {
+    public long getStart() {
         return start;
     }
 
     public void setStart(Timestamp start) {
-        this.start = start;
+        this.start = start.getTime();
     }
 
-    public Timestamp getEnd() {
+    public Long getEnd() {
         return end;
     }
 
     public void setEnd(Timestamp end) {
-        this.end = end;
+        this.end = end.getTime();
     }
 
     public boolean getStatus() {

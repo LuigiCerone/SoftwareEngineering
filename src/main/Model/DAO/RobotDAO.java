@@ -13,6 +13,7 @@ import main.Model.Robot;
 import org.bson.Document;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -451,14 +452,14 @@ public class RobotDAO implements RobotDAO_Interface {
 //        return robot;
 //    }
 
-    public HashMap<String, Robot> getRobotsForCluster(String clusterId) {
+    public HashSet<Robot> getRobotsForCluster(String clusterId) {
 
         MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
         MongoCollection<Document> robotsCollection = mongoDatabase.getCollection("robots");
-        HashMap<String, Robot> robots = new HashMap<String, Robot>();
+        HashSet<Robot> robots = new HashSet<Robot>();
 
         BasicDBObject searchQuery = new BasicDBObject();
-        searchQuery.put("clusterId", clusterId);
+        searchQuery.put(Robot.CLUSTER_ID, clusterId);
 
         MongoCursor<Document> cursor = robotsCollection.find(searchQuery).iterator();
         try {
@@ -472,14 +473,15 @@ public class RobotDAO implements RobotDAO_Interface {
                 robot.setInefficiencyRate(item.getDouble(Robot.INEFFICIENCY_RATE));
                 robot.setCountInefficiencyComponents(item.getInteger(Robot.COUNT_INEFFICIENCY_COMPONENTS));
 
-                robots.put(robot.getRobotId(), robot);
+                // Robot histories.
+                robot.setHistories((ArrayList<Document>) item.get(Robot.HISTORIES));
+                robots.add(robot);
             }
         } finally {
             cursor.close();
         }
         cursor.close();
         return robots;
-
     }
 
     @Override
@@ -497,7 +499,6 @@ public class RobotDAO implements RobotDAO_Interface {
                 .append(Robot.COUNT_INEFFICIENCY_COMPONENTS, 0)
                 .append(Robot.START_UP_TIME, startUp.getTime())
                 .append(Robot.START_DOWN_TIME, null)
-                .append(Robot.DOWN_TIME, 0)
                 .append(Robot.HISTORY, new History(readData, startUp, 0).toDocument());
         robots.insertOne(newRobot);
     }
@@ -543,7 +544,6 @@ public class RobotDAO implements RobotDAO_Interface {
         updateFields.append(Robot.START_DOWN_TIME, null);
         BasicDBObject setQuery = new BasicDBObject();
         setQuery.append("$set", updateFields);
-        setQuery.append("$inc", new BasicDBObject(Robot.DOWN_TIME, downTimeDiff));
 
         robots.updateOne(searchQuery, setQuery);
     }
@@ -608,7 +608,6 @@ public class RobotDAO implements RobotDAO_Interface {
                 .append(Robot.COUNT_INEFFICIENCY_COMPONENTS, 0)
                 .append(Robot.START_UP_TIME, startUp.getTime())
                 .append(Robot.START_DOWN_TIME, null)
-                .append(Robot.DOWN_TIME, 0)
                 .append(Robot.HISTORIES, historiesAsDoc);
         Document update = new Document("$setOnInsert", setOnInsert);
 

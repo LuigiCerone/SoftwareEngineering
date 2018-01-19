@@ -29,7 +29,10 @@ public class databaseUploaderHandler implements HttpHandler {
         // Add the thread to the threads pool.
 //        Thread myThread = new Thread(new ControllerSignals(data));
 //        HttpServerInit.addToThreadPool(myThread);
-
-        new ControllerSignals(data).work();
+        try {
+            new ControllerSignals(data).work();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

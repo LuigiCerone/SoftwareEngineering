@@ -17,4 +17,13 @@ public class Util {
 
         return diffInSeconds;
     }
+
+    public static long differenceBetweenTimestamps(long downEnd, long downStart) {
+        long duration = downEnd - downStart;
+        long diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(duration);
+//        long diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(duration);
+//        long diffInHours = TimeUnit.MILLISECONDS.toHours(duration);
+
+        return diffInSeconds;
+    }
 }

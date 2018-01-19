@@ -12,7 +12,6 @@ public class Robot {
     public static final String ROBOT_ID = "_id";
     public static final String CLUSTER_ID = "clusterId";
     public static final String INEFFICIENCY_RATE = "ir";
-    public static final String DOWN_TIME = "downTime";
     public static final String COUNT_INEFFICIENCY_COMPONENTS = "count";
     public static final String START_DOWN_TIME = "startDownTime";
     public static final String START_UP_TIME = "startUpTime";
@@ -29,7 +28,6 @@ public class Robot {
     private int countInefficiencyComponents;
 
     private HashMap<Integer, Boolean> robotSignals = new HashMap<Integer, Boolean>();
-    private int downTime;
     private Timestamp startUpTime;
     private Timestamp startDownTime;
     private ArrayList<History> histories;
@@ -40,7 +38,6 @@ public class Robot {
     public Robot(String robotId, String clusterId, int downTime) {
         this.robotId = robotId;
         this.clusterId = clusterId;
-        this.downTime = downTime;
     }
 
     public Robot(String robotId, String clusterId, double inefficiencyRate) {
@@ -54,7 +51,6 @@ public class Robot {
         clusterId = document.getString(Robot.CLUSTER_ID);
         inefficiencyRate = document.getDouble(Robot.INEFFICIENCY_RATE);
         countInefficiencyComponents = document.getInteger(Robot.COUNT_INEFFICIENCY_COMPONENTS);
-        downTime = document.getInteger(Robot.DOWN_TIME);
         startUpTime = new Timestamp(document.getLong(Robot.START_UP_TIME));
         try {
             startDownTime = new Timestamp(document.getLong(Robot.START_DOWN_TIME));
@@ -83,11 +79,6 @@ public class Robot {
     public void setCountInefficiencyComponents(int countInefficiencyComponents) {
         this.countInefficiencyComponents = countInefficiencyComponents;
     }
-
-    public void setDownTime(int downTime) {
-        this.downTime = downTime;
-    }
-
     public String getRobotId() {
         return robotId;
     }
@@ -124,10 +115,6 @@ public class Robot {
         return countInefficiencyComponents;
     }
 
-    public int getDownTime() {
-        return downTime;
-    }
-
     public Timestamp getStartUpTime() {
         return startUpTime;
     }
@@ -162,6 +149,14 @@ public class Robot {
     public boolean equals(Object obj) {
         Robot a = (Robot) obj;
         return this.robotId.equals(a.getRobotId());
+    }
+
+    public void setHistories(ArrayList<Document> historiesDoc) {
+        ArrayList<History> histories = new ArrayList<>(historiesDoc.size());
+        for (Document document : historiesDoc) {
+            histories.add(new History(document));
+        }
+        this.histories = histories;
     }
 
     @Override

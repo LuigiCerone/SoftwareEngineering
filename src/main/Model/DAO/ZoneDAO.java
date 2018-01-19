@@ -1,12 +1,7 @@
 package main.Model.DAO;
 
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
-import main.Database.DatabaseConnector;
 import main.Model.Cluster;
 import main.Model.Zone;
-import org.bson.Document;
 
 import java.util.HashMap;
 
@@ -44,22 +39,22 @@ public class ZoneDAO implements ZoneDAO_Interface {
 //    }
 
 
-    public HashMap<String, Zone> getZones() {
-        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
-        MongoCollection<Document> clusters = mongoDatabase.getCollection("clusters");
-        HashMap<String, Zone> zones = new HashMap<String, Zone>();
-
-        // We get all the zones from the clusters list using distinct;
-        MongoCursor<String> cursor = clusters.distinct("areaId", String.class).iterator();
-
-        while(cursor.hasNext()){
-            String zoneId = cursor.next();
-            Zone zone = new Zone(zoneId, new ClusterDAO().getClustersForZone(zoneId));
-            zones.put(zoneId, zone);
-        }
-        cursor.close();
-        return zones;
-    }
+//    public HashMap<String, Zone> getZones() {
+//        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+//        MongoCollection<Document> clusters = mongoDatabase.getCollection("clusters");
+//        HashMap<String, Zone> zones = new HashMap<String, Zone>();
+//
+//        // We get all the zones from the clusters list using distinct;
+//        MongoCursor<String> cursor = clusters.distinct("areaId", String.class).iterator();
+//
+//        while(cursor.hasNext()){
+//            String zoneId = cursor.next();
+//            Zone zone = new Zone(zoneId, new ClusterDAO().getClustersForZone(zoneId));
+//            zones.put(zoneId, zone);
+//        }
+//        cursor.close();
+//        return zones;
+//    }
 
     @Override
     public HashMap<String, Zone> populateWithZones(HashMap<String, Cluster> clusters) {
