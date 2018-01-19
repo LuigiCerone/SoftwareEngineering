@@ -6,6 +6,7 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
+import com.mongodb.client.model.UpdateOneModel;
 import main.Database.DatabaseConnector;
 import main.Model.History;
 import main.Model.ReadData;
@@ -13,10 +14,7 @@ import main.Model.Robot;
 import org.bson.Document;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class RobotDAO implements RobotDAO_Interface {
 //    @Override
@@ -580,8 +578,16 @@ public class RobotDAO implements RobotDAO_Interface {
     }
 
     @Override
-    public void updateIR(HashMap<String, Float> robotsIR) {
+    public void updateIR(HashMap<String, Float> clustersIR) {
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+        MongoCollection<Document> robotsCollection = mongoDatabase.getCollection("robots");
 
+        LinkedList<UpdateOneModel<? extends Document>> bulkUpdatesList = new LinkedList<>();
+        for (Map.Entry<String, Float> entry : clustersIR.entrySet()) {
+            bulkUpdatesList.add(new UpdateOneModel<>(new Document(Robot.ROBOT_ID, entry.getKey()),
+                    new Document("$set", new Document(Robot.INEFFICIENCY_RATE, entry.getValue()))));
+        }
+        robotsCollection.bulkWrite(bulkUpdatesList);
     }
 
     public Robot getRobot(ReadData readData) {

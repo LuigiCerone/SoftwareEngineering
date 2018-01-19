@@ -6,6 +6,7 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
+import com.mongodb.client.model.UpdateOneModel;
 import main.Database.DatabaseConnector;
 import main.Model.Cluster;
 import main.Model.History;
@@ -14,9 +15,7 @@ import main.Model.Robot;
 import org.bson.Document;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 public class ClusterDAO implements ClusterDAO_Interface {
 
@@ -596,7 +595,15 @@ public class ClusterDAO implements ClusterDAO_Interface {
 
     @Override
     public void updateIR(HashMap<String, Float> clustersIR) {
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+        MongoCollection<Document> clustersCollection = mongoDatabase.getCollection("clusters");
 
+        LinkedList<UpdateOneModel<? extends Document>> bulkUpdatesList = new LinkedList<>();
+        for (Map.Entry<String, Float> entry : clustersIR.entrySet()) {
+            bulkUpdatesList.add(new UpdateOneModel<>(new Document(Cluster.CLUSTER_ID, entry.getKey()),
+                    new Document("$set", new Document(Cluster.INEFFICIENCY_RATE, entry.getValue()))));
+        }
+        clustersCollection.bulkWrite(bulkUpdatesList);
     }
 
     @Override

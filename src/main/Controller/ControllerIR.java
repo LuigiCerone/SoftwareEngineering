@@ -118,9 +118,10 @@ public class ControllerIR {
 
         HashSet<Cluster> clusters = new ClusterDAO().getAllClusters();
         clustersRates = calculateClustersIr(nowLong, oneHourAgoLong, clusters);
+            new ClusterDAO().updateIR(clustersRates);
+
         robotsRates = calculateRobotsIr(nowLong, oneHourAgoLong, clusters);
-
-
+        new RobotDAO().updateIR(robotsRates);
     }
 
     HashMap<String, Float> calculateClustersIr(long nowLong, long oneHourAgoLong, HashSet<Cluster> clusters) {
