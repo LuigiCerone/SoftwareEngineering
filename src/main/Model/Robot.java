@@ -53,7 +53,11 @@ public class Robot {
         countInefficiencyComponents = document.getInteger(Robot.COUNT_INEFFICIENCY_COMPONENTS);
         downTime = document.getInteger(Robot.DOWN_TIME);
         startUpTime = new Timestamp(document.getLong(Robot.START_UP_TIME));
-        startDownTime = new Timestamp(document.getLong(Robot.START_DOWN_TIME));
+        try {
+            startDownTime = new Timestamp(document.getLong(Robot.START_DOWN_TIME));
+        } catch (Exception e) {
+            startDownTime = null;
+        }
     }
 
 

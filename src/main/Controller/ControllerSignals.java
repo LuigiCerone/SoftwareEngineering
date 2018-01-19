@@ -5,17 +5,15 @@ import main.Model.DAO.ClusterDAO;
 import main.Model.DAO.RobotDAO;
 import main.Model.ReadData;
 import main.Model.Robot;
-import main.Model.Zone;
-
-import java.util.HashMap;
 
 
 public class ControllerSignals implements Runnable {
     private ReadData readData;
 
-    private HashMap<String, Zone> zones = null;
+//    private HashMap<String, Zone> zones = null;
 
     public ControllerSignals(String readDataToDeserialize) {
+        System.out.println(readDataToDeserialize);
         this.readData = new ReadData(readDataToDeserialize);
     }
 
@@ -64,7 +62,5 @@ public class ControllerSignals implements Runnable {
         Cluster workingCluster = new ClusterDAO().getCluster(readData);
         Robot workingRobot = new RobotDAO().getRobot(readData);
         new ControllerIR().updateComponentState(readData, workingRobot, workingCluster);
-
-
     }
 }

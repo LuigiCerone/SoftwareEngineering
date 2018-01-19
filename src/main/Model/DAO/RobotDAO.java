@@ -483,7 +483,7 @@ public class RobotDAO implements RobotDAO_Interface {
     @Override
     public void insert(ReadData readData) {
         MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
-        MongoCollection<Document> robots = mongoDatabase.getCollection("robot");
+        MongoCollection<Document> robots = mongoDatabase.getCollection("robots");
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Document newRobot = new Document()
@@ -510,41 +510,53 @@ public class RobotDAO implements RobotDAO_Interface {
     @Override
     public void updateCountAndStartDown(Robot robot, ReadData readData) {
         MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
-        MongoCollection<Document> robots = mongoDatabase.getCollection("robot");
+        MongoCollection<Document> robots = mongoDatabase.getCollection("robots");
 
 
         BasicDBObject searchQuery = new BasicDBObject();
         searchQuery.put("_id", robot.getRobotId());
 
-        BasicDBObject set = new BasicDBObject("$set", new BasicDBObject(Robot.COUNT_INEFFICIENCY_COMPONENTS, robot.getCountInefficiencyComponents()));
-        set.append("$set", new BasicDBObject(Robot.START_DOWN_TIME, readData.getTimestamp().toString()));
-        robots.updateOne(searchQuery, set);
+        BasicDBObject updateFields = new BasicDBObject();
+        updateFields.append(Robot.COUNT_INEFFICIENCY_COMPONENTS, robot.getCountInefficiencyComponents());
+        updateFields.append(Robot.START_DOWN_TIME, readData.getTimestamp().getTime());
+        BasicDBObject setQuery = new BasicDBObject();
+        setQuery.append("$set", updateFields);
+
+        robots.updateOne(searchQuery, setQuery);
     }
 
     @Override
     public void updateCountAndStopDown(Robot robot, ReadData readData, long downTimeDiff) {
         MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
-        MongoCollection<Document> robots = mongoDatabase.getCollection("robot");
+        MongoCollection<Document> robots = mongoDatabase.getCollection("robots");
 
         BasicDBObject searchQuery = new BasicDBObject();
         searchQuery.put("_id", robot.getRobotId());
 
-        BasicDBObject set = new BasicDBObject("$set", new BasicDBObject(Robot.COUNT_INEFFICIENCY_COMPONENTS, robot.getCountInefficiencyComponents()));
-        set.append("$set", new BasicDBObject(Robot.START_DOWN_TIME, null));
-        set.append("$inc", new BasicDBObject(Robot.DOWN_TIME, downTimeDiff));
-        robots.updateOne(searchQuery, set);
+        BasicDBObject updateFields = new BasicDBObject();
+        updateFields.append(Robot.COUNT_INEFFICIENCY_COMPONENTS, robot.getCountInefficiencyComponents());
+        updateFields.append(Robot.START_DOWN_TIME, null);
+        BasicDBObject setQuery = new BasicDBObject();
+        setQuery.append("$set", updateFields);
+        setQuery.append("$inc", new BasicDBObject(Robot.DOWN_TIME, downTimeDiff));
+
+        robots.updateOne(searchQuery, setQuery);
     }
 
     @Override
     public void updateCount(Robot robot) {
         MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
-        MongoCollection<Document> robots = mongoDatabase.getCollection("robot");
+        MongoCollection<Document> robots = mongoDatabase.getCollection("robots");
 
         BasicDBObject searchQuery = new BasicDBObject();
         searchQuery.put("_id", robot.getRobotId());
 
-        BasicDBObject set = new BasicDBObject("$set", new BasicDBObject(Robot.COUNT_INEFFICIENCY_COMPONENTS, robot.getCountInefficiencyComponents()));
-        robots.updateOne(searchQuery, set);
+        BasicDBObject updateFields = new BasicDBObject();
+        updateFields.append(Robot.COUNT_INEFFICIENCY_COMPONENTS, robot.getCountInefficiencyComponents());
+        BasicDBObject setQuery = new BasicDBObject();
+        setQuery.append("$set", updateFields);
+
+        robots.updateOne(searchQuery, setQuery);
     }
 
     @Override
@@ -583,8 +595,8 @@ public class RobotDAO implements RobotDAO_Interface {
                 .append(Robot.CLUSTER_ID, readData.getCluster())
                 .append(Robot.INEFFICIENCY_RATE, 0.0)
                 .append(Robot.COUNT_INEFFICIENCY_COMPONENTS, 0)
-                .append(Robot.START_UP_TIME, (now.after(readData.getTimestamp()) ? readData.getTimestamp().toString() : now.toString()))
-                .append(Robot.START_DOWN_TIME, 0)
+                .append(Robot.START_UP_TIME, (now.after(readData.getTimestamp()) ? readData.getTimestamp().getTime() : now.getTime()))
+                .append(Robot.START_DOWN_TIME, null)
                 .append(Robot.DOWN_TIME, 0);
         Document update = new Document("$setOnInsert", setOnInsert);
 
