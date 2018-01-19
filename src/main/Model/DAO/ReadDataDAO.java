@@ -7,15 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class ReadDataDAO implements ReadDataDAO_Interface {
-    private Database database;
-
-    public ReadDataDAO() {
-        this.database = new Database();
-    }
-
+    
     @Override
     public void insert(main.Model.ReadData readData) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
 
         String sql = "INSERT INTO read_data (id, robotId, clusterId, zoneId, signals, value, timestamp) " +
                 "VALUES (null, ?,?,?,?,?,?); ";
@@ -33,7 +28,7 @@ public class ReadDataDAO implements ReadDataDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        database.closeConnectionToDB(connection);
+        Database.closeConnectionToDB(connection);
     }
 
     @Override

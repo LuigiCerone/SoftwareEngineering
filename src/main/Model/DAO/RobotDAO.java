@@ -12,16 +12,11 @@ import java.util.List;
 import java.util.Map;
 
 public class RobotDAO implements RobotDAO_Interface {
-    private Database database;
-
-    public RobotDAO() {
-        this.database = new Database();
-    }
 
     @Override
     public void insert(Robot robot, Connection connection) {
         if (connection == null)
-            connection = database.getConnection();
+            connection = Database.getConnection();
 
         String query = "INSERT INTO robot (robot.id, clusterId, ir, count, downTime, startUpTime) VALUES (?,?,?,?,?,?); ";
         try {
@@ -40,7 +35,7 @@ public class RobotDAO implements RobotDAO_Interface {
             e.printStackTrace();
         }
 
-        database.closeConnectionToDB(connection);
+        Database.closeConnectionToDB(connection);
     }
 
     @Override
@@ -50,7 +45,7 @@ public class RobotDAO implements RobotDAO_Interface {
 
     @Override
     public Robot findRobotByIdOrInsert(ReadData readData) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
         Robot robot = null;
 
         String query = "SELECT * FROM robot WHERE robot.id = ? ;";
@@ -102,13 +97,13 @@ public class RobotDAO implements RobotDAO_Interface {
             e.printStackTrace();
         }
         if (connection != null)
-            database.closeConnectionToDB(connection);
+            Database.closeConnectionToDB(connection);
         return robot;
     }
 
     @Override
     public void updateCountAndStartDown(Robot robot, ReadData readData) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
 
         String query = "UPDATE robot " +
                 "SET count=? , startDownTime=? " +
@@ -125,11 +120,11 @@ public class RobotDAO implements RobotDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        database.closeConnectionToDB(connection);
+        Database.closeConnectionToDB(connection);
     }
 
     public void updateCountAndStopDown(Robot robot, ReadData readData, long downTimeDiff) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
 
         String query = "UPDATE robot " +
                 "SET count=? ,  startDownTime=? , downTime=? " +
@@ -147,11 +142,11 @@ public class RobotDAO implements RobotDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        database.closeConnectionToDB(connection);
+        Database.closeConnectionToDB(connection);
     }
 
     public void updateCount(Robot robot) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
 
         String query = "UPDATE robot " +
                 "SET count = ? " +
@@ -168,12 +163,12 @@ public class RobotDAO implements RobotDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        database.closeConnectionToDB(connection);
+        Database.closeConnectionToDB(connection);
     }
 
     @Override
     public long getDownTime(String robotId) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
 
         String query = "SELECT downTime " +
                 "FROM robot " +
@@ -193,13 +188,13 @@ public class RobotDAO implements RobotDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        database.closeConnectionToDB(connection);
+        Database.closeConnectionToDB(connection);
         return downTime;
     }
 
     @Override
     public void delete(String robotId) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
 
         String query = "DELETE FROM robot " +
                 "WHERE id=?;";
@@ -212,12 +207,12 @@ public class RobotDAO implements RobotDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        database.closeConnectionToDB(connection);
+        Database.closeConnectionToDB(connection);
     }
 
 //    @Override
 //    public void processRobotIR() {
-//        Connection connection = database.getConnection();
+//        Connection connection = Database.getConnection();
 //        Queue<src.test.Robot> queue = new LinkedList<src.test.Robot>();
 //
 //        String query = "SELECT id, downTime, startUpTime, startDownTime" +
@@ -241,14 +236,14 @@ public class RobotDAO implements RobotDAO_Interface {
 //            e.printStackTrace();
 //        }
 //
-//        database.closeConnectionToDB(connection);
+//        Database.closeConnectionToDB(connection);
 //        calculateIR(queue);
 //
 //    }
 
     @Override
     public List<Robot> getAllRobots() {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
         PreparedStatement preparedStatement = null;
 
         String query = "SELECT id, clusterId, ir FROM robot ORDER BY id;";
@@ -268,14 +263,14 @@ public class RobotDAO implements RobotDAO_Interface {
             e.printStackTrace();
         }
 
-        database.closeConnectionToDB(connection);
+        Database.closeConnectionToDB(connection);
 
         return robotLinkedList;
     }
 
     // TODO Here
     public HashMap<String, Robot> getAllRobotsMap() {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
         PreparedStatement preparedStatement = null;
 
         String query = "SELECT id, clusterId, ir FROM robot ORDER BY id;";
@@ -295,13 +290,13 @@ public class RobotDAO implements RobotDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        database.closeConnectionToDB(connection);
+        Database.closeConnectionToDB(connection);
         return map;
     }
 
     @Override
     public void updateIR(HashMap<String, Float> robotsIR) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
 
         PreparedStatement statement = null;
 
@@ -328,12 +323,12 @@ public class RobotDAO implements RobotDAO_Interface {
             e.printStackTrace();
         }
 
-        database.closeConnectionToDB(connection);
+        Database.closeConnectionToDB(connection);
     }
 
     //    private void calculateIR(Queue<src.test.Robot> queue) {
 //        Timestamp now = new Timestamp(System.currentTimeMillis());
-//        Connection connection = database.getConnection();
+//        Connection connection = Database.getConnection();
 //        PreparedStatement statement = null;
 //
 //        String query = "UPDATE robot" +
@@ -377,10 +372,10 @@ public class RobotDAO implements RobotDAO_Interface {
 //        } catch (SQLException e) {
 //            e.printStackTrace();
 //        }
-//        database.closeConnectionToDB(connection);
+//        Database.closeConnectionToDB(connection);
 //    }
     public void populateWithRobots(HashMap<String, Cluster> clusters) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
 
         String query = "SELECT id, clusterId, ir " +
                 " FROM robot " +
@@ -406,7 +401,7 @@ public class RobotDAO implements RobotDAO_Interface {
     }
 
     public Robot callProcedure(ReadData readData) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
         CallableStatement cs = null;
         Robot robot = null;
 
@@ -446,7 +441,7 @@ public class RobotDAO implements RobotDAO_Interface {
         } catch (SQLException e) {
             System.err.println("SQLException: " + e.getMessage());
         } finally {
-            database.closeConnectionToDB(connection);
+            Database.closeConnectionToDB(connection);
         }
         return robot;
     }

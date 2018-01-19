@@ -12,16 +12,11 @@ import java.util.Map;
 import java.util.Queue;
 
 public class ClusterDAO implements ClusterDAO_Interface {
-    private Database database;
-
-    public ClusterDAO() {
-        this.database = new Database();
-    }
 
     @Override
     public void insert(Cluster cluster, Connection connection) {
         if (connection == null)
-            connection = database.getConnection();
+            connection = Database.getConnection();
 
         String query = "INSERT INTO cluster (id, zoneId, ir, count, downTime, startUpTime) VALUES (?,?,?,?,?,?);";
         try {
@@ -38,12 +33,12 @@ public class ClusterDAO implements ClusterDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        database.closeConnectionToDB(connection);
+        Database.closeConnectionToDB(connection);
     }
 
     @Override
     public Cluster findClusterByIdOrInsert(ReadData readData) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
         Cluster cluster = null;
 
         String query = "SELECT * FROM cluster WHERE cluster.id = ? ;";
@@ -94,12 +89,12 @@ public class ClusterDAO implements ClusterDAO_Interface {
             e.printStackTrace();
         }
         if (connection != null)
-            database.closeConnectionToDB(connection);
+            Database.closeConnectionToDB(connection);
         return cluster;
     }
 
     public Cluster callProcedure(ReadData readData) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
         CallableStatement cs = null;
         Cluster cluster = null;
         ResultSet resultSet = null;
@@ -152,14 +147,14 @@ public class ClusterDAO implements ClusterDAO_Interface {
             } catch (Exception e) {
             }
             ;
-            database.closeConnectionToDB(connection);
+            Database.closeConnectionToDB(connection);
         }
         return cluster;
     }
 
     @Override
     public void updateCountAndStartDown(Cluster cluster, ReadData readData) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
 
         String query = "UPDATE cluster " +
                 "SET count=? , startDownTime=? " +
@@ -186,14 +181,14 @@ public class ClusterDAO implements ClusterDAO_Interface {
             } catch (Exception e) {
             }
             ;
-            database.closeConnectionToDB(connection);
+            Database.closeConnectionToDB(connection);
         }
 
     }
 
     @Override
     public void updateCountAndStopDown(Cluster cluster, ReadData readData, long downTimeDiffCluster) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
 
         String query = "UPDATE cluster " +
                 "SET count=? ,  startDownTime=? , downTime=? " +
@@ -222,13 +217,13 @@ public class ClusterDAO implements ClusterDAO_Interface {
             } catch (Exception e) {
             }
             ;
-            database.closeConnectionToDB(connection);
+            Database.closeConnectionToDB(connection);
         }
     }
 
     @Override
     public void processClusterIR() {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
         Queue<Cluster> queue = new LinkedList<Cluster>();
 
         String query = "SELECT id, downTime, startUpTime, startDownTime" +
@@ -268,7 +263,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
             } catch (Exception e) {
             }
             ;
-            database.closeConnectionToDB(connection);
+            Database.closeConnectionToDB(connection);
         }
         calculateIR(queue);
     }
@@ -276,7 +271,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
     private void calculateIR(Queue<Cluster> queue) {
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
         PreparedStatement statement = null;
 
         String query = "UPDATE cluster" +
@@ -331,13 +326,13 @@ public class ClusterDAO implements ClusterDAO_Interface {
             } catch (Exception e) {
             }
             ;
-            database.closeConnectionToDB(connection);
+            Database.closeConnectionToDB(connection);
         }
     }
 
     @Override
     public void updateIR(HashMap<String, Float> clustersIR) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
 
         PreparedStatement statement = null;
 
@@ -370,13 +365,13 @@ public class ClusterDAO implements ClusterDAO_Interface {
             } catch (Exception e) {
             }
             ;
-            database.closeConnectionToDB(connection);
+            Database.closeConnectionToDB(connection);
         }
     }
 
     @Override
     public LinkedList<Cluster> getAllClusters() {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
         PreparedStatement preparedStatement = null;
 
         String query = "SELECT id, zoneId, ir FROM cluster ORDER BY id;";
@@ -412,14 +407,14 @@ public class ClusterDAO implements ClusterDAO_Interface {
             } catch (Exception e) {
             }
             ;
-            database.closeConnectionToDB(connection);
+            Database.closeConnectionToDB(connection);
         }
         return clusterLinkedList;
     }
 
 
     public HashMap<String, Cluster> getAllClusterMap() {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
 
         String query = "SELECT id, zoneId, ir FROM cluster ORDER BY id;";
         HashMap<String, Cluster> clusters = new HashMap<>();
@@ -455,7 +450,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
             } catch (Exception e) {
             }
             ;
-            database.closeConnectionToDB(connection);
+            Database.closeConnectionToDB(connection);
         }
 
         return clusters;

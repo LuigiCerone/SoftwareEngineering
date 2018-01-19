@@ -8,15 +8,10 @@ import java.sql.*;
 import java.util.HashMap;
 
 public class ZoneDAO implements ZoneDAO_Interface {
-    Database database = null;
-
-    public ZoneDAO() {
-        database = new Database();
-    }
-
+    
     @Override
     public HashMap<String, Zone> populateWithZones(HashMap<String, Cluster> clusters) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
 
         String query = "SELECT * FROM cluster ORDER BY zoneId; ";
 

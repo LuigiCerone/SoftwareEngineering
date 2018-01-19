@@ -10,15 +10,10 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 public class SignalDAO implements SignalDAO_Interface {
-    private Database database;
-
-    public SignalDAO() {
-        this.database = new Database();
-    }
-
+    
     @Override
     public void update(Signal signal) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
         String query = "UPDATE signals " +
                 "SET value=? , timestamp=? " +
                 "WHERE robotId = ? AND number=?; ";
@@ -35,12 +30,12 @@ public class SignalDAO implements SignalDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        database.closeConnectionToDB(connection);
+        Database.closeConnectionToDB(connection);
     }
 
     @Override
     public HashMap<Integer, Boolean> getAllSignalsForRobot(String robotId) {
-        Connection connection = database.getConnection();
+        Connection connection = Database.getConnection();
 
         String query = "SELECT robotId, number, value " +
                 "FROM signals " +
@@ -62,7 +57,7 @@ public class SignalDAO implements SignalDAO_Interface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        database.closeConnectionToDB(connection);
+        Database.closeConnectionToDB(connection);
         return robotSignal;
     }
 }

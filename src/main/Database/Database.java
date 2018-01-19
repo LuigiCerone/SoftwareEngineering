@@ -15,10 +15,6 @@ public class Database {
 
     private static DataSource datasource;
 
-    public Database() {
-
-    }
-
 //    private static final Logger LOGGER = LoggerFactory.getLogger(MyClass.class);
 //    private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -42,7 +38,7 @@ public class Database {
 
     }
 
-    public Connection getConnection(){
+    public static Connection getConnection(){
         try {
             return getDataSource().getConnection();
         } catch (SQLException e) {
@@ -68,7 +64,7 @@ public class Database {
 //        return con;
 //    }
 
-    public void closeConnectionToDB(Connection con) {
+    public static void closeConnectionToDB(Connection con) {
         try {
             con.close();
         } catch (SQLException e) {
