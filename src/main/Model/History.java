@@ -1,5 +1,7 @@
 package main.Model;
 
+import org.bson.Document;
+
 import java.sql.Timestamp;
 import java.util.Comparator;
 
@@ -25,10 +27,24 @@ public class History {
         this.status = status;
     }
 
-    public History() {
+    // If type == 0 is a Robot, else if type == 1 is a Cluster.
+    public History(ReadData readData, Timestamp startUp, int type) {
+        if (type == 0)
+            this.deviceId = readData.getRobot();
+        else if (type == 1)
+            this.deviceId = readData.getCluster();
+        this.start = startUp;
+        this.end = null;
+        this.status = true;
     }
 
-    ;
+    public Document toDocument() {
+        return new Document()
+                .append(History.DEVICE_ID, deviceId)
+                .append(History.START, (start == null ? null : start.getTime()))
+                .append(History.END, (end == null ? null : end.getTime()))
+                .append(History.STATUS, status);
+    }
 
     public int getId() {
         return id;

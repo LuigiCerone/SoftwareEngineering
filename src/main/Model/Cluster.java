@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import org.bson.Document;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Cluster {
@@ -15,6 +16,8 @@ public class Cluster {
     public static final String COUNT_INEFFICIENCY_COMPONENTS = "count";
     public static final String START_DOWN_TIME = "startDownTime";
     public static final String START_UP_TIME = "startUpTime";
+    public static final String HISTORY = "history";
+    public static final String HISTORIES = "histories";
 
     @Expose
     private String clusterId;
@@ -30,6 +33,8 @@ public class Cluster {
 
     @Expose
     private HashMap<String, Robot> robotsList;
+
+    ArrayList<History> histories;
 
     public Cluster() {
     }
@@ -55,6 +60,11 @@ public class Cluster {
             startDownTime = null;
         }
 
+//        try {
+//            histories = (ArrayList<History>) document.get(Cluster.HISTORIES);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     public String getClusterId() {

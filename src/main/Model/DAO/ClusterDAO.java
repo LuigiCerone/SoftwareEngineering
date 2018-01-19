@@ -8,12 +8,14 @@ import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
 import main.Database.DatabaseConnector;
 import main.Model.Cluster;
+import main.Model.History;
 import main.Model.ReadData;
 import main.Model.Robot;
 import org.bson.Document;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 public class ClusterDAO implements ClusterDAO_Interface {
@@ -473,14 +475,20 @@ public class ClusterDAO implements ClusterDAO_Interface {
 
         // Item to insert if no cluster is already present.
         Timestamp now = new Timestamp(System.currentTimeMillis());
+        Timestamp startUp = (now.after(readData.getTimestamp()) ? readData.getTimestamp() : now);
+
+        HashSet<Document> historiesAsDoc = new HashSet<>();
+        historiesAsDoc.add(new History(readData, startUp, 1).toDocument());
+
         Document setOnInsert = new Document()
                 .append(Cluster.CLUSTER_ID, readData.getCluster())
                 .append(Cluster.ZONE_ID, readData.getZone())
                 .append(Cluster.INEFFICIENCY_RATE, 0.0)
                 .append(Cluster.COUNT_INEFFICIENCY_COMPONENTS, 0)
-                .append(Cluster.START_UP_TIME, (now.after(readData.getTimestamp()) ? readData.getTimestamp().getTime() : now.getTime()))
+                .append(Cluster.START_UP_TIME, startUp.getTime())
                 .append(Cluster.START_DOWN_TIME, null)
-                .append(Cluster.DOWN_TIME, 0);
+                .append(Cluster.DOWN_TIME, 0)
+                .append(Cluster.HISTORIES, historiesAsDoc);
         Document update = new Document("$setOnInsert", setOnInsert);
 
         FindOneAndUpdateOptions options = new FindOneAndUpdateOptions();

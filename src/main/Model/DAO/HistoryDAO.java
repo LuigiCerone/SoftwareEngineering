@@ -1,6 +1,14 @@
 package main.Model.DAO;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.UpdateResult;
+import main.Database.DatabaseConnector;
+import main.Model.Cluster;
 import main.Model.History;
+import main.Model.Robot;
+import org.bson.Document;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -14,7 +22,35 @@ public class HistoryDAO implements HistoryDAO_Interface {
 
     @Override
     public void insertPeriodEnd(String deviceId, Timestamp end, boolean status, int type) {
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+        MongoCollection<Document> collection = null;
 
+        try {
+            String KEY = null;
+            if (type == 0) {
+                collection = mongoDatabase.getCollection("robots");
+                KEY = Robot.HISTORIES + ".$." + History.END;
+            } else if (type == 1) {
+                collection = mongoDatabase.getCollection("clusters");
+                KEY = Cluster.HISTORIES + ".$." + History.END;
+            }
+
+            // Where clause of the query.
+            Document whereQuery = new Document();
+            whereQuery.append("_id", deviceId);
+            whereQuery.append(KEY, new Document("$eq", null));
+
+            // Update clause of the query.
+            BasicDBObject updateFields = new BasicDBObject();
+            updateFields.append(KEY, end.getTime());
+            BasicDBObject setQuery = new BasicDBObject();
+            setQuery.append("$set", updateFields);
+
+            UpdateResult document = collection.updateOne(whereQuery, setQuery);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

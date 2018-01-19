@@ -7,12 +7,14 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
 import main.Database.DatabaseConnector;
+import main.Model.History;
 import main.Model.ReadData;
 import main.Model.Robot;
 import org.bson.Document;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class RobotDAO implements RobotDAO_Interface {
@@ -486,14 +488,17 @@ public class RobotDAO implements RobotDAO_Interface {
         MongoCollection<Document> robots = mongoDatabase.getCollection("robots");
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
+        Timestamp startUp = (now.after(readData.getTimestamp()) ? readData.getTimestamp() : now);
+
         Document newRobot = new Document()
                 .append(Robot.ROBOT_ID, readData.getRobot())
                 .append(Robot.CLUSTER_ID, readData.getCluster())
                 .append(Robot.INEFFICIENCY_RATE, 0.0)
                 .append(Robot.COUNT_INEFFICIENCY_COMPONENTS, 0)
-                .append(Robot.START_UP_TIME, (now.after(readData.getTimestamp()) ? readData.getTimestamp().toString() : now.toString()))
+                .append(Robot.START_UP_TIME, startUp.getTime())
                 .append(Robot.START_DOWN_TIME, null)
-                .append(Robot.DOWN_TIME, 0);
+                .append(Robot.DOWN_TIME, 0)
+                .append(Robot.HISTORY, new History(readData, startUp, 0).toDocument());
         robots.insertOne(newRobot);
     }
 
@@ -590,14 +595,21 @@ public class RobotDAO implements RobotDAO_Interface {
 
         // Item to insert if no cluster is already present.
         Timestamp now = new Timestamp(System.currentTimeMillis());
+        Timestamp startUp = (now.after(readData.getTimestamp()) ? readData.getTimestamp() : now);
+
+        HashSet<Document> historiesAsDoc = new HashSet<>();
+        historiesAsDoc.add(new History(readData, startUp, 0).toDocument());
+
+//        Document histories = new Document(new Document(Robot.HISTORY, ));
         Document setOnInsert = new Document()
                 .append(Robot.ROBOT_ID, readData.getRobot())
                 .append(Robot.CLUSTER_ID, readData.getCluster())
                 .append(Robot.INEFFICIENCY_RATE, 0.0)
                 .append(Robot.COUNT_INEFFICIENCY_COMPONENTS, 0)
-                .append(Robot.START_UP_TIME, (now.after(readData.getTimestamp()) ? readData.getTimestamp().getTime() : now.getTime()))
+                .append(Robot.START_UP_TIME, startUp.getTime())
                 .append(Robot.START_DOWN_TIME, null)
-                .append(Robot.DOWN_TIME, 0);
+                .append(Robot.DOWN_TIME, 0)
+                .append(Robot.HISTORIES, historiesAsDoc);
         Document update = new Document("$setOnInsert", setOnInsert);
 
         FindOneAndUpdateOptions options = new FindOneAndUpdateOptions();

@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import org.bson.Document;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Robot {
@@ -15,6 +16,8 @@ public class Robot {
     public static final String COUNT_INEFFICIENCY_COMPONENTS = "count";
     public static final String START_DOWN_TIME = "startDownTime";
     public static final String START_UP_TIME = "startUpTime";
+    public static final String HISTORY = "history";
+    public static final String HISTORIES = "histories";
 
     @Expose
     private String robotId;
@@ -29,7 +32,7 @@ public class Robot {
     private int downTime;
     private Timestamp startUpTime;
     private Timestamp startDownTime;
-
+    private ArrayList<History> histories;
 
     public Robot() {
     }
@@ -58,6 +61,11 @@ public class Robot {
         } catch (Exception e) {
             startDownTime = null;
         }
+//        try {
+//            histories = (ArrayList<History>) document.get(Robot.HISTORIES);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
 
