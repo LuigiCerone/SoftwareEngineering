@@ -5,6 +5,7 @@ import main.Model.Cluster;
 import main.Model.DAO.ClusterDAO;
 import main.Model.DAO.HistoryDAO;
 import main.Model.DAO.RobotDAO;
+import main.Model.DAO.SignalDAO;
 import main.Model.History;
 import main.Model.ReadData;
 import main.Model.Robot;
@@ -22,19 +23,12 @@ public class ControllerIR {
 
     public void updateComponentState(ReadData readData, Robot robot, Cluster cluster) {
         HistoryDAO historyDAO = new HistoryDAO();
-
-        long downTimeDiffRobot = 0;
-        long downTimeDiffCluster = 0;
-
         // Modify the robot counter stat.
         int countRobotInefficiencyComponents = robot.updateComponentState(readData.getValue());
-//        System.out.println(countRobotInefficiencyComponents);
-
         int countClusterInefficiencyComponents = cluster.getCountInefficiencyComponents();
 
         // The robot has become down with this reading.
         if (countRobotInefficiencyComponents == -1 && robot.getStartDownTime() == null) { //  <--------- Puà darsi che era già down ed è risalito a -1.
-
             // Start counting for down time.
             // Save in the DB the timestamp in witch the robot has gone down, call this Y.
             // Notify the cluster that a robot is down by decrementing its count.
@@ -63,10 +57,9 @@ public class ControllerIR {
             // Stop counting for downtime, calculate it and add to robot.downTime.
             // Get Y and calculate the time.
             // Notify the cluster that a robot is up by incrementing its count.
-            downTimeDiffRobot = Util.differenceBetweenTimestamps(readData.getTimestamp(), robot.getStartDownTime());
 //            System.out.println(downTimeDiff + " con count : " + countInefficiencyComponents + "==" + robot.getCountInefficiencyComponents());
 
-            new RobotDAO().updateCountAndStopDown(robot, readData, downTimeDiffRobot);
+            new RobotDAO().updateCountAndStopDown(robot, readData);
 
             // Update log history entry with time.
             // End DOWN period.
@@ -78,8 +71,7 @@ public class ControllerIR {
             cluster.setCountInefficiencyComponents(countClusterInefficiencyComponents + 1);
             if (cluster.getCountInefficiencyComponents() == 0) {
                 // The cluster is now up.
-                downTimeDiffCluster = Util.differenceBetweenTimestamps(readData.getTimestamp(), cluster.getStartDownTime());
-                new ClusterDAO().updateCountAndStopDown(cluster, readData, downTimeDiffCluster);
+                new ClusterDAO().updateCountAndStopDown(cluster, readData);
 
                 // End DOWN period.
                 historyDAO.insertPeriodEnd(cluster.getClusterId(), readData.getTimestamp(), false, 1);
@@ -93,8 +85,7 @@ public class ControllerIR {
 
         // Modify the signal data in the DB.
         // TODO Add the following if needed.
-//        Signal signal = new Signal(readData.getSignal(), readData.getValue(), readData.getTimestamp(), robot.getRobotId());
-//        new SignalDAO().update(signal);
+        new SignalDAO().update(readData);
     }
 
     public void calculateIR() {

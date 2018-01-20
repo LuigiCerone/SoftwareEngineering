@@ -1,6 +1,6 @@
 package main.Model;
 
-import java.sql.Timestamp;
+import org.bson.Document;
 
 public class Signal {
     //JSON field name.
@@ -10,17 +10,19 @@ public class Signal {
 
     private int singalNumber;
     private boolean signalValue;
-    private Timestamp timestamps;
-    private String robotId;
+    private long timestamp;
 
-    public Signal() {
-    }
-
-    public Signal(int singalNumber, boolean signalValue, Timestamp timestamps, String robotId) {
+    public Signal(int singalNumber, boolean signalValue, long timestamps) {
         this.singalNumber = singalNumber;
         this.signalValue = signalValue;
-        this.timestamps = timestamps;
-        this.robotId = robotId;
+        this.timestamp = timestamps;
+    }
+
+    public Document toDocument() {
+        return new Document()
+                .append(SIGNAL_NUMER, singalNumber)
+                .append(SIGNAL_VALUE, signalValue)
+                .append(SIGNAL_TIMESTAMP, timestamp);
     }
 
     public int getSingalNumber() {
@@ -39,26 +41,16 @@ public class Signal {
         this.signalValue = signalValue;
     }
 
-    public boolean getSignalValue() { return this.signalValue;
-    }
-    public Timestamp getTimestamps() {
-        return timestamps;
+    public boolean getSignalValue() {
+        return this.signalValue;
     }
 
-    public void setTimestamps(Timestamp timestamps) {
-        this.timestamps = timestamps;
+    public long getTimestamps() {
+        return timestamp;
     }
 
-    @Override
-    public String toString() {
-        return "Signal{" +
-                "singalNumber=" + singalNumber +
-                ", signalValue=" + signalValue +
-                ", timestamps='" + timestamps + '\'' +
-                '}';
+    public void setTimestamps(long timestamps) {
+        this.timestamp = timestamps;
     }
 
-    public String getRobotId() {
-        return robotId;
-    }
 }

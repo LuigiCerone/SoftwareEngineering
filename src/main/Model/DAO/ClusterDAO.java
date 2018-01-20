@@ -124,7 +124,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
     }
 
     @Override
-    public void updateCountAndStopDown(Cluster cluster, ReadData readData, long downTimeDiffCluster) {
+    public void updateCountAndStopDown(Cluster cluster, ReadData readData) {
         MongoDatabase database = DatabaseConnector.getInstance().getMongoDatabase();
         MongoCollection<Document> clusters = database.getCollection("clusters");
 

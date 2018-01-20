@@ -2,6 +2,7 @@ console.log("Ok");
 // Let us open a web socket
 var ws, display = 0;
 var zones;
+var clusterId, zoneId;
 
 // display == 0 --> display Robots (by default).
 // display == 1 --> display Clusters.
@@ -43,6 +44,10 @@ function onMessage(evt) {
     zones = Object.values(JSON.parse(evt.data));
     processZones(zones);
     setStatus();
+
+    if (display == 1) {
+        processRobots(zoneId, clusterId);
+    }
 
     displaySelected();
 }
@@ -112,6 +117,8 @@ function processZones(zones) {
                 clusterCol.classList.add('col-3');
                 var innerCol = document.createElement('div');
                 innerCol.classList.add('inner');
+                innerCol.classList.add('cluster');
+
                 innerCol.dataset.clusterId = cluster.clusterId;
                 innerCol.dataset.zoneId = cluster.zoneId;
 
@@ -142,7 +149,7 @@ function processZones(zones) {
 }
 
 
-function processRobots(zoneId, clusterId) {
+function processRobots() {
     var selectedZone = zones.find(function (zone) {
         if (zone.id === zoneId)
             return true;
@@ -279,11 +286,9 @@ $(function () {
         disconnectWS();
     });
 
-    $('body').on('click', 'div.inner', function () {
-        var zoneId = $(this).data('zoneId');
-        var clusterId = $(this).data('clusterId');
-        console.log(zoneId + " " + clusterId);
-
+    $('body').on('click', 'div.cluster', function () {
+        zoneId = $(this).data('zoneId');
+        clusterId = $(this).data('clusterId');
         display = 1;
         displaySelected();
         processRobots(zoneId, clusterId);

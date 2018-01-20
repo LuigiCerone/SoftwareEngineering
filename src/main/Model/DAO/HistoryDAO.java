@@ -61,13 +61,6 @@ public class HistoryDAO implements HistoryDAO_Interface {
             whereQuery.append("_id", deviceId);
             whereQuery.append(KEY + "." + History.END, null);
 
-//            Document clause1 = new Document("_id", deviceId);
-//            Document clause2 = new Document(KEY, null);
-//            BasicDBList and = new BasicDBList();
-//            and.add(clause1);
-//            and.add(clause2);
-//            Document whereQuery = new Document("$and", and);
-
             // Update clause of the query.
             BasicDBObject updateFields = new BasicDBObject();
             updateFields.append(KEY + ".$." + History.END, end.getTime());

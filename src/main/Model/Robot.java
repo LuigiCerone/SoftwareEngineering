@@ -17,6 +17,7 @@ public class Robot {
     public static final String START_UP_TIME = "startUpTime";
     public static final String HISTORY = "history";
     public static final String HISTORIES = "histories";
+    public static final String SIGNALS = "signals";
 
     @Expose
     private String robotId;

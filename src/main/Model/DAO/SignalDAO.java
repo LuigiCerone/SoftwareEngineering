@@ -1,72 +1,31 @@
 package main.Model.DAO;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import main.Database.DatabaseConnector;
+import main.Model.ReadData;
+import main.Model.Robot;
 import main.Model.Signal;
-
-import java.util.HashMap;
+import org.bson.Document;
 
 public class SignalDAO implements SignalDAO_Interface {
     @Override
-    public void update(Signal signal) {
+    public void update(ReadData readData) {
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+        MongoCollection<Document> robots = mongoDatabase.getCollection("robots");
 
-    }
+        BasicDBObject searchQuery = new BasicDBObject();
+        searchQuery.append(Robot.ROBOT_ID, readData.getRobot());
+        searchQuery.append(Robot.SIGNALS + "." + Signal.SIGNAL_NUMER, readData.getSignal());
 
-    @Override
-    public HashMap<Integer, Boolean> getAllSignalsForRobot(String robotId) {
-        return null;
+        // Update clause of the query.
+        BasicDBObject updateFields = new BasicDBObject();
+        updateFields.append(Robot.SIGNALS + ".$." + Signal.SIGNAL_VALUE, readData.getValue());
+        updateFields.append(Robot.SIGNALS + ".$." + Signal.SIGNAL_TIMESTAMP, readData.getTimestamp().getTime());
+        BasicDBObject setQuery = new BasicDBObject();
+        setQuery.append("$set", updateFields);
+
+        robots.updateOne(searchQuery, setQuery);
     }
-//    private DatabaseConnector databaseConnector;
-//
-//    public SignalDAO() {
-//        this.databaseConnector = new DatabaseConnector();
-//    }
-//
-//    @Override
-//    public void update(Signal signal) {
-//        Connection connection = databaseConnector.getConnection();
-//        String query = "UPDATE signals " +
-//                "SET value=? , timestamp=? " +
-//                "WHERE robotId = ? AND number=?; ";
-//
-//        try {
-//            PreparedStatement statement = connection.prepareStatement(query);
-//            statement.setBoolean(1, signal.getSignalValue());
-//            statement.setTimestamp(2, signal.getTimestamps());
-//            statement.setString(3, signal.getRobotId());
-//            statement.setInt(4, signal.getSingalNumber());
-//
-//            statement.execute();
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        databaseConnector.closeConnectionToDB(connection);
-//    }
-//
-//    @Override
-//    public HashMap<Integer, Boolean> getAllSignalsForRobot(String robotId) {
-//        Connection connection = databaseConnector.getConnection();
-//
-//        String query = "SELECT robotId, number, value " +
-//                "FROM signals " +
-//                "WHERE robotId = ?;";
-//
-//        HashMap<Integer, Boolean> robotSignal = new HashMap<Integer, Boolean>();
-//
-//        try {
-//            PreparedStatement statement = connection.prepareStatement(query);
-//
-//            statement.setString(1, robotId);
-//            ResultSet resultSet = statement.executeQuery();
-//
-//            while (resultSet.next()) {
-//
-//                robotSignal.put(resultSet.getInt(Signal.SIGNAL_NUMER), resultSet.getBoolean(Signal.SIGNAL_VALUE));
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        databaseConnector.closeConnectionToDB(connection);
-//        return robotSignal;
-//    }
 }

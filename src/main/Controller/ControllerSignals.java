@@ -5,6 +5,10 @@ import main.Model.DAO.ClusterDAO;
 import main.Model.DAO.RobotDAO;
 import main.Model.ReadData;
 import main.Model.Robot;
+import main.Model.Signal;
+import org.bson.Document;
+
+import java.util.ArrayList;
 
 
 public class ControllerSignals implements Runnable {
@@ -18,15 +22,15 @@ public class ControllerSignals implements Runnable {
         this.readData = new ReadData(readDataToDeserialize);
     }
 
+    public ControllerSignals() {
+
+    }
+
     @Override
     public void run() {
-        // TODO Write the following in a file.
-        // new ReadDataDAO().insert(this.readData);
-        ClusterDAO clusterDAO = new ClusterDAO();
-        Cluster cluster = clusterDAO.findClusterByIdOrInsert(readData);
-
-        RobotDAO robotDAO = new RobotDAO();
-        Robot robot = robotDAO.findRobotByIdOrInsert(readData);
+        Cluster workingCluster = new ClusterDAO().getCluster(readData);
+        Robot workingRobot = new RobotDAO().getRobot(readData);
+        new ControllerIR().updateComponentState(readData, workingRobot, workingCluster);
     }
 
     public void work() {
@@ -37,5 +41,14 @@ public class ControllerSignals implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public ArrayList<Document> createSignals(long timestamp) {
+        int SIGNALS_NUMBER = 8;
+        ArrayList<Document> signalsAsDoc = new ArrayList<>(SIGNALS_NUMBER);
+        for (int i = 0; i < SIGNALS_NUMBER; i++) {
+            signalsAsDoc.add(new Signal(i, true, timestamp).toDocument());
+        }
+        return signalsAsDoc;
     }
 }
