@@ -118,127 +118,80 @@ public class ControllerIR {
 
         HashSet<Cluster> clusters = new ClusterDAO().getAllClusters();
         clustersRates = calculateClustersIr(nowLong, oneHourAgoLong, clusters);
-            new ClusterDAO().updateIR(clustersRates);
+        new ClusterDAO().updateIR(clustersRates);
 
         robotsRates = calculateRobotsIr(nowLong, oneHourAgoLong, clusters);
         new RobotDAO().updateIR(robotsRates);
     }
 
+    private float computeHistories(ArrayList<History> histories, long nowLong, long oneHourAgoLong) {
+        long downTime = 0;
+        long upTime = 0;
+        for (History history : histories) {
+            if (history.getEnd() == null) {
+                long time = Util.differenceBetweenTimestamps(nowLong, history.getStart());
+                if (time >= 3600) {
+                    // This means the robot has been in this state for the last hour (and is still in this status).
+                    if (history.getStatus())
+                        upTime = 3600;
+                    else
+                        downTime = 3600;
+                } else {
+                    // This mean this is the currently status.
+                    if (history.getStatus())
+                        upTime += time;
+                    else
+                        downTime += time;
+                }
+            } else if (history.getStart() >= oneHourAgoLong && history.getEnd() <= nowLong) {
+                // This means that both startTime and endTime are in last hour.
+                long time = Util.differenceBetweenTimestamps(history.getEnd(), history.getStart());
+
+                if (history.getStatus())
+                    upTime += time;
+                else
+                    downTime += time;
+
+                // Il caso in cui è iniziata più di un'ora fa ed ed è finita dopo Start ma prima di End.
+            } else if (history.getStart() <= oneHourAgoLong) {
+                // TODO Test this case.
+                // This means that the entry is on the middle.
+                long time = 3600 - downTime - upTime;
+                if (history.getStatus())
+                    upTime += time;
+                else
+                    downTime += time;
+            }
+        }
+
+        float downTimeF;
+        downTimeF = (float) downTime / 60; // downTime in minutes.
+
+        // 60 is the temporal window.
+        float ir = ((float) downTimeF / 60) * 100;
+        ir = (float) (Math.round(ir * 100.0) / 100.0);
+        return ir;
+    }
+
     HashMap<String, Float> calculateClustersIr(long nowLong, long oneHourAgoLong, HashSet<Cluster> clusters) {
-        HashMap<String, Float> rates = new HashMap<>();
+        HashMap<String, Float> clustersRates = new HashMap<>();
         // Iterate over clusters and calculate ir.
         for (Cluster cluster : clusters) {
-            long downTime = 0;
-            long upTime = 0;
             ArrayList<History> histories = cluster.getHistories();
-
-            for (History history : histories) {
-                if (history.getEnd() == null) {
-                    long time = Util.differenceBetweenTimestamps(nowLong, history.getStart());
-                    if (time >= 3600) {
-                        // This means the robot has been in this state for the last hour (and is still in this status).
-                        if (history.getStatus())
-                            upTime = 3600;
-                        else
-                            downTime = 3600;
-                    } else {
-                        // This mean this is the currently status.
-                        if (history.getStatus())
-                            upTime += time;
-                        else
-                            downTime += time;
-                    }
-                } else if (history.getStart() >= oneHourAgoLong && history.getEnd() <= nowLong) {
-                    // This means that both startTime and endTime are in last hour.
-                    long time = Util.differenceBetweenTimestamps(history.getEnd(), history.getStart());
-
-                    if (history.getStatus())
-                        upTime += time;
-                    else
-                        downTime += time;
-
-                    // Il caso in cui è iniziata più di un'ora fa ed ed è finita dopo Start ma prima di End.
-                } else if (history.getStart() <= oneHourAgoLong) {
-                    // TODO Test this case.
-                    // This means that the entry is on the middle.
-                    long time = 3600 - downTime - upTime;
-                    if (history.getStatus())
-                        upTime += time;
-                    else
-                        downTime += time;
-                } else if (history.getStart() < oneHourAgoLong && history.getEnd() < oneHourAgoLong) {
-                    // TODO Delete this history, we don't need it anymore.
-                }
-            }
-
-            float downTimeF;
-            downTimeF = (float) downTime / 60; // downTime in minutes.
-
-            // 60 is the temporal window.
-            float ir = ((float) downTimeF / 60) * 100;
-            ir = (float) (Math.round(ir * 100.0) / 100.0);
-            rates.put(cluster.getClusterId(), ir);
+            clustersRates.put(cluster.getClusterId(), computeHistories(histories, nowLong, oneHourAgoLong));
         }
-        return rates;
+        return clustersRates;
     }
 
     HashMap<String, Float> calculateRobotsIr(long nowLong, long oneHourAgoLong, HashSet<Cluster> clusters) {
-        HashMap<String, Float> rates = new HashMap<>();
+        HashMap<String, Float> robotsRates = new HashMap<>();
         // Iterate over clusters and calculate ir.
         for (Cluster cluster : clusters) {
             for (Robot robot : cluster.getRobotsList()) {
-                long downTime = 0;
-                long upTime = 0;
                 ArrayList<History> histories = cluster.getHistories();
-
-                for (History history : histories) {
-                    if (history.getEnd() == null) {
-                        long time = Util.differenceBetweenTimestamps(nowLong, history.getStart());
-                        if (time >= 3600) {
-                            // This means the robot has been in this state for the last hour (and is still in this status).
-                            if (history.getStatus())
-                                upTime = 3600;
-                            else
-                                downTime = 3600;
-                        } else {
-                            // This mean this is the currently status.
-                            if (history.getStatus())
-                                upTime += time;
-                            else
-                                downTime += time;
-                        }
-                    } else if (history.getStart() >= oneHourAgoLong && history.getEnd() <= nowLong) {
-                        // This means that both startTime and endTime are in last hour.
-                        long time = Util.differenceBetweenTimestamps(history.getEnd(), history.getStart());
-
-                        if (history.getStatus())
-                            upTime += time;
-                        else
-                            downTime += time;
-
-                        // Il caso in cui è iniziata più di un'ora fa ed ed è finita dopo Start ma prima di End.
-                    } else if (history.getStart() <= oneHourAgoLong) {
-                        // TODO Test this case.
-                        // This means that the entry is on the middle.
-                        long time = 3600 - downTime - upTime;
-                        if (history.getStatus())
-                            upTime += time;
-                        else
-                            downTime += time;
-                    } else if (history.getStart() < oneHourAgoLong && history.getEnd() < oneHourAgoLong) {
-                        // TODO Delete this history, we don't need it anymore.
-                    }
-                }
-
-                float downTimeF;
-                downTimeF = (float) downTime / 60; // downTime in minutes.
-
-                // 60 is the temporal window.
-                float ir = ((float) downTimeF / 60) * 100;
-                ir = (float) (Math.round(ir * 100.0) / 100.0);
-                rates.put(robot.getRobotId(), ir);
+                robotsRates.put(robot.getRobotId(), computeHistories(histories, nowLong, oneHourAgoLong));
             }
         }
-        return rates;
+        return robotsRates;
     }
 }
