@@ -15,7 +15,7 @@ public class Main {
         ScheduledExecutorService scheduler =
                 Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleAtFixedRate(new DashboardIRThread(), 0, 5, TimeUnit.MINUTES);
-        scheduler.scheduleAtFixedRate(new OldHistoryCleanerThread(), 0, 1, TimeUnit.HOURS);
+        scheduler.scheduleAtFixedRate(new OldHistoryCleanerThread(), 30, 90, TimeUnit.MINUTES);
 
     }
 }

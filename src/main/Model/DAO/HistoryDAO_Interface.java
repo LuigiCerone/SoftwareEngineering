@@ -15,4 +15,5 @@ public interface HistoryDAO_Interface {
 
     HashMap<String, HashSet<History>> processIR(Timestamp now, Timestamp oneHourAgo, int type);
 
+    void oldHistoriesCleaner();
 }
