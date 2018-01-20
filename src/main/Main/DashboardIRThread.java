@@ -31,22 +31,27 @@ public class DashboardIRThread implements Runnable {
     public void run() {
         // TODO Replace Thread.sleep with TimerWatcher.
         while (true) {
-            if (webSocket.isSomeoneConnected()) {
-                System.out.println("I'm the DashboardIRThread and I'm now running!");
-                //Update IR.
+//            if (webSocket.isSomeoneConnected()) {
+            System.out.println("I'm the DashboardIRThread and I'm now running!");
+            //Update IR.
+            HashMap<String, Zone> zones = null;
+            try {
                 new ControllerIR().calculateIR();
-                HashMap<String, Zone> zones = new ZoneDAO().getZones();
-                webSocket.setData(gson.toJson(zones));
-                webSocket.sendJSONToAll();
-
-                // Data should be updated every 5mins = 300s = 300000ms;
-                try {
-                    System.out.println("I'm the DashboardIRThread and I'm going to sleep!");
-                    Thread.sleep(120000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                zones = new ZoneDAO().getZones();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            webSocket.setData(gson.toJson(zones));
+            webSocket.sendJSONToAll();
+
+            // Data should be updated every 5mins = 300s = 300000ms;
+            try {
+                System.out.println("I'm the DashboardIRThread and I'm going to sleep!");
+                Thread.sleep(120000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+//            }
         }
     }
 }

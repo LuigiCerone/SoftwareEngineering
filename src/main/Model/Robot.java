@@ -127,10 +127,6 @@ public class Robot {
         return startDownTime;
     }
 
-    public void setStartDownTime(Timestamp startDownTime) {
-        this.startDownTime = startDownTime;
-    }
-
     public int updateComponentState(boolean value) {
         // The reading contains a down signal from this robot.
         if (!value) {

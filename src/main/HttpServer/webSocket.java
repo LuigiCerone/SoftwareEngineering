@@ -14,11 +14,11 @@ public class webSocket extends WebSocketServer {
     public webSocket() {
         super(new InetSocketAddress("127.0.0.1", 9999));
         allClients = new HashSet<WebSocket>();
-        System.out.println("Constructor");
     }
 
     public void setData(String serializedData) {
         this.serializedData = serializedData;
+        System.out.println("Set!");
     }
 
     public boolean isSomeoneConnected() {
@@ -32,7 +32,8 @@ public class webSocket extends WebSocketServer {
 //        System.out.println("Address: " + client.getRemoteSocketAddress().getAddress().getHostAddress());
 //        System.out.println("Port: " + client.getRemoteSocketAddress().getPort());
         allClients.add(client);
-        sendJSONToNew(client);
+        if (serializedData != null)
+            sendJSONToNew(client);
     }
 
     // Called when a client disconnects.

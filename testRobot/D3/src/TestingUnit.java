@@ -139,8 +139,12 @@ public class TestingUnit extends JFrame {
         }
         // Create an array of fake Robots.
         robots = new ArrayList<Robot>(ROBOTS_NUMBER);
+
+        ArrayList<String> zones = createFakeZones();
+        ArrayList<String> clusters = createFakeCluster();
+
         for (int i = 0; i < ROBOTS_NUMBER; i++) {
-            robots.add(createFakeRobot());
+            robots.add(createFakeRobot(zones.get(random.nextInt(zones.size())), clusters.get(random.nextInt(clusters.size()))));
         }
 
         System.out.println("Array has been created.");
@@ -174,12 +178,30 @@ public class TestingUnit extends JFrame {
         }
     }
 
+    private ArrayList<String> createFakeZones() {
+        int length = random.nextInt(60 - 40) + 40;
+        ArrayList<String> zones = new ArrayList<>(length);
+
+        for (int i = 0; i < length; i++) {
+            zones.add(UUID.randomUUID().toString().replace("-", "").substring(0, 17));
+        }
+        return zones;
+    }
+
+    private ArrayList<String> createFakeCluster() {
+        int length = random.nextInt(60 - 40) + 40;
+        ArrayList<String> clusters = new ArrayList<>(length);
+
+        for (int i = 0; i < length; i++) {
+            clusters.add(UUID.randomUUID().toString().replace("-", "").substring(0, 17));
+        }
+        return clusters;
+    }
+
 
     // Create a new robot with random data.
-    private Robot createFakeRobot() {
+    private Robot createFakeRobot(String zoneId, String clusterId) {
         String robotId = UUID.randomUUID().toString().replace("-", "").substring(0, 17);
-        String clusterId = UUID.randomUUID().toString().replace("-", "").substring(0, 17);
-        String zoneId = UUID.randomUUID().toString().replace("-", "").substring(0, 17);
 
         // [0] is not used
         boolean[] signals = new boolean[8];
@@ -205,7 +227,7 @@ public class TestingUnit extends JFrame {
 
         @Override
         public void run() {
-            long start = System.currentTimeMillis();
+//            long start = System.currentTimeMillis();
             try {
                 JSONObject jsonObject = new JSONObject();
 
@@ -233,8 +255,8 @@ public class TestingUnit extends JFrame {
                 e.printStackTrace();
             }
 
-            long end = System.currentTimeMillis();
-            System.out.println("One single request took : " + (end - start) + "ms.");
+//            long end = System.currentTimeMillis();
+//            System.out.println("One single request took : " + (end - start) + "ms.");
 
         }
 

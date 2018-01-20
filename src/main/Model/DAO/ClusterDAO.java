@@ -25,7 +25,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
         Cluster cluster = null;
 
         // Where clause of the query.
-        Document whereQuery = new Document("_id", readData.getCluster());
+        Document whereQuery = new Document(Cluster.CLUSTER_ID, readData.getCluster());
 
         // Item to insert if no cluster is already present.
         Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -185,6 +185,8 @@ public class ClusterDAO implements ClusterDAO_Interface {
                 cluster.setRobotsList(robots);
                 clusters.add(cluster);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             cursor.close();
         }

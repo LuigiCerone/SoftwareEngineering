@@ -13,7 +13,8 @@ public class ControllerSignals implements Runnable {
 //    private HashMap<String, Zone> zones = null;
 
     public ControllerSignals(String readDataToDeserialize) {
-        System.out.println(readDataToDeserialize);
+        // Uncomment the following if you want to see the read data.
+//        System.out.println(readDataToDeserialize);
         this.readData = new ReadData(readDataToDeserialize);
     }
 
@@ -26,39 +27,9 @@ public class ControllerSignals implements Runnable {
 
         RobotDAO robotDAO = new RobotDAO();
         Robot robot = robotDAO.findRobotByIdOrInsert(readData);
-
-        // TODO Check if the signal value is already set.
-//        new ControllerIR().updateComponentState(robot, robotDAO, readData, cluster, clusterDAO);
-//        readData.getSignal();
-//        readData.getValue();
     }
 
     public void work() {
-        // TODO Write the following in a file.
-        // new ReadDataDAO().insert(this.readData);
-//        zones = new ZoneDAO().getZones();
-//
-//        if (zones.get(readData.getZone()) == null) {
-//            // We need to add the zone, but for this we only need to add a new cluster with this zoneId.
-//        } else {
-//            // The zone is already present.
-//            Zone workingZone = zones.get(readData.getZone());
-//            if (workingZone.getCluster(readData.getCluster()) == null) {
-//                // We need to add the cluster.
-//                new ClusterDAO().insert(readData);
-//            } else {
-//                // The cluster is already present.
-//                Cluster workingCluster = workingZone.getCluster(readData.getCluster());
-//                if (workingCluster.getRobot(readData.getRobot()) == null) {
-//                    // We need to add the robot.
-//                    new RobotDAO().insert(readData);
-//                } else {
-//                    // The robot is already present, then update the count.
-//                    new ControllerIR().updateComponentState(readData, workingCluster.getRobot(readData.getRobot()), workingCluster);
-//                }
-//            }
-
-
         Cluster workingCluster = new ClusterDAO().getCluster(readData);
         Robot workingRobot = new RobotDAO().getRobot(readData);
         try {

@@ -478,7 +478,6 @@ public class RobotDAO implements RobotDAO_Interface {
         } finally {
             cursor.close();
         }
-        cursor.close();
         return robots;
     }
 

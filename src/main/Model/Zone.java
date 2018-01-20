@@ -12,30 +12,9 @@ public class Zone {
     @Expose
     private HashSet<Cluster> clustersList;
 
-    public Zone(String id) {
-        this.id = id;
-        this.clustersList = new HashSet<>();
-    }
-
     public Zone(String id, HashSet<Cluster> clusters) {
         this.id = id;
         this.clustersList = clusters;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public HashSet<Cluster> getClustersList() {
-        return clustersList;
-    }
-
-    public void addCluster(Cluster cluster) {
-        this.clustersList.add(cluster);
     }
 
     @Override

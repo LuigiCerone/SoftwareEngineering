@@ -26,12 +26,6 @@ public class ControllerIR {
         long downTimeDiffRobot = 0;
         long downTimeDiffCluster = 0;
 
-        // Check if the stored signal is the same of the just received one.
-//        if (robot.getRobotSignal(readData.getSignal()) == readData.getValue()) {
-//            return;
-//        }
-
-
         // Modify the robot counter stat.
         int countRobotInefficiencyComponents = robot.updateComponentState(readData.getValue());
 //        System.out.println(countRobotInefficiencyComponents);
@@ -95,18 +89,17 @@ public class ControllerIR {
         } else {
             // The robot is still down/up.
             new RobotDAO().updateCount(robot);
-            // TODO is the following required? Nope.
-            // clusterDAO.updateCount(cluster);
         }
 
         // Modify the signal data in the DB.
+        // TODO Add the following if needed.
 //        Signal signal = new Signal(readData.getSignal(), readData.getValue(), readData.getTimestamp(), robot.getRobotId());
 //        new SignalDAO().update(signal);
     }
 
     public void calculateIR() {
-        HashMap<String, Float> clustersRates = new HashMap<>();
-        HashMap<String, Float> robotsRates = new HashMap<>();
+        HashMap<String, Float> clustersRates;
+        HashMap<String, Float> robotsRates;
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
         ZonedDateTime zonedDateTime = now.toInstant().atZone(ZoneId.of("UTC"));
@@ -118,10 +111,12 @@ public class ControllerIR {
 
         HashSet<Cluster> clusters = new ClusterDAO().getAllClusters();
         clustersRates = calculateClustersIr(nowLong, oneHourAgoLong, clusters);
-        new ClusterDAO().updateIR(clustersRates);
+        if (clustersRates.size() > 0) {
+            new ClusterDAO().updateIR(clustersRates);
 
-        robotsRates = calculateRobotsIr(nowLong, oneHourAgoLong, clusters);
-        new RobotDAO().updateIR(robotsRates);
+            robotsRates = calculateRobotsIr(nowLong, oneHourAgoLong, clusters);
+            new RobotDAO().updateIR(robotsRates);
+        }
     }
 
     private float computeHistories(ArrayList<History> histories, long nowLong, long oneHourAgoLong) {
@@ -167,7 +162,7 @@ public class ControllerIR {
         float downTimeF;
         downTimeF = (float) downTime / 60; // downTime in minutes.
 
-        // 60 is the temporal window.
+        // 60min = 1hour is the temporal window.
         float ir = ((float) downTimeF / 60) * 100;
         ir = (float) (Math.round(ir * 100.0) / 100.0);
         return ir;
