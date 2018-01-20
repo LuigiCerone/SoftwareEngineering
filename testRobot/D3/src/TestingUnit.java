@@ -140,8 +140,10 @@ public class TestingUnit extends JFrame {
         // Create an array of fake Robots.
         robots = new ArrayList<Robot>(ROBOTS_NUMBER);
 
-        ArrayList<String> zones = createFakeZones();
-        ArrayList<String> clusters = createFakeCluster();
+        int CLUSTERS_NUMBER = ROBOTS_NUMBER / 900;
+        int ZONES_NUMBER = CLUSTERS_NUMBER / 2;
+        ArrayList<String> zones = createFakeZones(CLUSTERS_NUMBER);
+        ArrayList<String> clusters = createFakeCluster(ZONES_NUMBER);
 
         for (int i = 0; i < ROBOTS_NUMBER; i++) {
             robots.add(createFakeRobot(zones.get(random.nextInt(zones.size())), clusters.get(random.nextInt(clusters.size()))));
@@ -178,8 +180,10 @@ public class TestingUnit extends JFrame {
         }
     }
 
-    private ArrayList<String> createFakeZones() {
-        int length = random.nextInt(60 - 40) + 40;
+    private ArrayList<String> createFakeZones(int ZONE) {
+        int minBound = ZONE - 10;
+        if (minBound < 0) minBound = 0;
+        int length = random.nextInt(((ZONE + 10) - minBound) + minBound);
         ArrayList<String> zones = new ArrayList<>(length);
 
         for (int i = 0; i < length; i++) {
@@ -188,8 +192,10 @@ public class TestingUnit extends JFrame {
         return zones;
     }
 
-    private ArrayList<String> createFakeCluster() {
-        int length = random.nextInt(60 - 40) + 40;
+    private ArrayList<String> createFakeCluster(int CLUSTER) {
+        int minBound = CLUSTER - 10;
+        if (minBound < 0) minBound = 0;
+        int length = random.nextInt((CLUSTER + 10) - minBound) + minBound;
         ArrayList<String> clusters = new ArrayList<>(length);
 
         for (int i = 0; i < length; i++) {

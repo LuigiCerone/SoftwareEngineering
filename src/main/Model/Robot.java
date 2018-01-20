@@ -79,6 +79,7 @@ public class Robot {
     public void setCountInefficiencyComponents(int countInefficiencyComponents) {
         this.countInefficiencyComponents = countInefficiencyComponents;
     }
+
     public String getRobotId() {
         return robotId;
     }
@@ -125,6 +126,10 @@ public class Robot {
 
     public Timestamp getStartDownTime() {
         return startDownTime;
+    }
+
+    public ArrayList<History> getHistories() {
+        return histories;
     }
 
     public int updateComponentState(boolean value) {

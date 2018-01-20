@@ -183,7 +183,7 @@ public class ControllerIR {
         // Iterate over clusters and calculate ir.
         for (Cluster cluster : clusters) {
             for (Robot robot : cluster.getRobotsList()) {
-                ArrayList<History> histories = cluster.getHistories();
+                ArrayList<History> histories = robot.getHistories();
                 robotsRates.put(robot.getRobotId(), computeHistories(histories, nowLong, oneHourAgoLong));
             }
         }
