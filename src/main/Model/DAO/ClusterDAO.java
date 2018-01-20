@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.BulkWriteOptions;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.UpdateOneModel;
@@ -155,7 +156,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
             bulkUpdatesList.add(new UpdateOneModel<>(new Document(Cluster.CLUSTER_ID, entry.getKey()),
                     new Document("$set", new Document(Cluster.INEFFICIENCY_RATE, entry.getValue()))));
         }
-        clustersCollection.bulkWrite(bulkUpdatesList);
+        clustersCollection.bulkWrite(bulkUpdatesList, new BulkWriteOptions().ordered(false));
     }
 
     @Override

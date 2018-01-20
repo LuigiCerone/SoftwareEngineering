@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.BulkWriteOptions;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.UpdateOneModel;
@@ -154,7 +155,7 @@ public class RobotDAO implements RobotDAO_Interface {
             bulkUpdatesList.add(new UpdateOneModel<>(new Document(Robot.ROBOT_ID, entry.getKey()),
                     new Document("$set", new Document(Robot.INEFFICIENCY_RATE, entry.getValue()))));
         }
-        robotsCollection.bulkWrite(bulkUpdatesList);
+        robotsCollection.bulkWrite(bulkUpdatesList, new BulkWriteOptions().ordered(false));
     }
 
 
