@@ -481,6 +481,32 @@ public class RobotDAO implements RobotDAO_Interface {
         return robots;
     }
 
+    public HashSet<Robot> getRobotsInfoNoHistory(String clusterId) {
+
+        MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
+        MongoCollection<Document> robotsCollection = mongoDatabase.getCollection("robots");
+        HashSet<Robot> robots = new HashSet<Robot>();
+
+        BasicDBObject searchQuery = new BasicDBObject();
+        searchQuery.put(Robot.CLUSTER_ID, clusterId);
+
+        MongoCursor<Document> cursor = robotsCollection.find(searchQuery).iterator();
+        try {
+            while (cursor.hasNext()) {
+                Document item = cursor.next();
+
+                Robot robot = new Robot();
+                robot.setRobotId(item.getString(Robot.ROBOT_ID));
+                robot.setClusterId(item.getString(Robot.CLUSTER_ID));
+                robot.setInefficiencyRate(item.getDouble(Robot.INEFFICIENCY_RATE));
+                robots.add(robot);
+            }
+        } finally {
+            cursor.close();
+        }
+        return robots;
+    }
+
     @Override
     public void insert(ReadData readData) {
         MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();

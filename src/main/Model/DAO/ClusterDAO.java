@@ -71,12 +71,10 @@ public class ClusterDAO implements ClusterDAO_Interface {
                 Cluster cluster = new Cluster();
                 cluster.setClusterId(item.getString(Cluster.CLUSTER_ID));
                 cluster.setZoneId(item.getString(Cluster.ZONE_ID));
-                cluster.setStartUpTime(new Timestamp(item.getLong(Cluster.START_UP_TIME)));
                 cluster.setInefficiencyRate(item.getDouble(Cluster.INEFFICIENCY_RATE));
-                cluster.setCountInefficiencyComponents(item.getInteger(Cluster.COUNT_INEFFICIENCY_COMPONENTS));
 
                 // We need to get the robots in this cluster.
-                HashSet<Robot> robots = new RobotDAO().getRobotsForCluster(cluster.getClusterId());
+                HashSet<Robot> robots = new RobotDAO().getRobotsInfoNoHistory(cluster.getClusterId());
                 cluster.setRobotsList(robots);
                 clusters.add(cluster);
             }
