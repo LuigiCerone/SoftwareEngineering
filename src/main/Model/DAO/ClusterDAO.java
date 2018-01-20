@@ -148,12 +148,12 @@ public class ClusterDAO implements ClusterDAO_Interface {
     }
 
     @Override
-    public void updateIR(HashMap<String, Float> clustersIR) {
+    public void updateIR(HashMap<String, Double> clustersIR) {
         MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
         MongoCollection<Document> clustersCollection = mongoDatabase.getCollection("clusters");
 
         LinkedList<UpdateOneModel<? extends Document>> bulkUpdatesList = new LinkedList<>();
-        for (Map.Entry<String, Float> entry : clustersIR.entrySet()) {
+        for (Map.Entry<String, Double> entry : clustersIR.entrySet()) {
             bulkUpdatesList.add(new UpdateOneModel<>(new Document(Cluster.CLUSTER_ID, entry.getKey()),
                     new Document("$set", new Document(Cluster.INEFFICIENCY_RATE, entry.getValue()))));
         }

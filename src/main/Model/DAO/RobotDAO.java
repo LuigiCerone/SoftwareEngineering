@@ -577,12 +577,12 @@ public class RobotDAO implements RobotDAO_Interface {
     }
 
     @Override
-    public void updateIR(HashMap<String, Float> clustersIR) {
+    public void updateIR(HashMap<String, Double> clustersIR) {
         MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
         MongoCollection<Document> robotsCollection = mongoDatabase.getCollection("robots");
 
         LinkedList<UpdateOneModel<? extends Document>> bulkUpdatesList = new LinkedList<>();
-        for (Map.Entry<String, Float> entry : clustersIR.entrySet()) {
+        for (Map.Entry<String, Double> entry : clustersIR.entrySet()) {
             bulkUpdatesList.add(new UpdateOneModel<>(new Document(Robot.ROBOT_ID, entry.getKey()),
                     new Document("$set", new Document(Robot.INEFFICIENCY_RATE, entry.getValue()))));
         }

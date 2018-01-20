@@ -26,5 +26,7 @@ public interface RobotDAO_Interface {
 
     public List<Robot> getAllRobots();
 
-    void updateIR(HashMap<String, Float> robotsIR);
+//    void updateIR(HashMap<String, Float> robotsIR);
+
+    void updateIR(HashMap<String, Double> clustersIR);
 }

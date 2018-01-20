@@ -18,7 +18,7 @@ public interface ClusterDAO_Interface {
 
     public void processClusterIR();
 
-    void updateIR(HashMap<String, Float> clustersIR);
+    void updateIR(HashMap<String, Double> clustersIR);
 
     HashSet<Cluster> getAllClusters();
 

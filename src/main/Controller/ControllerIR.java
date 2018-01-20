@@ -98,8 +98,8 @@ public class ControllerIR {
     }
 
     public void calculateIR() {
-        HashMap<String, Float> clustersRates;
-        HashMap<String, Float> robotsRates;
+        HashMap<String, Double> clustersRates;
+        HashMap<String, Double> robotsRates;
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
         ZonedDateTime zonedDateTime = now.toInstant().atZone(ZoneId.of("UTC"));
@@ -119,7 +119,7 @@ public class ControllerIR {
         }
     }
 
-    private float computeHistories(ArrayList<History> histories, long nowLong, long oneHourAgoLong) {
+    private double computeHistories(ArrayList<History> histories, long nowLong, long oneHourAgoLong) {
         long downTime = 0;
         long upTime = 0;
         for (History history : histories) {
@@ -163,13 +163,13 @@ public class ControllerIR {
         downTimeF = (float) downTime / 60; // downTime in minutes.
 
         // 60min = 1hour is the temporal window.
-        float ir = ((float) downTimeF / 60) * 100;
-        ir = (float) (Math.round(ir * 100.0) / 100.0);
+        double ir = ((double) downTimeF / 60) * 100;
+        ir = (double) (Math.round(ir * 100.0) / 100.0);
         return ir;
     }
 
-    HashMap<String, Float> calculateClustersIr(long nowLong, long oneHourAgoLong, HashSet<Cluster> clusters) {
-        HashMap<String, Float> clustersRates = new HashMap<>();
+    HashMap<String, Double> calculateClustersIr(long nowLong, long oneHourAgoLong, HashSet<Cluster> clusters) {
+        HashMap<String, Double> clustersRates = new HashMap<>();
         // Iterate over clusters and calculate ir.
         for (Cluster cluster : clusters) {
             ArrayList<History> histories = cluster.getHistories();
@@ -178,8 +178,8 @@ public class ControllerIR {
         return clustersRates;
     }
 
-    HashMap<String, Float> calculateRobotsIr(long nowLong, long oneHourAgoLong, HashSet<Cluster> clusters) {
-        HashMap<String, Float> robotsRates = new HashMap<>();
+    HashMap<String, Double> calculateRobotsIr(long nowLong, long oneHourAgoLong, HashSet<Cluster> clusters) {
+        HashMap<String, Double> robotsRates = new HashMap<>();
         // Iterate over clusters and calculate ir.
         for (Cluster cluster : clusters) {
             for (Robot robot : cluster.getRobotsList()) {
