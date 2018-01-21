@@ -46,7 +46,7 @@ public class ControllerSignals implements Runnable {
     public ArrayList<Document> createSignals(long timestamp) {
         int SIGNALS_NUMBER = 8;
         ArrayList<Document> signalsAsDoc = new ArrayList<>(SIGNALS_NUMBER);
-        for (int i = 0; i < SIGNALS_NUMBER; i++) {
+        for (int i = 1; i < SIGNALS_NUMBER; i++) {
             signalsAsDoc.add(new Signal(i, true, timestamp).toDocument());
         }
         return signalsAsDoc;

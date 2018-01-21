@@ -75,11 +75,6 @@ public class HistoryDAO implements HistoryDAO_Interface {
     }
 
     @Override
-    public HashMap<String, HashSet<History>> processIR(Timestamp now, Timestamp oneHourAgo, int type) {
-        return null;
-    }
-
-    @Override
     public void oldHistoriesCleaner() {
         MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
         MongoCollection<Document> collection = mongoDatabase.getCollection("robots");
@@ -98,8 +93,6 @@ public class HistoryDAO implements HistoryDAO_Interface {
         Document fields = new Document(Robot.HISTORIES, new Document((History.END), whereQuery));
         Document pullQuery = new Document("$pull", fields);
         collection.updateMany(new Document(), pullQuery);
-//
-
 //
         collection = mongoDatabase.getCollection("clusters");
         collection.updateMany(new Document(), pullQuery);

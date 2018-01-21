@@ -56,12 +56,6 @@ public class Cluster {
         } catch (Exception e) {
             startDownTime = null;
         }
-
-//        try {
-//            histories = (ArrayList<History>) document.get(Cluster.HISTORIES);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
     public String getClusterId() {

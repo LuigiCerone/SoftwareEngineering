@@ -3,29 +3,18 @@ package main.Model;
 import org.bson.Document;
 
 import java.sql.Timestamp;
-import java.util.Comparator;
 
 public class History {
     //JSON and DatabaseConnector field names.
-    public static final String HISTORY_ID = "id";
     public static final String DEVICE_ID = "deviceId";
     public static final String START = "startTime";
     public static final String END = "endTime";
     public static final String STATUS = "status";
 
-    private int id;
     private String deviceId;
     private Long start;
     private Long end;
     private boolean status; // If was 1 (=UP) or 0 (=DOWN)
-
-    public History(int id, String deviceId, long start, long end, boolean status) {
-        this.id = id;
-        this.deviceId = deviceId;
-        this.start = start;
-        this.end = end;
-        this.status = status;
-    }
 
     // If type == 0 is a Robot, else if type == 1 is a Cluster.
     public History(ReadData readData, Timestamp startUp, int type) {
@@ -60,14 +49,6 @@ public class History {
                 .append(History.STATUS, status);
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getDeviceId() {
         return deviceId;
     }
@@ -100,25 +81,4 @@ public class History {
         this.status = status;
     }
 
-
-    public static class HistoryComparator implements Comparator {
-        @Override
-        public int compare(Object o1, Object o2) {
-            History a = (History) o1;
-            History b = (History) o2;
-
-            if (a.getId() == b.getId()) return 0;
-
-            if (a.getId() < b.getId()) {
-                return 1;  //do the other way
-            }
-            return -1;
-        }
-    }
-
-
-    @Override
-    public boolean equals(Object obj) {
-        return id == ((History) obj).getId();
-    }
 }

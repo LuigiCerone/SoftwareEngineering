@@ -19,6 +19,8 @@ import java.sql.Timestamp;
 import java.util.*;
 
 public class RobotDAO implements RobotDAO_Interface {
+
+    @Override
     public HashSet<Robot> getRobotsForCluster(String clusterId) {
         MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
         MongoCollection<Document> robotsCollection = mongoDatabase.getCollection("robots");
@@ -49,6 +51,7 @@ public class RobotDAO implements RobotDAO_Interface {
         return robots;
     }
 
+    @Override
     public HashSet<Robot> getRobotsInfoNoHistory(String clusterId) {
 
         MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
@@ -159,6 +162,7 @@ public class RobotDAO implements RobotDAO_Interface {
     }
 
 
+    @Override
     public Robot getRobot(ReadData readData) {
         MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
         MongoCollection<Document> robotsCollection = mongoDatabase.getCollection("robots");

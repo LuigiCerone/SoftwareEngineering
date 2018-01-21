@@ -8,19 +8,18 @@ import java.util.HashSet;
 
 public interface ClusterDAO_Interface {
 
+    Cluster getCluster(ReadData readData);
+
+    HashSet<Cluster> getClustersForZone(String zoneId);
+
     void insert(ReadData readData);
 
-    public Cluster findClusterByIdOrInsert(ReadData readData);
-
-    public void updateCountAndStartDown(Cluster cluster, ReadData readData);
+    void updateCountAndStartDown(Cluster cluster, ReadData readData);
 
     void updateCountAndStopDown(Cluster cluster, ReadData readData);
-
-    public void processClusterIR();
 
     void updateIR(HashMap<String, Double> clustersIR);
 
     HashSet<Cluster> getAllClusters();
 
-//    public void updateCount(Cluster cluster);
 }

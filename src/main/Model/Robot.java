@@ -36,11 +36,6 @@ public class Robot {
     public Robot() {
     }
 
-    public Robot(String robotId, String clusterId, int downTime) {
-        this.robotId = robotId;
-        this.clusterId = clusterId;
-    }
-
     public Robot(String robotId, String clusterId, double inefficiencyRate) {
         this.robotId = robotId;
         this.clusterId = clusterId;
@@ -58,24 +53,7 @@ public class Robot {
         } catch (Exception e) {
             startDownTime = null;
         }
-//        try {
-//            histories = (ArrayList<History>) document.get(Robot.HISTORIES);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
-
-
-    // When a src.test.Robot is initialized all the signals are set to true-
-//    private void initRobotsSignals() {
-//        TimeZone tz = TimeZone.getTimeZone("UTC");
-//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
-//        df.setTimeZone(tz);
-//        String nowAsISO = df.format(new Date());
-//        for (int i = 0; i < 7; i++) {
-//            robotSignals[i] = new Signal(i + 1, true, nowAsISO);
-//        }
-//    }
 
     public void setCountInefficiencyComponents(int countInefficiencyComponents) {
         this.countInefficiencyComponents = countInefficiencyComponents;

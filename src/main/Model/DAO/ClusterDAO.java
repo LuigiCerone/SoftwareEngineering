@@ -19,6 +19,8 @@ import java.sql.Timestamp;
 import java.util.*;
 
 public class ClusterDAO implements ClusterDAO_Interface {
+
+    @Override
     public Cluster getCluster(ReadData readData) {
         MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
         MongoCollection<Document> clustersCollection = mongoDatabase.getCollection("clusters");
@@ -55,6 +57,7 @@ public class ClusterDAO implements ClusterDAO_Interface {
         return cluster;
     }
 
+    @Override
     public HashSet<Cluster> getClustersForZone(String zoneId) {
         MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
         MongoCollection<Document> clustersCollection = mongoDatabase.getCollection("clusters");
@@ -103,11 +106,6 @@ public class ClusterDAO implements ClusterDAO_Interface {
 
 
     @Override
-    public Cluster findClusterByIdOrInsert(ReadData readData) {
-        return null;
-    }
-
-    @Override
     public void updateCountAndStartDown(Cluster cluster, ReadData readData) {
         MongoDatabase mongoDatabase = DatabaseConnector.getInstance().getMongoDatabase();
         MongoCollection<Document> clusters = mongoDatabase.getCollection("clusters");
@@ -139,11 +137,6 @@ public class ClusterDAO implements ClusterDAO_Interface {
         setQuery.append("$set", updateFields);
 
         clusters.updateOne(searchQuery, setQuery);
-    }
-
-    @Override
-    public void processClusterIR() {
-
     }
 
     @Override
