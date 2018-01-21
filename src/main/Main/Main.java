@@ -1,21 +1,57 @@
 package main.Main;
 
-import main.HttpServer.HttpServerInit;
-
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class Main {
+public class Main extends JFrame {
     public static void main(String[] args) throws Exception {
-        System.out.println("Running mode");
 
-        new HttpServerInit();
+        // JFrame stuff========================================================
+        JButton startButton = new JButton("Start");
+        JButton stopButton = new JButton("Stop");
 
-        ScheduledExecutorService scheduler =
-                Executors.newSingleThreadScheduledExecutor();
-        scheduler.scheduleAtFixedRate(new DashboardIRThread(), 0, 5, TimeUnit.MINUTES);
-        scheduler.scheduleAtFixedRate(new OldHistoryCleanerThread(), 30, 90, TimeUnit.MINUTES);
+        JFrame frame = new JFrame("SEProject");
+        frame.setResizable(false);
+        frame.setSize(300, 100);
+        Container frameContentPane = frame.getContentPane();
+        frameContentPane.setLayout(new FlowLayout());
+        frameContentPane.add(startButton);
+        frameContentPane.add(stopButton);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.pack();
+        frame.setVisible(true);
+        //====================================================================
+
+        startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new Thread() {
+                    public void run() {
+                        ScheduledExecutorService scheduler =
+                                Executors.newSingleThreadScheduledExecutor();
+
+                        // Every 5 mins system calculate the ir.
+                        scheduler.scheduleAtFixedRate(new DashboardIRThread(), 0, 5, TimeUnit.MINUTES);
+                        // Every 90 mins system cleans the old unused histories.
+                        scheduler.scheduleAtFixedRate(new OldHistoryCleanerThread(), 30, 90, TimeUnit.MINUTES);
+                        System.out.println("The system is running!");
+                    }
+                }.start();
+            }
+        });
+
+        stopButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
 
     }
 }
