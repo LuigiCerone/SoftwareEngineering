@@ -1,5 +1,8 @@
 package main.Main;
 
+import main.HttpServer.DashboardIRThread;
+import main.HttpServer.OldHistoryCleanerThread;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

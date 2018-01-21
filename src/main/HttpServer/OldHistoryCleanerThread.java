@@ -1,4 +1,4 @@
-package main.Main;
+package main.HttpServer;
 
 import main.Model.DAO.HistoryDAO;
 

@@ -7,7 +7,15 @@ var clusterId, zoneId;
 // display == 0 --> display Robots (by default).
 // display == 1 --> display Clusters.
 
+
+// =====================================================================================================================
+// =====================================================================================================================
+// Socket stuff.
+
 function connectWS() {
+    console.log("Cliccato!");
+    $('body').addClass("loading");
+
     ws = new WebSocket("ws://127.0.0.1:9999");
     ws.onopen = function (data) {
         onOpen(data);
@@ -41,6 +49,9 @@ function onOpen(data) {
 }
 
 function onMessage(evt) {
+
+    console.log("Arrivato");
+    $('body').removeClass("loading");
     zones = Object.values(JSON.parse(evt.data));
     processZones(zones);
     setStatus();
@@ -63,6 +74,41 @@ function onError(error) {
     console.log("Error with data: " + error);
     setStatus();
 }
+
+// CONNECTING	0	The connection is not yet open.
+// OPEN	1	The connection is open and ready to communicate.
+// CLOSING	2	The connection is in the process of closing.
+// CLOSED	3	The connection is closed or couldn't be opened.
+function setStatus() {
+    var status = $('#status');
+    if (ws == null) {
+        status.text('CLOSED');
+    } else {
+        switch (ws.readyState) {
+            case 0:
+                // CONNECTING.
+                status.text('CONNECTING');
+                break;
+            case 1:
+                // OPEN.
+                status.text('OPEN');
+                break;
+            case 2:
+                // CLOSING.
+                status.text('CLOSING');
+                break;
+            case 3:
+                // CLOSED.
+                status.text('CLOSED');
+                break;
+        }
+    }
+}
+
+// End socket stuff.
+// =====================================================================================================================
+// =====================================================================================================================
+
 
 function createGroupedArray(arr, chunkSize) {
     var groups = [], i;
@@ -188,7 +234,7 @@ function processRobots() {
     robotsNumber.innerHTML = "<b>Number of robots:</b> " + selectedCluster.robotsList.length;
     clusterInfoCol.appendChild(robotsNumber);
 
-    if (selectedCluster.robotsList.length == 0) {
+    if (selectedCluster.robotsList.length === 0) {
         var error = document.createElement('h3');
         error.innerHTML = "<p>No robots in this clusters</p>";
         container.append(error);
@@ -227,36 +273,6 @@ function processRobots() {
     }
 }
 
-// CONNECTING	0	The connection is not yet open.
-// OPEN	1	The connection is open and ready to communicate.
-// CLOSING	2	The connection is in the process of closing.
-// CLOSED	3	The connection is closed or couldn't be opened.
-function setStatus() {
-    var status = $('#status');
-    if (ws == null) {
-        status.text('CLOSED');
-    } else {
-        switch (ws.readyState) {
-            case 0:
-                // CONNECTING.
-                status.text('CONNECTING');
-                break;
-            case 1:
-                // OPEN.
-                status.text('OPEN');
-                break;
-            case 2:
-                // CLOSING.
-                status.text('CLOSING');
-                break;
-            case 3:
-                // CLOSED.
-                status.text('CLOSED');
-                break;
-        }
-    }
-}
-
 // Elements are just hidden so there is no need to reprocess them when users change screen.
 function displaySelected() {
     if (display == 0) {
@@ -270,14 +286,15 @@ function displaySelected() {
     }
 }
 
-
+// =====================================================================================================================
+// =====================================================================================================================
+// Document ready.
 $(function () {
     setStatus();
     $('#wsStart').on('click', function () {
         if (ws != null && (ws.readyState == 0 || ws.readyState == 1))
             return;
         connectWS();
-        console.log(ws.readyState);
     });
 
     $('#wsStop').on('click', function () {
@@ -303,7 +320,6 @@ $(function () {
         event.preventDefault();
         var idToSearch = $('#input_id').val();
         // console.log(idToSearch);
-
         var searchedRobot = null;
 
         zones.forEach(function (zone) {
@@ -315,8 +331,6 @@ $(function () {
                 });
             });
         });
-
-        console.log(searchedRobot);
 
         $('#modalBody').empty();
 

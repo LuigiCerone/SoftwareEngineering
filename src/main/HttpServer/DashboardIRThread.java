@@ -1,9 +1,8 @@
-package main.Main;
+package main.HttpServer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import main.Controller.ControllerIR;
-import main.HttpServer.webSocket;
 import main.Model.DAO.ZoneDAO;
 import main.Model.Zone;
 
