@@ -13,11 +13,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Main extends JFrame {
+    static JLabel hostIP;
+
     public static void main(String[] args) throws Exception {
 
         // JFrame stuff========================================================
         JButton startButton = new JButton("Start");
         JButton stopButton = new JButton("Stop");
+        hostIP = new JLabel();
 
         JFrame frame = new JFrame("SEProject");
         frame.setResizable(false);
@@ -26,6 +29,8 @@ public class Main extends JFrame {
         frameContentPane.setLayout(new FlowLayout());
         frameContentPane.add(startButton);
         frameContentPane.add(stopButton);
+        frameContentPane.add(new JLabel("IP for the webSocket is: "));
+        frameContentPane.add(hostIP);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        frame.pack();
         frame.setVisible(true);
@@ -63,5 +68,9 @@ public class Main extends JFrame {
         });
 
 
+    }
+
+    public static void setIP(String IP) {
+        hostIP.setText(IP);
     }
 }

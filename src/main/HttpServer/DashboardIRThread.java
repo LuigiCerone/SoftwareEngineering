@@ -6,6 +6,10 @@ import main.Controller.ControllerIR;
 import main.Model.DAO.ZoneDAO;
 import main.Model.Zone;
 
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.HashMap;
 
 public class DashboardIRThread implements Runnable {
@@ -21,7 +25,7 @@ public class DashboardIRThread implements Runnable {
 //        WebSocketImpl.DEBUG = true;
         // Start the webSocket.
         if (webSocket == null) {
-            webSocket = new webSocket();
+            webSocket = new webSocket(getLocalLANAddress());
             webSocket.start();
         }
     }
@@ -45,4 +49,21 @@ public class DashboardIRThread implements Runnable {
 
         System.out.println("I'm the DashboardIRThread and I'm going to sleep!");
     }
+
+    private String getLocalLANAddress() {
+        try {
+            Enumeration<NetworkInterface> b = NetworkInterface.getNetworkInterfaces();
+            while (b.hasMoreElements()) {
+                for (InterfaceAddress f : b.nextElement().getInterfaceAddresses())
+                    if (f.getAddress().isSiteLocalAddress()) {
+                        System.out.println(f.getAddress().getHostAddress());
+                        return f.getAddress().getHostAddress();
+                    }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

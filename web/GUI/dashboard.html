@@ -16,24 +16,29 @@
 <body>
 <h1> Software Engineering Project 2017-18</h1>
 <br><br>
-<div class="row">
-    <div class="col no-border">
-        <button class="btn btn-outline-success my-2 my-sm-0" id="wsStart">Connect</button>
-        <button class="btn btn-outline-success my-2 my-sm-0" id="wsStop">Disconnect</button>
-    </div>
-    <div class="col no-border">
-        <b><span id="status"></span></b>
-    </div>
-    <div class="col no-border">
-        <button id="toggle" class="btn btn-outline-success my-2 my-sm-0" disabled>Go back</button>
-    </div>
-    <div class="col no-border">
-        <form class="form-inline my-2 my-lg-0">
-            <input id="input_id" class="form-control mr-sm-2" type="text" placeholder="Search">
-            <button id="search" class="btn btn-outline-success my-2 my-sm-0" type="submit" data-toggle="modal"
-                    data-target="#robotModal">Search
-            </button>
-        </form>
+<div class="container">
+    <div class="row">
+        <div class="col-2 no-border">
+            <input id="ip" class="form-control" type="text" placeholder="WebSocket IP" maxlength="15">
+        </div>
+        <div class="col-3 no-border">
+            <button class="btn btn-outline-success my-2 my-sm-0" id="wsStart">Connect</button>
+            <button class="btn btn-outline-success my-2 my-sm-0" id="wsStop">Disconnect</button>
+        </div>
+        <div class="col-1 no-border">
+            <b><span id="status"></span></b>
+        </div>
+        <div class="col-2 no-border">
+            <button id="toggle" class="btn btn-outline-success my-2 my-sm-0" disabled>Go back</button>
+        </div>
+        <div class="col-4 no-border">
+            <form class="form-inline my-2 my-lg-0">
+                <input id="input_id" class="form-control mr-sm-2" type="text" placeholder="Search">
+                <button id="search" class="btn btn-outline-success my-2 my-sm-0" type="submit" data-toggle="modal"
+                        data-target="#robotModal">Search
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 <br>

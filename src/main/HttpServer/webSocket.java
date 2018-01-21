@@ -1,5 +1,6 @@
 package main.HttpServer;
 
+import main.Main.Main;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -11,10 +12,12 @@ public class webSocket extends WebSocketServer {
     private HashSet<WebSocket> allClients;
     private String serializedData = null;
 
-    public webSocket() {
-        super(new InetSocketAddress("127.0.0.1", 9999));
+    public webSocket(String IP) {
+        super(new InetSocketAddress(IP, 9999));
         allClients = new HashSet<WebSocket>();
+        Main.setIP(IP);
     }
+
 
     public void setData(String serializedData) {
         this.serializedData = serializedData;

@@ -1,6 +1,5 @@
-console.log("Ok");
 // Let us open a web socket
-var ws, display = 0;
+var ws, display = 0, number = 0;
 var zones;
 var clusterId, zoneId;
 
@@ -12,16 +11,14 @@ var clusterId, zoneId;
 // =====================================================================================================================
 // Socket stuff.
 
-function connectWS() {
-    console.log("Cliccato!");
+function connectWS(ip) {
     $('body').addClass("loading");
-
-    ws = new WebSocket("ws://127.0.0.1:9999");
+    ws = new WebSocket("ws://" + ip + ":9999");
     ws.onopen = function (data) {
         onOpen(data);
     };
-    ws.onclose = function (data) {
-        onClose(data);
+    ws.onclose = function () {
+        onClose();
     };
     ws.onmessage = function (data) {
         onMessage(data);
@@ -30,11 +27,14 @@ function connectWS() {
         onError(data);
     };
 
-    ws.onopen("Button click");
-    setStatus();
+    if (ws != null) {
+        ws.onopen("Button click");
+        setStatus();
+    }
 }
 
 function disconnectWS() {
+    number = 123456;
     onClose();
     console.log(ws.readyState);
     setStatus();
@@ -49,24 +49,32 @@ function onOpen(data) {
 }
 
 function onMessage(evt) {
-
-    console.log("Arrivato");
     $('body').removeClass("loading");
     zones = Object.values(JSON.parse(evt.data));
     processZones(zones);
     setStatus();
 
-    if (display == 1) {
+    if (display === 1) {
         processRobots(zoneId, clusterId);
     }
 
     displaySelected();
 }
 
-function onClose(data) {
+function onClose() {
     // websocket is closed.
     ws.close();
-    console.log("Closed with data: " + data);
+    if (number === 0) {
+        // There was an error.
+        // var error = document.createElement('h3');
+        // error.innerHTML = "Can't establish a connection with the given IP, please check it and retry.";
+        // $('#zoneContainer').append(error);
+
+
+        alert("Can't establish a connection with the given IP, please check it and retry.");
+        window.location.reload();
+    }
+    console.log("Closed with data: " + number);
     setStatus();
 }
 
@@ -175,7 +183,7 @@ function processZones(zones) {
                 innerCol.appendChild(clusterId);
 
                 var ir = document.createElement('p');
-                ir.innerHTML = "<b>IR:</b> " + cluster.inefficiencyRate;
+                ir.innerHTML = "<b>IR:</b> " + cluster.inefficiencyRate + "&#37;";
                 innerCol.appendChild(ir);
 
                 var robotsNumber = document.createElement('p');
@@ -227,7 +235,7 @@ function processRobots() {
     clusterInfoCol.appendChild(clusterIdInfo);
 
     var ir = document.createElement('p');
-    ir.innerHTML = "<b>IR:</b> " + selectedCluster.inefficiencyRate;
+    ir.innerHTML = "<b>IR:</b> " + selectedCluster.inefficiencyRate + "&#37;";
     clusterInfoCol.appendChild(ir);
 
     var robotsNumber = document.createElement('p');
@@ -294,7 +302,8 @@ $(function () {
     $('#wsStart').on('click', function () {
         if (ws != null && (ws.readyState == 0 || ws.readyState == 1))
             return;
-        connectWS();
+        connectWS($('#ip').val());
+        return true;
     });
 
     $('#wsStop').on('click', function () {
@@ -309,6 +318,10 @@ $(function () {
         display = 1;
         displaySelected();
         processRobots(zoneId, clusterId);
+    });
+
+    $('#ip').on('focus', function () {
+        number = 0;
     });
 
     $('#toggle').on('click', function () {
