@@ -10,11 +10,8 @@ import main.Model.History;
 import main.Model.ReadData;
 import main.Model.Robot;
 
-import java.sql.Timestamp;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -92,13 +89,24 @@ public class ControllerIR {
         HashMap<String, Double> clustersRates;
         HashMap<String, Double> robotsRates;
 
-        Timestamp now = new Timestamp(System.currentTimeMillis());
-        ZonedDateTime zonedDateTime = now.toInstant().atZone(ZoneId.of("UTC"));
-        Timestamp oneHourAgo = Timestamp.from(zonedDateTime.minus(1, ChronoUnit.HOURS).toInstant());
-        System.out.println("Timestamps are oneHourAgo: " + oneHourAgo.toString() + " now: " + now.toString());
+//        Timestamp now = new Timestamp(System.currentTimeMillis());
+        Calendar calendar = Calendar.getInstance();
+        System.out.println("Now is: " + calendar.getTime().toString());
+        long nowLong = calendar.getTimeInMillis();
 
-        long nowLong = now.getTime();
-        long oneHourAgoLong = oneHourAgo.getTime();
+//        ZonedDateTime zonedDateTime = now.toInstant().atZone(ZoneId.of("UTC"));
+//        Timestamp oneHourAgo = Timestamp.from(zonedDateTime.minus(1, ChronoUnit.HOURS).toInstant());
+        calendar.add(Calendar.HOUR_OF_DAY, -1);
+        long oneHourAgoLong = calendar.getTimeInMillis();
+        System.out.println("One hour ago was: " + calendar.getTime().toString());
+
+//        System.out.println("Timestamps are oneHourAgo: " + oneHourAgo.toString() + " now: " + now.toString());
+
+//        long nowLong = now.getTime();
+//        long oneHourAgoLong = oneHourAgo.getTime();
+
+//        long nowLong = 1516536000000L;
+//        long oneHourAgoLong = 1516532400000L;
 
         HashSet<Cluster> clusters = new ClusterDAO().getAllClusters();
         clustersRates = calculateClustersIr(nowLong, oneHourAgoLong, clusters);

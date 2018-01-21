@@ -1,6 +1,7 @@
 package main.Main;
 
 import main.HttpServer.DashboardIRThread;
+import main.HttpServer.HttpServerInit;
 import main.HttpServer.OldHistoryCleanerThread;
 
 import javax.swing.*;
@@ -35,6 +36,12 @@ public class Main extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 new Thread() {
                     public void run() {
+
+                        try {
+                            new HttpServerInit();
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
                         ScheduledExecutorService scheduler =
                                 Executors.newSingleThreadScheduledExecutor();
 

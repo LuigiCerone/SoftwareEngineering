@@ -318,6 +318,7 @@ $(function () {
 
     $('#search').on('click', function (event) {
         event.preventDefault();
+        if (zones.length === 0) return;
         var idToSearch = $('#input_id').val();
         // console.log(idToSearch);
         var searchedRobot = null;
@@ -340,13 +341,13 @@ $(function () {
             p.innerHTML = "<b>Not found </b>";
             body.appendChild(p);
         } else {
-            var robot = document.createElement('p');
-            robot.innerHTML = "<b>Robot:</b>" + searchedRobot.robotId;
-            body.appendChild(robot);
-
             var cluster = document.createElement('p');
             cluster.innerHTML = "<b>Cluster:</b> " + searchedRobot.clusterId;
             body.appendChild(cluster);
+
+            var robot = document.createElement('p');
+            robot.innerHTML = "<b>Robot:</b>" + searchedRobot.robotId;
+            body.appendChild(robot);
 
             var ir = document.createElement('p');
             ir.innerHTML = "<b>IR:</b> " + searchedRobot.inefficiencyRate;
