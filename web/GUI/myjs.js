@@ -2,6 +2,7 @@
 var ws, display = 0, number = 0;
 var zones;
 var clusterId, zoneId;
+var ipRegex = new RegExp('^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$');
 
 // display == 0 --> display Robots (by default).
 // display == 1 --> display Clusters.
@@ -71,8 +72,7 @@ function onClose() {
         // $('#zoneContainer').append(error);
 
 
-        alert("Can't establish a connection with the given IP, please check it and retry.");
-        window.location.reload();
+        $('#errorModal').modal('show');
     }
     console.log("Closed with data: " + number);
     setStatus();
@@ -320,8 +320,18 @@ $(function () {
         processRobots(zoneId, clusterId);
     });
 
-    $('#ip').on('focus', function () {
+    $('#ip').on('keyup', function () {
         number = 0;
+        var text = $('#ip').val();
+        if (ipRegex.test(text)) {
+            $('#wsStart').prop("disabled", false);
+            $('#wsStop').prop("disabled", false);
+            $('#search').prop("disabled", false);
+        } else {
+            $('#wsStart').prop("disabled", true);
+            $('#wsStop').prop("disabled", true);
+            $('#search').prop("disabled", true);
+        }
     });
 
     $('#toggle').on('click', function () {
@@ -370,4 +380,8 @@ $(function () {
         $('#modalBody').append(body);
 
     });
+
+    $('#closeModalError').on('click', function () {
+        window.location.reload();
+    })
 });

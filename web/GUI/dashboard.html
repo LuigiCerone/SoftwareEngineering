@@ -22,8 +22,8 @@
             <input id="ip" class="form-control" type="text" placeholder="WebSocket IP" maxlength="15">
         </div>
         <div class="col-3 no-border">
-            <button class="btn btn-outline-success my-2 my-sm-0" id="wsStart">Connect</button>
-            <button class="btn btn-outline-success my-2 my-sm-0" id="wsStop">Disconnect</button>
+            <button class="btn btn-outline-success my-2 my-sm-0" id="wsStart" disabled>Connect</button>
+            <button class="btn btn-outline-success my-2 my-sm-0" id="wsStop" disabled>Disconnect</button>
         </div>
         <div class="col-1 no-border">
             <b><span id="status"></span></b>
@@ -35,7 +35,7 @@
             <form class="form-inline my-2 my-lg-0">
                 <input id="input_id" class="form-control mr-sm-2" type="text" placeholder="Search">
                 <button id="search" class="btn btn-outline-success my-2 my-sm-0" type="submit" data-toggle="modal"
-                        data-target="#robotModal">Search
+                        data-target="#robotModal" disabled>Search
                 </button>
             </form>
         </div>
@@ -69,5 +69,22 @@
 
 <div class="spinner"></div>
 
+<!-- Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Wrong IP</h5>
+            </div>
+            <div class="modal-body">
+                Can't establish a connection with the given IP, please check it and retry.
+            </div>
+            <div class="modal-footer">
+                <button id="closeModalError" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
