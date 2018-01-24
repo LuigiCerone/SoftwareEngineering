@@ -266,7 +266,7 @@ function processRobots() {
                 col.appendChild(cluster);
 
                 var ir = document.createElement('p');
-                ir.innerHTML = "<b>IR:</b> " + data.inefficiencyRate;
+                ir.innerHTML = "<b>IR:</b> " + data.inefficiencyRate + "&#37;";
                 col.appendChild(ir);
 
                 if (data.inefficiencyRate >= 40.0) {
@@ -373,7 +373,7 @@ $(function () {
             body.appendChild(robot);
 
             var ir = document.createElement('p');
-            ir.innerHTML = "<b>IR:</b> " + searchedRobot.inefficiencyRate;
+            ir.innerHTML = "<b>IR:</b> " + searchedRobot.inefficiencyRate + "&#37;";
             body.appendChild(ir);
         }
 

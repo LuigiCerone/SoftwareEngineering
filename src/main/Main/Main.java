@@ -57,7 +57,7 @@ public class Main extends JFrame {
                                 Executors.newSingleThreadScheduledExecutor();
 
                         // Every 5 mins system calculate the ir.
-                        scheduler.scheduleAtFixedRate(new DashboardIRThread(), 0, 5, TimeUnit.MINUTES);
+                        scheduler.scheduleAtFixedRate(new DashboardIRThread(), 2, 5, TimeUnit.MINUTES);
                         // Every 90 mins system cleans the old unused histories.
                         scheduler.scheduleAtFixedRate(new OldHistoryCleanerThread(), 30, 90, TimeUnit.MINUTES);
                         System.out.println("The system is running!");

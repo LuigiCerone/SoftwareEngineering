@@ -16,7 +16,7 @@ public class databaseUploaderHandler implements HttpHandler {
         if (exchange.getRequestMethod().equalsIgnoreCase("POST")) {
             InputStream is = exchange.getRequestBody();
             value = IOUtils.toString(is, "UTF-8");
-            System.out.println("Just received a request: " + value);
+//            System.out.println("Just received a request: " + value);
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             exchange.close();
 
