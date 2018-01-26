@@ -1,3 +1,5 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea/
 out/
+testRobot/D3/out
+testRobot/D3/.idea
