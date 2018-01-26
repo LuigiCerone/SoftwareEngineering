@@ -3,11 +3,9 @@ package main.HttpServer;
 import com.sun.net.httpserver.HttpServer;
 
 import java.net.InetSocketAddress;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class HttpServerInit {
-    private static ExecutorService pool = Executors.newFixedThreadPool(2);
+//    private static ExecutorService pool = Executors.newFixedThreadPool(2);
 
     public HttpServerInit() throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(9000), 0);
